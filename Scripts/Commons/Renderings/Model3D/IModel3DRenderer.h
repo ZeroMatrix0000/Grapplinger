@@ -1,7 +1,7 @@
 /*
  * FileName:     IModel3DRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/09
+ * Last Updated: 2026/10/25
  *
  * 3Dモデル描画のインタフェース
  */
@@ -33,15 +33,15 @@ namespace Renderings
 		// デストラクタ
 		virtual ~IModel3DRenderer() = default;
 
-		// モデルのポインタを追加
-		virtual void AddPModel(const ICameraScreen* pICameraScreen, const Model3D* pModel) = 0;
-		// モデルのポインタを削除
-		virtual void RemovePModel(const ICameraScreen* pICameraScreen, const Model3D* pModel) = 0;
+		// モデルの参照を追加
+		virtual void AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) = 0;
+		// モデルの参照を削除
+		virtual void RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) = 0;
 
-		// パーティクルのポインタを追加
-		virtual void AddPParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement) = 0;
-		// パーティクルのポインタを削除
-		virtual void RemovePParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement) = 0;
+		// パーティクルの参照を追加
+		virtual void AddParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) = 0;
+		// パーティクルの参照を削除
+		virtual void RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) = 0;
 
 	};
 }

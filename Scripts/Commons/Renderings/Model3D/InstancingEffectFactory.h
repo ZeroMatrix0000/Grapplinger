@@ -1,7 +1,7 @@
 /*
  * FileName:     InstancingEffectFactory.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/08
+ * Last Updated: 2026/10/26
  *
  * インスタンス描画用のエフェクトファクトリ
  */
@@ -42,7 +42,7 @@ namespace Renderings
 		void SetDirectory(const std::wstring& filePath) { m_directory = filePath; };
 
 		// モデルソースを設定
-		void SetModel3DSource(Model3DSource* pModelSource) { m_pModelSource = pModelSource; }
+		void SetModel3DSource(Ref<Model3DSource> modelSource) { m_pModelSource = &modelSource.Get(); }
 
 
 	private:

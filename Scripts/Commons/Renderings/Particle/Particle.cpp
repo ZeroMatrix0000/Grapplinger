@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/25
  *
  * パーティクル
  */
@@ -35,7 +35,7 @@ Renderings::Particle::~Particle()
 	{
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->RemovePParticle(pICameraScreen, renderElement.get());
+			m_pIModelRenderer->RemoveParticleRef(Ref{ *pICameraScreen }, Ref{ *renderElement }.Const());
 		}
 	}
 }
@@ -63,13 +63,13 @@ void Renderings::Particle::SetModelSource(const std::string& modelSourceName, Re
 	// 描画者からパーティクルを削除
 	for (const auto* pICameraScreen : m_pICameraScreens)
 	{
-		m_pIModelRenderer->RemovePParticle(pICameraScreen, pRenderElement);
+		m_pIModelRenderer->RemoveParticleRef(Ref{ *pICameraScreen }, Ref{ *pRenderElement }.Const());
 	}
 	pRenderElement->modelSourceRef = m_pIResources->GetModelSource(modelSourceName);
 	// 描画者にパーティクルを追加
 	for (const auto* pICameraScreen : m_pICameraScreens)
 	{
-		m_pIModelRenderer->AddPParticle(pICameraScreen, pRenderElement);
+		m_pIModelRenderer->AddParticleRef(Ref{ *pICameraScreen }, Ref{ *pRenderElement }.Const());
 	}
 }
 
@@ -81,7 +81,7 @@ void Renderings::Particle::AddICameraScreen(const ICameraScreen& iCameraScreen)
 		m_pICameraScreens.push_back(&iCameraScreen);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->AddPParticle(&iCameraScreen, renderElement.get());
+			m_pIModelRenderer->AddParticleRef(Ref{ iCameraScreen }, Ref{ *renderElement }.Const());
 		}
 	}
 }
@@ -95,7 +95,7 @@ void Renderings::Particle::RemoveICameraScreen(const ICameraScreen& iCameraScree
 		m_pICameraScreens.erase(it);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->RemovePParticle(&iCameraScreen, renderElement.get());
+			m_pIModelRenderer->RemoveParticleRef(Ref{ iCameraScreen }, Ref{ *renderElement }.Const());
 		}
 	}
 }

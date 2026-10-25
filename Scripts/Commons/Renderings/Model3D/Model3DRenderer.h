@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/16
+ * Last Updated: 2026/10/25
  *
  * 3Dモデル描画
  */
@@ -41,20 +41,20 @@ namespace Renderings
 		// 深度ステンシルビューを設定
 		void SetDepthStencilView(ID3D11DepthStencilView* pDepthStencilView) { m_pDepthStencilView = pDepthStencilView; };
 
-		// 頂点シェーダを設定
-		void SetVertexShader(const VertexShader* pVertexShader);
+		// 頂点シェーダのポインタを設定
+		void SetPVertexShader(const VertexShader* pVertexShader);
 		// ピクセルシェーダを設定
-		void SetPixelShader(const PixelShader* pPixelShader) { m_pPixelShader = pPixelShader; }
+		void SetPPixelShader(const PixelShader* pPixelShader) { m_pPixelShader = pPixelShader; }
 
-		// モデルのポインタを追加
-		void AddPModel(const ICameraScreen* pICameraScreen, const Model3D* pModel) override;
-		// モデルのポインタを削除
-		void RemovePModel(const ICameraScreen* pICameraScreen, const Model3D* pModel) override;
+		// モデルの参照を追加
+		void AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) override;
+		// モデルの参照を削除
+		void RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) override;
 
-		// パーティクルのポインタを追加
-		void AddPParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement) override;
-		// パーティクルのポインタを削除
-		void RemovePParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement) override;
+		// パーティクルの参照を追加
+		void AddParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) override;
+		// パーティクルの参照を削除
+		void RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) override;
 
 
 	private:
@@ -65,10 +65,10 @@ namespace Renderings
 		// 描画オブジェクト
 		struct RenderObjects
 		{
-			// モデルのポインタリスト
-			std::vector<const Model3D*> pModels{};
-			// パーティクルのポインタリスト
-			std::vector<const Particle::RenderElement*> pParticleElements{};
+			// モデルの参照リスト
+			std::vector<Ref<const Model3D>> modelRefs{};
+			// パーティクルの参照リスト
+			std::vector<Ref<const Particle::RenderElement>> particleElementRefs{};
 		};
 
 		// 入力要素
@@ -94,9 +94,9 @@ namespace Renderings
 		void SetPartInfo(const Model3DSource::PartInfo& partInfo);
 
 		// 描画
-		void Draw(const ICameraScreen* pICameraScreen, const DirectX::ModelMeshPart* pPart);
+		void Draw(Ref<const ICameraScreen> iCameraScreenRef, Ref<const DirectX::ModelMeshPart> partRef);
 		// インスタンス描画
-		void DrawInstanced(const ICameraScreen* pICameraScreen, const DirectX::ModelMeshPart* pPart, size_t instMatricesCount);
+		void DrawInstanced(Ref<const ICameraScreen> iCameraScreenRef, Ref<const DirectX::ModelMeshPart> partRef, size_t instMatricesCount);
 
 
 		/* メンバ変数 */
@@ -111,7 +111,7 @@ namespace Renderings
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_whiteTexture;
 
 		// 描画オブジェクトリスト
-		std::unordered_map<const ICameraScreen*, std::unordered_map<const Model3DSource*, RenderObjects>> m_renderObjects;
+		std::unordered_map<Ref<const ICameraScreen>, std::unordered_map<Ref<const Model3DSource>, RenderObjects>> m_renderObjects;
 
 		// デバイスのポインタ
 		ID3D11Device5* m_pDevice;

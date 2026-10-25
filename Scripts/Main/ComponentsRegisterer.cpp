@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/25
  *
  * コンポーネント登録者
  */
@@ -80,7 +80,7 @@ void ComponentsRegisterer::RegisterComponents
 	// 3Dモデル
 	componentManagerRef->RegisterCreate<Renderings::Model3D>([iModelRendererRef, iResourcesRef](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Model3D>(desc, &iModelRendererRef.Get(), &iResourcesRef.Get());
+			return std::make_unique<Renderings::Model3D>(desc, iModelRendererRef, iResourcesRef);
 		});
 	// 画像
 	componentManagerRef->RegisterCreate<Renderings::Image>([iImageRendererRef, iResourcesRef](const ComponentDesc& desc)

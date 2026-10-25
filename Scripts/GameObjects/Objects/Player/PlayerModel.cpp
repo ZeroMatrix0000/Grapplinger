@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerModel.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/25
  *
  * プレイヤーのモデル
  */
@@ -180,8 +180,8 @@ void PlayerModel::Scaling(float elapsedTime, const Player& player)
 // 映るカメラ画面を追加
 void PlayerModel::AddICameraScreen(Ref<const Renderings::ICameraScreen> iCameraScreen)
 {
-	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreen(iCameraScreen.Get());
-	m_refSilhouette->GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreen(iCameraScreen.Get());
+	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreen);
+	m_refSilhouette->GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreen);
 }
 
 // トランスフォームを設定

@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/25
  *
  * 3Dモデル
  */
@@ -31,7 +31,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Model3D(const ComponentDesc& desc, IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+		Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 		// デストラクタ
 		~Model3D();
 
@@ -46,10 +46,10 @@ namespace Renderings
 		// モデルソースを設定
 		void SetModelSource(const std::string& modelSourceName);
 
-		// 映るカメラ画面を追加
-		void AddICameraScreen(const ICameraScreen& iCameraScreen);
-		// 映るカメラ画面を削除
-		void RemoveICameraScreen(const ICameraScreen& iCameraScreen);
+		// 映るカメラ画面の参照を追加
+		void AddICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
+		// 映るカメラ画面参照を削除
+		void RemoveICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
 
 		// 色を取得
 		const Math::Color& GetColor() const { return m_color; }
@@ -69,14 +69,14 @@ namespace Renderings
 		// モデルソースの参照
 		Ref<const Model3DSource> m_modelSourceRef;
 
-		// 映るカメラ画面のポインタリスト
-		std::vector<const ICameraScreen*> m_pICameraScreens;
+		// 映るカメラ画面の参照リスト
+		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
 
-		// モデル描画インタフェースのポインタ
-		IModel3DRenderer* m_pIModelRenderer;
+		// モデル描画インタフェースの参照
+		Ref<IModel3DRenderer> m_iModelRendererRef;
 
-		// リソース管理のポインタ
-		Systems::IResources* m_pIResources;
+		// リソース管理の参照
+		Ref<Systems::IResources> m_iResourcesRef;
 
 	};
 }

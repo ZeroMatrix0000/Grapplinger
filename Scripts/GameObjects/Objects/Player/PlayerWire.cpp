@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerWire.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/25
  *
  * プレイヤーの糸
  */
@@ -196,7 +196,7 @@ void PlayerWire::Scaling(float elapsedTime)
 // 映るカメラ画面を追加
 void PlayerWire::AddICameraScreen(Ref<const Renderings::ICameraScreen> iCameraScreen)
 {
-	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreen(iCameraScreen.Get());
+	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreen);
 	m_refParticleManager->AddICameraScreen(iCameraScreen.Get());
 }
 

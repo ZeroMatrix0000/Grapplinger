@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/25
  *
  * 3Dモデル描画
  */
@@ -79,26 +79,26 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 	// 定数バッファ
 	ConstantBuffer* pPSConstantBuffer = m_pPixelShader->GetConstantBuffer();
 
-	for (const auto& [pICameraScreen, renderObjectsList] : m_renderObjects)
+	for (const auto& [iCameraScreenRef, renderObjectsList] : m_renderObjects)
 	{
 		// 定数バッファを設定
-		pVSConstantBuffer->SetVariable("View", pICameraScreen->GetViewMatrix().Transpose());
-		pVSConstantBuffer->SetVariable("Projection", pICameraScreen->GetProjectionMatrix().Transpose());
+		pVSConstantBuffer->SetVariable("View", iCameraScreenRef->GetViewMatrix().Transpose());
+		pVSConstantBuffer->SetVariable("Projection", iCameraScreenRef->GetProjectionMatrix().Transpose());
 		m_pVertexShader->SetConstantBuffer(m_pDevice, m_pContext, 0);
 		pPSConstantBuffer->SetVariable("AmbientColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
 		pPSConstantBuffer->SetVariable("LightDirection", Math::Vector3{ -0.25f, -1.0f, -0.5f });
 		pPSConstantBuffer->SetVariable("LightColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
-		pPSConstantBuffer->SetVariable("EyePosition", pICameraScreen->GetEyePosition());
+		pPSConstantBuffer->SetVariable("EyePosition", iCameraScreenRef->GetEyePosition());
 		m_pPixelShader->SetConstantBuffer(m_pDevice, m_pContext, 0);
 
 		// モデルソースリスト
-		std::vector<const Model3DSource*> modelSources{};
+		std::vector<Ref<const Model3DSource>> modelSources{};
 		for (const auto& [modelSource, _] : renderObjectsList)
 		{
 			modelSources.push_back(modelSource);
 		}
 		// 描画順にソート
-		std::ranges::sort(modelSources, [](const Model3DSource* a, const Model3DSource* b)
+		std::ranges::sort(modelSources, [](Ref<const Model3DSource> a, Ref<const Model3DSource> b)
 			{
 				return a->GetDrawingOrder() < b->GetDrawingOrder();
 			});
@@ -129,17 +129,27 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 
 			// 行列リスト
 			std::vector<InputElement> inputElements{};
-			inputElements.reserve(renderObjects.pModels.size() + renderObjects.pParticleElements.size());
+			inputElements.reserve(renderObjects.modelRefs.size() + renderObjects.particleElementRefs.size());
 
-			for (const auto* pModel : renderObjects.pModels)
+			for (Ref modelRef : renderObjects.modelRefs)
 			{
 				// モデルの所有者のトランスフォーム
-				Ref transform{ pModel->GetConstOwner()->GetConstComponent<Transform>() };
+				Ref transform{ modelRef->GetConstOwner()->GetConstComponent<Transform>() };
+				if (transform == modelRef->GetConstOwner()->GetNullComponent<Transform>().Const())
+				{
+					// エラーメッセージを追加
+					Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
+					(
+						L"Transform コンポーネントが見つかりません。 | %s",
+						Utility::string2wstring(modelRef->GetConstOwner()->GetName()).c_str()
+					));
+					return;
+				}
 
 				// 入力要素リストに追加
 				InputElement& inputElement = inputElements.emplace_back();
 				DirectX::XMStoreFloat3x4(&inputElement.instMatrix, transform->GetWorldMatrix());
-				inputElement.color = pModel->GetColor();
+				inputElement.color = modelRef->GetColor();
 
 				// インスタンス描画じゃないなら
 				if (!isInstance)
@@ -156,7 +166,7 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 							// パーツの情報を設定
 							SetPartInfo(modelSource->GetPartInfo(partIndex));
 							// 描画
-							Draw(pICameraScreen, part.get());
+							Draw(iCameraScreenRef, Ref{ *part }.Const());
 
 							partIndex++;
 						}
@@ -167,12 +177,12 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				}
 			}
 
-			for (const auto* pElement : renderObjects.pParticleElements)
+			for (Ref elementRef : renderObjects.particleElementRefs)
 			{
 				// 入力要素リストに追加
 				InputElement& inputElement = inputElements.emplace_back();
-				DirectX::XMStoreFloat3x4(&inputElement.instMatrix, pElement->matrix);
-				inputElement.color = pElement->color;
+				DirectX::XMStoreFloat3x4(&inputElement.instMatrix, elementRef->matrix);
+				inputElement.color = elementRef->color;
 
 				// インスタンス描画じゃないなら
 				if (!isInstance)
@@ -189,7 +199,7 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 							// パーツの情報を設定
 							SetPartInfo(modelSource->GetPartInfo(partIndex));
 							// 描画
-							Draw(pICameraScreen, part.get());
+							Draw(iCameraScreenRef, Ref{ *part }.Const());
 
 							partIndex++;
 						}
@@ -212,7 +222,7 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 					// 定数バッファを設定
 					SetPartInfo(modelSource->GetPartInfo(partIndex));
 					// 描画
-					DrawInstanced(pICameraScreen, part.get(), inputElements.size());
+					DrawInstanced(iCameraScreenRef, Ref{ *part }.Const(), inputElements.size());
 
 					partIndex++;
 				}
@@ -237,148 +247,138 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 }
 
 // 頂点シェーダを設定
-void Renderings::Model3DRenderer::SetVertexShader(const VertexShader* pVertexShader)
+void Renderings::Model3DRenderer::SetPVertexShader(const VertexShader* pVertexShader)
 {
 	m_pVertexShader = pVertexShader;
 	CreateInputLayout();
 }
 
-// モデルのポインタを追加
-void Renderings::Model3DRenderer::AddPModel(const ICameraScreen* pICameraScreen, const Model3D* pModel)
+// モデルの参照を追加
+void Renderings::Model3DRenderer::AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef)
 {
-	if (!pICameraScreen)
+	if (iCameraScreenRef == iCameraScreenRef->GetConstOwner()->GetNullComponent<ICameraScreen>().Const())
 	{
 		return;
 	}
 
 	// モデルソース
-	Ref<const Model3DSource> modelSource = pModel->GetPModelSource();
+	Ref<const Model3DSource> modelSource = modelRef->GetPModelSource();
 	if (!modelSource->IsInitialized())
 	{
 		return;
 	}
 
 	// カメラに対応した描画オブジェクトリストが見つからなければ生成
-	auto cameraIt = m_renderObjects.find(pICameraScreen);
+	auto cameraIt = m_renderObjects.find(iCameraScreenRef);
 	if (cameraIt == m_renderObjects.end())
 	{
-		m_renderObjects.emplace(pICameraScreen, std::unordered_map<const Model3DSource*, RenderObjects>{});
-		cameraIt = m_renderObjects.find(pICameraScreen);
+		m_renderObjects.emplace(iCameraScreenRef, std::unordered_map<Ref<const Model3DSource>, RenderObjects>{});
+		cameraIt = m_renderObjects.find(iCameraScreenRef);
 	}
 
 	// モデルソースに対応した描画オブジェクトリストが見つからなければ生成
-	auto modelIt = cameraIt->second.find(&modelSource.Get());
+	auto modelIt = cameraIt->second.find(modelSource);
 	if (modelIt == cameraIt->second.end())
 	{
-		cameraIt->second.emplace(&modelSource.Get(), RenderObjects{});
-		modelIt = cameraIt->second.find(&modelSource.Get());
+		cameraIt->second.emplace(modelSource, RenderObjects{});
+		modelIt = cameraIt->second.find(modelSource);
 	}
 
 	// モデルのポインタの追加
-	modelIt->second.pModels.push_back(pModel);
+	modelIt->second.modelRefs.push_back(modelRef);
 }
 
-// モデルのポインタを削除
-void Renderings::Model3DRenderer::RemovePModel(const ICameraScreen* pICameraScreen, const Model3D* pModel)
+// モデルの参照を削除
+void Renderings::Model3DRenderer::RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef)
 {
-	if (!pICameraScreen)
-	{
-		return;
-	}
-
 	// モデルソース
-	Ref<const Model3DSource> modelSource = pModel->GetPModelSource();
+	Ref<const Model3DSource> modelSource = modelRef->GetPModelSource();
 	if (!modelSource->IsInitialized())
 	{
 		return;
 	}
 
 	// ポインタリスト
-	auto& pModels = m_renderObjects.at(pICameraScreen).at(&modelSource.Get()).pModels;
+	auto& modelRefs = m_renderObjects.at(iCameraScreenRef).at(modelSource).modelRefs;
 
-	auto it = std::ranges::find(pModels, pModel);
-	if (it != pModels.end())
+	auto it = std::ranges::find(modelRefs, modelRef);
+	if (it != modelRefs.end())
 	{
-		pModels.erase(it);
+		modelRefs.erase(it);
 	}
 
 	// 空の配列を削除
-	if (pModels.size() == 0 && m_renderObjects.at(pICameraScreen).at(&modelSource.Get()).pParticleElements.size() == 0)
+	if (modelRefs.size() == 0 && m_renderObjects.at(iCameraScreenRef).at(modelSource).particleElementRefs.size() == 0)
 	{
-		m_renderObjects.at(pICameraScreen).erase(&modelSource.Get());
-		if (m_renderObjects.at(pICameraScreen).size() == 0)
+		m_renderObjects.at(iCameraScreenRef).erase(modelSource);
+		if (m_renderObjects.at(iCameraScreenRef).size() == 0)
 		{
-			m_renderObjects.erase(pICameraScreen);
+			m_renderObjects.erase(iCameraScreenRef);
 		}
 	}
 }
 
-// パーティクルのポインタを追加
-void Renderings::Model3DRenderer::AddPParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement)
+// パーティクルの参照を追加
+void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
 {
-	if (!pICameraScreen)
+	if (iCameraScreenRef == iCameraScreenRef->GetConstOwner()->GetNullComponent<ICameraScreen>().Const())
 	{
 		return;
 	}
 
 	// モデルソース
-	Ref<const Model3DSource> modelSource = pParticleElement->modelSourceRef;
+	Ref<const Model3DSource> modelSource = particleElementRef->modelSourceRef;
 	if (!modelSource->IsInitialized())
 	{
 		return;
 	}
 
 	// カメラに対応した描画オブジェクトリストが見つからなければ生成
-	auto cameraIt = m_renderObjects.find(pICameraScreen);
+	auto cameraIt = m_renderObjects.find(iCameraScreenRef);
 	if (cameraIt == m_renderObjects.end())
 	{
-		m_renderObjects.emplace(pICameraScreen, std::unordered_map<const Model3DSource*, RenderObjects>{});
-		cameraIt = m_renderObjects.find(pICameraScreen);
+		m_renderObjects.emplace(iCameraScreenRef, std::unordered_map<Ref<const Model3DSource>, RenderObjects>{});
+		cameraIt = m_renderObjects.find(iCameraScreenRef);
 	}
 
 	// モデルソースに対応した描画オブジェクトリストが見つからなければ生成
-	auto modelIt = cameraIt->second.find(&modelSource.Get());
+	auto modelIt = cameraIt->second.find(modelSource);
 	if (modelIt == cameraIt->second.end())
 	{
-		cameraIt->second.emplace(&modelSource.Get(), RenderObjects{});
-		modelIt = cameraIt->second.find(&modelSource.Get());
+		cameraIt->second.emplace(modelSource, RenderObjects{});
+		modelIt = cameraIt->second.find(modelSource);
 	}
 
 	// モデルのポインタの追加
-	modelIt->second.pParticleElements.push_back(pParticleElement);
+	modelIt->second.particleElementRefs.push_back(particleElementRef);
 }
 
-// パーティクルのポインタを削除
-void Renderings::Model3DRenderer::RemovePParticle(const ICameraScreen* pICameraScreen, const Particle::RenderElement* pParticleElement)
+// パーティクルの参照を削除
+void Renderings::Model3DRenderer::RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
 {
-	if (!pICameraScreen)
-	{
-		return;
-	}
-
 	// モデルソース
-	Ref<const Model3DSource> modelSource = pParticleElement->modelSourceRef;
+	Ref<const Model3DSource> modelSource = particleElementRef->modelSourceRef;
 	if (!modelSource->IsInitialized())
 	{
 		return;
 	}
 
 	// ポインタリスト
-	auto& pParticleElements = m_renderObjects.at(pICameraScreen).at(&modelSource.Get()).pParticleElements;
+	auto& particleElementRefs = m_renderObjects.at(iCameraScreenRef).at(modelSource).particleElementRefs;
 
-	auto it = std::ranges::find(pParticleElements, pParticleElement);
-	if (it != pParticleElements.end())
+	auto it = std::ranges::find(particleElementRefs, particleElementRef);
+	if (it != particleElementRefs.end())
 	{
-		pParticleElements.erase(it);
+		particleElementRefs.erase(it);
 	}
 
 	// 空の配列を削除
-	if (pParticleElements.size() == 0 && m_renderObjects.at(pICameraScreen).at(&modelSource.Get()).pModels.size() == 0)
+	if (particleElementRefs.size() == 0 && m_renderObjects.at(iCameraScreenRef).at(modelSource).modelRefs.size() == 0)
 	{
-		m_renderObjects.at(pICameraScreen).erase(&modelSource.Get());
-		if (m_renderObjects.at(pICameraScreen).size() == 0)
+		m_renderObjects.at(iCameraScreenRef).erase(modelSource);
+		if (m_renderObjects.at(iCameraScreenRef).size() == 0)
 		{
-			m_renderObjects.erase(pICameraScreen);
+			m_renderObjects.erase(iCameraScreenRef);
 		}
 	}
 }
@@ -551,7 +551,7 @@ void Renderings::Model3DRenderer::SetPartInfo(const Model3DSource::PartInfo& par
 }
 
 // 描画
-void Renderings::Model3DRenderer::Draw(const ICameraScreen* pICameraScreen, const DirectX::ModelMeshPart* pPart)
+void Renderings::Model3DRenderer::Draw(Ref<const ICameraScreen> iCameraScreenRef, Ref<const DirectX::ModelMeshPart> partRef)
 {
 	// 入力レイアウト
 	m_pContext->IASetInputLayout(m_inputLayout.Get());
@@ -559,12 +559,12 @@ void Renderings::Model3DRenderer::Draw(const ICameraScreen* pICameraScreen, cons
 	// 頂点バッファ
 	ID3D11Buffer* buffers[] =
 	{
-		pPart->vertexBuffer.Get(),
+		partRef->vertexBuffer.Get(),
 		m_instanceBuffer.Get()
 	};
 	UINT strides[] =
 	{
-		pPart->vertexStride,
+		partRef->vertexStride,
 		sizeof(InputElement)
 	};
 	UINT offsets[] =
@@ -583,35 +583,35 @@ void Renderings::Model3DRenderer::Draw(const ICameraScreen* pICameraScreen, cons
 	// 番号バッファ
 	m_pContext->IASetIndexBuffer
 	(
-		pPart->indexBuffer.Get(),
-		pPart->indexFormat,
+		partRef->indexBuffer.Get(),
+		partRef->indexFormat,
 		0
 	);
 
 	// トポロジー
-	m_pContext->IASetPrimitiveTopology(pPart->primitiveType);
+	m_pContext->IASetPrimitiveTopology(partRef->primitiveType);
 
 	// 描画
 	m_pContext->DrawIndexed
 	(
-		pPart->indexCount,
-		pPart->startIndex,
-		pPart->vertexOffset
+		partRef->indexCount,
+		partRef->startIndex,
+		partRef->vertexOffset
 	);
 }
 
 // インスタンス描画
-void Renderings::Model3DRenderer::DrawInstanced(const ICameraScreen* pICameraScreen, const DirectX::ModelMeshPart* pPart, size_t instMatricesCount)
+void Renderings::Model3DRenderer::DrawInstanced(Ref<const ICameraScreen> iCameraScreenRef, Ref<const DirectX::ModelMeshPart> partRef, size_t instMatricesCount)
 {
 	// 頂点バッファ
 	ID3D11Buffer* buffers[] =
 	{
-		pPart->vertexBuffer.Get(),
+		partRef->vertexBuffer.Get(),
 		m_instanceBuffer.Get()
 	};
 	UINT strides[] =
 	{
-		pPart->vertexStride,
+		partRef->vertexStride,
 		sizeof(InputElement)
 	};
 	UINT offsets[] =
@@ -630,13 +630,13 @@ void Renderings::Model3DRenderer::DrawInstanced(const ICameraScreen* pICameraScr
 	// 番号バッファ
 	m_pContext->IASetIndexBuffer
 	(
-		pPart->indexBuffer.Get(),
-		pPart->indexFormat,
+		partRef->indexBuffer.Get(),
+		partRef->indexFormat,
 		0
 	);
 
 	// トポロジー
-	m_pContext->IASetPrimitiveTopology(pPart->primitiveType);
+	m_pContext->IASetPrimitiveTopology(partRef->primitiveType);
 
 	// 入力レイアウト
 	m_pContext->IASetInputLayout(m_inputLayout.Get());
@@ -644,10 +644,10 @@ void Renderings::Model3DRenderer::DrawInstanced(const ICameraScreen* pICameraScr
 	// 描画
 	m_pContext->DrawIndexedInstanced
 	(
-		pPart->indexCount,
+		partRef->indexCount,
 		static_cast<UINT>(instMatricesCount),
-		pPart->startIndex,
-		pPart->vertexOffset,
+		partRef->startIndex,
+		partRef->vertexOffset,
 		0
 	);
 }
