@@ -1,7 +1,7 @@
 /*
  * FileName:     DeviceResources2D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/09/28
+ * Last Updated: 2026/10/26
  *
  * Direct2D に必要なリソース
  */
@@ -12,13 +12,13 @@
 #include "DeviceResources.h"
 
 // コンストラクタ
-Renderings::DeviceResources2D::DeviceResources2D(const DeviceResources& deviceResources)
+Renderings::DeviceResources2D::DeviceResources2D(Ref<const DeviceResources> deviceResourcesRef)
 	: OnlyOne{ typeid(DeviceResources2D) }
 	, m_d2dFactory{}
 	, m_d2dDevice{}
 	, m_d2dContext{}
 	, m_backBuffer{}
-	, m_refDeviceResources{ deviceResources }
+	, m_deviceResourcesRef{ deviceResourcesRef }
 {
 }
 
@@ -69,7 +69,7 @@ void Renderings::DeviceResources2D::CreateFactory()
 void Renderings::DeviceResources2D::CreateDevice()
 {
 	// DXGIデバイス
-	auto dxgiDevice = m_refDeviceResources.CreateDXGIDevice();
+	auto dxgiDevice = m_deviceResourcesRef->CreateDXGIDevice();
 
 	Utility::ThrowIfFailed(m_d2dFactory->CreateDevice(dxgiDevice.Get(), m_d2dDevice.GetAddressOf()));
 	Utility::ThrowIfFailed(m_d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, m_d2dContext.GetAddressOf()));
@@ -80,7 +80,7 @@ void Renderings::DeviceResources2D::CreateBackBuffer()
 {
 	// サーフェス
 	Microsoft::WRL::ComPtr<IDXGISurface> surface;
-	Utility::ThrowIfFailed(m_refDeviceResources.GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(surface.GetAddressOf())));
+	Utility::ThrowIfFailed(m_deviceResourcesRef->GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(surface.GetAddressOf())));
 
 	Utility::ThrowIfFailed(m_d2dContext->CreateBitmapFromDxgiSurface
 	(

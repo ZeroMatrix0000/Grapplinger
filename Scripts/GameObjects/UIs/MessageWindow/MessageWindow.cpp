@@ -65,8 +65,8 @@ void MessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjec
 
 	// キャンバスを設定
 	m_refBackground->SetCanvasRef(canvasRef);
-	m_refCharacter->SetCanvas(canvasRef.Get());
-	m_refText->SetCanvas(canvasRef.Get());
+	m_refCharacter->SetCanvasRef(canvasRef);
+	m_refText->SetCanvasRef(canvasRef);
 
 	// 移動率を初期化
 	m_moveRate.SetMovement(0.0f, 0.0f);

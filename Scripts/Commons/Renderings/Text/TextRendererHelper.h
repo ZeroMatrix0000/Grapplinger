@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRendererHelper.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/06
+ * Last Updated: 2026/10/26
  *
  * テキスト描画のヘルパー関数群
  */
@@ -56,13 +56,13 @@ namespace Renderings
 		(
 			float                   canvasRatio,
 			const Math::Vector2&    position,
+			const Text&             text,
 			ID2D1DeviceContext7*    pContext,
 			IDWriteFactory8*        pDWriteFactory,
 			IDWriteFontCollection3* pFontCollection,
 			IDWriteTextLayout*      pTextLayout,
 			ID2D1SolidColorBrush*   pBrush,
-			DecorationTextRenderer* pDecorationRenderer,
-			const Text*             pText
+			DecorationTextRenderer* pDecorationRenderer
 		);
 
 

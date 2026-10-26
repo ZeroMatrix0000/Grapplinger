@@ -1,7 +1,7 @@
 /*
  * FileName:     Z2Talk.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * Z: はなす
  */
@@ -65,7 +65,7 @@ void Z2Talk::SetPosition(const Math::Box& playerBox, const Renderings::ICameraSc
 		playerBox.position - playerBox.size * Math::Vector3::Up / 2.0f,
 		iCameraScreen.GetViewMatrix(),
 		iCameraScreen.GetProjectionMatrix(),
-		m_refText->GetPCanvas()->GetSize()
+		m_refText->GetCanvasRef()->GetSize()
 	);
 
 	m_refRectTransform->SetPosition(screenPosition);

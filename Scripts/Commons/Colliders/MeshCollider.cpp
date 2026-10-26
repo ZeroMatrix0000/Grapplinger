@@ -1,7 +1,7 @@
 /*
  * FileName:     MeshCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * メッシュの当たり判定
  */
@@ -34,14 +34,14 @@ Colliders::MeshCollider::MeshCollider
 	, m_iResourcesRef{ iResourcesRef }
 {
 	// 描画者に長方形を追加
-	m_iColliderRendererRef->AddPMeshCollider(this);
+	m_iColliderRendererRef->AddPMeshCollider(Ref{ *this }.Const());
 }
 
 // デストラクタ
 Colliders::MeshCollider::~MeshCollider()
 {
 	// 描画者から長方形を削除
-	m_iColliderRendererRef->RemovePMeshCollider(this);
+	m_iColliderRendererRef->RemovePMeshCollider(Ref{ *this }.Const());
 }
 
 // 初期化処理

@@ -90,7 +90,7 @@ void ComponentsRegisterer::RegisterComponents
 	// テキスト
 	componentManagerRef->RegisterCreate<Renderings::Text>([iTextRendererRef](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Text>(desc, &iTextRendererRef.Get());
+			return std::make_unique<Renderings::Text>(desc, iTextRendererRef);
 		});
 	// パーティクル管理
 	componentManagerRef->RegisterCreate<Renderings::ParticleManager>([iModelRendererRef, iResourcesRef](const ComponentDesc& desc)

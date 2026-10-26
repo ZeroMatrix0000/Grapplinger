@@ -1,7 +1,7 @@
 /*
  * FileName:     DeviceResources2D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/28
+ * Last Updated: 2026/10/26
  *
  * Direct2D に必要なリソース
  */
@@ -24,7 +24,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		DeviceResources2D(const DeviceResources& deviceResources);
+		DeviceResources2D(Ref<const DeviceResources> deviceResourcesRef);
 
 		// 初期化処理
 		void Initialize();
@@ -74,7 +74,7 @@ namespace Renderings
 		Microsoft::WRL::ComPtr<ID2D1Bitmap1> m_backBuffer;
 
 		// デバイスリソースの参照
-		const DeviceResources& m_refDeviceResources;
+		Ref<const DeviceResources> m_deviceResourcesRef;
 
 	};
 }

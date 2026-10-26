@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRendererHelper.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/06
+ * Last Updated: 2026/10/26
  *
  * テキスト描画のヘルパー関数群
  */
@@ -194,19 +194,19 @@ void Renderings::TextRenderHelper::DrawTextLayout
 (
 	float                   canvasRatio,
 	const Math::Vector2&    position,
+	const Text&             text,
 	ID2D1DeviceContext7*    pContext,
 	IDWriteFactory8*        pDWriteFactory,
 	IDWriteFontCollection3* pFontCollection,
 	IDWriteTextLayout*      pTextLayout,
 	ID2D1SolidColorBrush*   pBrush,
-	DecorationTextRenderer* pDecorationRenderer,
-	const Text*             pText
+	DecorationTextRenderer* pDecorationRenderer
 )
 {
 	// 色付け詳細リスト
-	const auto& colorDescList = pText->GetDecorationString(m_refRenderer).GetColorDescList();
+	const auto& colorDescList = text.GetDecorationString(m_refRenderer).GetColorDescList();
 	// ルビ詳細リスト
-	const auto& rubyDescList = pText->GetDecorationString(m_refRenderer).GetRubyDescList();
+	const auto& rubyDescList = text.GetDecorationString(m_refRenderer).GetRubyDescList();
 
 	// エフェクトを追加
 	for (const auto& colorDesc : colorDescList)
@@ -236,13 +236,13 @@ void Renderings::TextRenderHelper::DrawTextLayout
 	if (rubyDescList.size() != 0)
 	{
 		// フォントサイズ
-		float fontSize = pText->GetFontSize() * canvasRatio;
+		float fontSize = text.GetFontSize() * canvasRatio;
 
 		// テキストフォーマット
 		Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat;
 		CreateTextFormat
 		(
-			pText->GetFontName(),
+			text.GetFontName(),
 			fontSize * 0.45f,
 			1.0f,
 			DWRITE_TEXT_ALIGNMENT_CENTER,
@@ -290,16 +290,16 @@ void Renderings::TextRenderHelper::DrawTextLayout
 			};
 
 			// 文字の真上に描画位置が来るようにする
-			switch (pText->GetParagraphAlignment())
+			switch (text.GetParagraphAlignment())
 			{
 			case DWRITE_PARAGRAPH_ALIGNMENT_NEAR:
 				rubyRect.position.y -= fontSize * 0.2f;
 				break;
 			case DWRITE_PARAGRAPH_ALIGNMENT_CENTER:
-				rubyRect.position.y -= fontSize * (pText->GetLineSpace() / 2.0f - 0.8f);
+				rubyRect.position.y -= fontSize * (text.GetLineSpace() / 2.0f - 0.8f);
 				break;
 			case DWRITE_PARAGRAPH_ALIGNMENT_FAR:
-				rubyRect.position.y -= fontSize * (pText->GetLineSpace() - 1.4f);
+				rubyRect.position.y -= fontSize * (text.GetLineSpace() - 1.4f);
 				break;
 			default:
 				break;

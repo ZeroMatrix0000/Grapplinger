@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/26
  *
  * テキスト描画
  */
@@ -29,7 +29,7 @@ Renderings::TextRenderer::TextRenderer()
 	, m_floodEffect{}
 	, m_compositeEffect{}
 	, m_decorationRenderer{}
-	, m_pTexts{}
+	, m_textRefs{}
 	, m_pContext{}
 	, m_pBackBuffer{}
 {
@@ -139,31 +139,31 @@ void Renderings::TextRenderer::Begin()
 }
 
 // 描画処理
-void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
+void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 {
 	// 空文字列かサイズが 0 以下か色が透明なら何もしない
-	if (pText->GetStr().empty() || pText->GetFontSize() <= 0.0f || pText->GetFontColor().A() == 0.0f)
+	if (textRef->GetStr().empty() || textRef->GetFontSize() <= 0.0f || textRef->GetFontColor().A() == 0.0f)
 	{
 		return;
 	}
 
 	// テキストの所有者の2Dトランスフォーム
-	Ref<const RectTransform> rectTransform = pText->GetConstOwner()->GetConstComponent<RectTransform>();
+	Ref<const RectTransform> rectTransform = textRef->GetConstOwner()->GetConstComponent<RectTransform>();
 
 	// テキストが映るキャンバス
-	const Canvas* pCanvas = pText->GetPCanvas();
-	if (!pCanvas)
+	Ref<const Canvas> canvasRef = textRef->GetCanvasRef();
+	if (canvasRef == textRef->GetConstOwner()->GetNullComponent<Canvas>().Const())
 	{
 		return;
 	}
 
 	// キャンバスの表示倍率
-	float canvasRatio = pCanvas->GetRatio();
+	float canvasRatio = canvasRef->GetRatio();
 
 	// 長方形をキャンバス情報とピボットとアンカーに沿って移動
 	Math::Rect transformRect = m_helper.AdjustRect
 	(
-		pCanvas->GetSize(),
+		canvasRef->GetSize(),
 		canvasRatio,
 		rectTransform->GetRect(),
 		rectTransform->GetPivot(),
@@ -171,24 +171,24 @@ void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
 	);
 
 	// フォントサイズ
-	float fontSize = pText->GetFontSize() * canvasRatio;
+	float fontSize = textRef->GetFontSize() * canvasRatio;
 
 	// テキストフォーマット
 	Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat;
 	m_helper.CreateTextFormat
 	(
-		pText->GetFontName(),
+		textRef->GetFontName(),
 		fontSize,
-		pText->GetLineSpace(),
-		pText->GetTextAlignment(),
-		pText->GetParagraphAlignment(),
+		textRef->GetLineSpace(),
+		textRef->GetTextAlignment(),
+		textRef->GetParagraphAlignment(),
 		m_dWriteFactory.Get(),
 		m_fontCollection.Get(),
 		textFormat.GetAddressOf()
 	);
 
 	// 描画する文字列
-	const std::wstring& str = pText->GetStr();
+	const std::wstring& str = textRef->GetStr();
 
 	// テキストレイアウト
 	Microsoft::WRL::ComPtr<IDWriteTextLayout> textLayout;
@@ -203,14 +203,14 @@ void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
 	);
 
 	// ブラシ
-	m_brush->SetColor(pText->GetD2D1FontColor());
+	m_brush->SetColor(textRef->GetD2D1FontColor());
 
 	// テキスト詳細
 	DWRITE_TEXT_METRICS metrics{};
 	textLayout->GetMetrics(&metrics);
 
 	// アウトライン幅
-	float outlineWidth = pText->GetOutlineWidth() * canvasRatio;
+	float outlineWidth = textRef->GetOutlineWidth() * canvasRatio;
 
 	// アウトライン幅があるなら
 	if (outlineWidth != 0.0f)
@@ -252,13 +252,13 @@ void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
 		(
 			canvasRatio,
 			Math::Vector2{ outlineWidth + 1.0f - metrics.left, outlineWidth + 1.0f + fontSize - metrics.top },
+			textRef.Get(),
 			m_textContext.Get(),
 			m_dWriteFactory.Get(),
 			m_fontCollection.Get(),
 			textLayout.Get(),
 			m_brush.Get(),
-			&m_decorationRenderer,
-			pText
+			&m_decorationRenderer
 		);
 
 		// 描画終了
@@ -271,7 +271,7 @@ void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
 		Microsoft::WRL::ComPtr<ID2D1Image> dilateImage;
 		m_dilateEffect->GetOutput(dilateImage.GetAddressOf());
 		// 色変更エフェクト
-		m_floodEffect->SetValue(D2D1_FLOOD_PROP_COLOR, pText->GetD2D1OutlineColor());
+		m_floodEffect->SetValue(D2D1_FLOOD_PROP_COLOR, textRef->GetD2D1OutlineColor());
 		Microsoft::WRL::ComPtr<ID2D1Image> floodImage;
 		m_floodEffect->GetOutput(floodImage.GetAddressOf());
 		// 画像合体エフェクト
@@ -352,13 +352,13 @@ void Renderings::TextRenderer::Draw(const Text* pText, bool isDebug)
 		(
 			canvasRatio,
 			transformRect.position - transformRect.size / 2.0f,
+			textRef.Get(),
 			m_pContext,
 			m_dWriteFactory.Get(),
 			m_fontCollection.Get(),
 			textLayout.Get(),
 			m_brush.Get(),
-			&m_decorationRenderer,
-			pText
+			&m_decorationRenderer
 		);
 
 		// デバッグ表示
@@ -395,25 +395,25 @@ void Renderings::TextRenderer::OnWindowSizeChanged(ID2D1DeviceContext7* pContext
 	m_pBackBuffer = pBackBuffer;
 }
 
-// テキストのポインタを追加
-void Renderings::TextRenderer::AddPText(const Text* pText)
+// テキストの参照を追加
+void Renderings::TextRenderer::AddTextRef(Ref<const Text> textRef)
 {
-	m_pTexts.push_back(pText);
+	m_textRefs.push_back(textRef);
 }
 
-// テキストのポインタを削除
-void Renderings::TextRenderer::RemovePText(const Text* pText)
+// テキストの参照を削除
+void Renderings::TextRenderer::RemoveTextRef(Ref<const Text> textRef)
 {
-	auto it = std::ranges::find(m_pTexts, pText);
-	if (it != m_pTexts.end())
+	auto it = std::ranges::find(m_textRefs, textRef);
+	if (it != m_textRefs.end())
 	{
-		m_pTexts.erase(it);
+		m_textRefs.erase(it);
 	}
 }
 
 // テキストのポインタリストをソート
-void Renderings::TextRenderer::SortPTexts()
+void Renderings::TextRenderer::SortTextRefs()
 {
 	// レイヤー順にソート
-	std::ranges::sort(m_pTexts, [](const Text* p1, const Text* p2) {return p1->GetOrderInLayer() < p2->GetOrderInLayer(); });
+	std::ranges::sort(m_textRefs, [](Ref<const Text> ref1, Ref<const Text> ref2) {return ref1->GetOrderInLayer() < ref2->GetOrderInLayer(); });
 }

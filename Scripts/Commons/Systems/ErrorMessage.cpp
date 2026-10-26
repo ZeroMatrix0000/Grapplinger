@@ -1,7 +1,7 @@
 /*
  * FileName:     ErrorMessage.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/26
  *
  * エラーメッセージ
  */
@@ -72,7 +72,7 @@ void Systems::ErrorMessage::CreateObjects(IGameObjectInstantiator* pIGameObjectI
 	canvas->Initialize(Renderings::Canvas::FixedSize::None, Math::Vector2{ 1600.0f, 900.0f });
 
 	// キャンバスに画像を映す
-	m_pText->SetCanvas(canvas.Get());
+	m_pText->SetCanvasRef(canvas.Const());
 }
 
 // メッセージを追加

@@ -1,7 +1,7 @@
 /*
  * FileName:     SphereCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * 球の当たり判定
  */
@@ -28,14 +28,14 @@ Colliders::SphereCollider::SphereCollider(const ComponentDesc& desc, Ref<Renderi
 	, m_iColliderRendererRef{ iColliderRendererRef }
 {
 	// 描画者に球を追加
-	m_iColliderRendererRef->AddPSphereCollider(this);
+	m_iColliderRendererRef->AddPSphereCollider(Ref{ *this }.Const());
 }
 
 // デストラクタ
 Colliders::SphereCollider::~SphereCollider()
 {
 	// 描画者から長方形を削除
-	m_iColliderRendererRef->RemovePSphereCollider(this);
+	m_iColliderRendererRef->RemovePSphereCollider(Ref{ *this }.Const());
 }
 
 // 初期化処理

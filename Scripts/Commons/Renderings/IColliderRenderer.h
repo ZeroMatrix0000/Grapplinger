@@ -1,7 +1,7 @@
 /*
  * FileName:     IColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/24
+ * Last Updated: 2026/10/26
  *
  * 当たり判定描画のインタフェース
  */
@@ -36,20 +36,20 @@ namespace Renderings
 		// デストラクタ
 		virtual ~IColliderRenderer() = default;
 
-		// 長方形の当たり判定のポインタを追加
-		virtual void AddPBoxCollider(const Colliders::BoxCollider* pBoxCollider) = 0;
-		// 長方形の当たり判定のポインタを削除
-		virtual void RemovePBoxCollider(const Colliders::BoxCollider* pBoxCollider) = 0;
+		// 長方形の当たり判定の参照を追加
+		virtual void AddPBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef) = 0;
+		// 長方形の当たり判定の参照を削除
+		virtual void RemovePBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef) = 0;
 
-		// 球の当たり判定のポインタを追加
-		virtual void AddPSphereCollider(const Colliders::SphereCollider* pSphereCollider) = 0;
-		// 球の当たり判定のポインタを削除
-		virtual void RemovePSphereCollider(const Colliders::SphereCollider* pSphereCollider) = 0;
+		// 球の当たり判定の参照を追加
+		virtual void AddPSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef) = 0;
+		// 球の当たり判定の参照を削除
+		virtual void RemovePSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef) = 0;
 
-		// メッシュの当たり判定のポインタを追加
-		virtual void AddPMeshCollider(const Colliders::MeshCollider* pMeshCollider) = 0;
-		// メッシュの当たり判定のポインタを削除
-		virtual void RemovePMeshCollider(const Colliders::MeshCollider* pMeshCollider) = 0;
+		// メッシュの当たり判定の参照を追加
+		virtual void AddPMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef) = 0;
+		// メッシュの当たり判定の参照を削除
+		virtual void RemovePMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef) = 0;
 
 	};
 }

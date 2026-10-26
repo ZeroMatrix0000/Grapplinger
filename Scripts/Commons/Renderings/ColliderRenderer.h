@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/14
+ * Last Updated: 2026/10/26
  *
  * 当たり判定描画
  */
@@ -29,20 +29,20 @@ namespace Renderings
 		// 描画処理
 		void Render();
 
-		// 長方形の当たり判定のポインタを追加
-		void AddPBoxCollider(const Colliders::BoxCollider* pBoxCollider) override;
-		// 長方形の当たり判定のポインタを削除
-		void RemovePBoxCollider(const Colliders::BoxCollider* pBoxCollider) override;
+		// 長方形の当たり判定の参照を追加
+		void AddPBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef) override;
+		// 長方形の当たり判定の参照を削除
+		void RemovePBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef) override;
 
-		// 球の当たり判定のポインタを追加
-		void AddPSphereCollider(const Colliders::SphereCollider* pSphereCollider) override;
-		// 球の当たり判定のポインタを削除
-		void RemovePSphereCollider(const Colliders::SphereCollider* pSphereCollider) override;
+		// 球の当たり判定の参照を追加
+		void AddPSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef) override;
+		// 球の当たり判定の参照を削除
+		void RemovePSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef) override;
 
-		// メッシュの当たり判定のポインタを追加
-		void AddPMeshCollider(const Colliders::MeshCollider* pMeshCollider) override;
-		// メッシュの当たり判定のポインタを削除
-		void RemovePMeshCollider(const Colliders::MeshCollider* pMeshCollider) override;
+		// メッシュの当たり判定の参照を追加
+		void AddPMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef) override;
+		// メッシュの当たり判定の参照を削除
+		void RemovePMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef) override;
 
 
 	private:
@@ -69,12 +69,12 @@ namespace Renderings
 		// ベーシックエフェクト
 		std::unique_ptr<DirectX::BasicEffect>                                  m_basicEffect;
 
-		// 長方形の当たり判定のポインタリスト
-		std::vector<const Colliders::BoxCollider*>    m_pBoxColliders;
-		// 球の当たり判定のポインタリスト
-		std::vector<const Colliders::SphereCollider*> m_pSphereColliders;
-		// メッシュの当たり判定のポインタリスト
-		std::vector<const Colliders::MeshCollider*>   m_pMeshColliders;
+		// 長方形の当たり判定の参照リスト
+		std::vector<Ref<const Colliders::BoxCollider>>    m_boxColliderRefs;
+		// 球の当たり判定の参照リスト
+		std::vector<Ref<const Colliders::SphereCollider>> m_sphereColliderRefs;
+		// メッシュの当たり判定の参照リスト
+		std::vector<Ref<const Colliders::MeshCollider>>   m_meshColliderRefs;
 
 		// デバイスコンテキスト
 		ID3D11DeviceContext4*        m_pContext;

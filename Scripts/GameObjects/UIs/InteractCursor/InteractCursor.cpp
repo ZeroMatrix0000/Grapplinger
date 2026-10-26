@@ -1,7 +1,7 @@
 /*
  * FileName:     InteractCursor.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * 話しかける・調べる際のカーソル
  */
@@ -73,7 +73,7 @@ void InteractCursor::SetName(const std::wstring& name)
 // キャンバスを設定
 void InteractCursor::SetCanvas(const Renderings::Canvas& canvas)
 {
-	m_refText->SetCanvas(canvas);
+	m_refText->SetCanvasRef(Ref{ canvas });
 	m_refImage->SetCanvasRef(Ref{ canvas });
 }
 
@@ -93,5 +93,5 @@ void InteractCursor::SetPosition(const Math::Vector2& position)
 // キャンバスを取得
 const Renderings::Canvas& InteractCursor::GetCanvas() const
 {
-	return *m_refText->GetPCanvas();
+	return m_refText->GetCanvasRef().Get();
 }

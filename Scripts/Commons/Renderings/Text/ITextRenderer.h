@@ -1,7 +1,7 @@
 /*
  * FileName:     ITextRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/28
+ * Last Updated: 2026/10/26
  *
  * テキスト描画のインタフェース
  */
@@ -31,10 +31,10 @@ namespace Renderings
 		// デストラクタ
 		virtual ~ITextRenderer() = default;
 
-		// テキストのポインタを追加
-		virtual void AddPText(const Text* pText) = 0;
-		// テキストのポインタを削除
-		virtual void RemovePText(const Text* pText) = 0;
+		// テキストの参照を追加
+		virtual void AddTextRef(Ref<const Text> textRef) = 0;
+		// テキストの参照を削除
+		virtual void RemoveTextRef(Ref<const Text> textRef) = 0;
 
 	};
 }

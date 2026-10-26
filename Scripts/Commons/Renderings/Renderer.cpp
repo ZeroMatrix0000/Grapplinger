@@ -59,10 +59,10 @@ void Renderings::Renderer::Render()
 	// 画像のポインタリスト
 	const auto& imageRefs = m_imageRenderer.GetImageRefs();
 
-	// テキストのポインタリストをソート
-	m_textRenderer.SortPTexts();
-	// テキストのポインタリスト
-	const auto& pTexts = m_textRenderer.GetPTexts();
+	// テキストの参照リストをソート
+	m_textRenderer.SortTextRefs();
+	// テキストの参照リスト
+	const auto& pTexts = m_textRenderer.GetTextRefs();
 
 	// 画像イテレータ
 	auto itImage = imageRefs.begin();

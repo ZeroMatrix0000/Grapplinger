@@ -1,7 +1,7 @@
 /*
  * FileName:     Text.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/30
+ * Last Updated: 2026/10/26
  *
  * テキスト
  */
@@ -26,7 +26,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Text(const ComponentDesc& desc, ITextRenderer* pITextRenderer);
+		Text(const ComponentDesc& desc, Ref<ITextRenderer> iTextRendererRef);
 		// デストラクタ
 		~Text();
 
@@ -60,8 +60,8 @@ namespace Renderings
 		// レイヤー順を設定
 		void SetOrderInLayer(int orderInLayer) { m_orderInLayer = orderInLayer; }
 
-		// キャンバスを設定
-		void SetCanvas(const Canvas& canvas) { m_pCanvas = &canvas; }
+		// キャンバスの参照を設定
+		void SetCanvasRef(Ref<const Canvas> canvasRef) { m_canvasRef = canvasRef; }
 
 		// 文字列を取得
 		const std::wstring& GetStr() const { return m_str.GetStr(); }
@@ -96,8 +96,8 @@ namespace Renderings
 		// レイヤー順を取得
 		int GetOrderInLayer() const { return m_orderInLayer; }
 
-		// キャンバスのポインタを取得
-		const Canvas* GetPCanvas() const { return m_pCanvas; }
+		// キャンバスの参照を取得
+		Ref<const Canvas> GetCanvasRef() const { return m_canvasRef; }
 
 	private:
 
@@ -130,11 +130,11 @@ namespace Renderings
 		// レイヤー順
 		int m_orderInLayer;
 
-		// キャンバスのポインタ
-		const Canvas* m_pCanvas;
+		// キャンバスの参照
+		Ref<const Canvas> m_canvasRef;
 
-		// テキスト描画インタフェースのポインタ
-		ITextRenderer* m_pITextRenderer;
+		// テキスト描画インタフェースの参照
+		Ref<ITextRenderer> m_iTextRendererRef;
 
 	};
 }

@@ -105,7 +105,7 @@ void SelectMenu::AddOption(const std::wstring& str, const std::function<void()>&
 	Ref<GameObject> refObj = Instantiate("Prefab_SelectMenuText");
 	Ref text = refObj->AddComponent<Renderings::Text>();
 	text->SetStr(str);
-	text->SetCanvas(m_refCursorImage->GetCanvasRef().Get());
+	text->SetCanvasRef(m_refCursorImage->GetCanvasRef());
 	text->SetFontSize(m_params.fontSizeBegin);
 	Ref rectTransform = refObj->AddComponent<RectTransform>();
 	rectTransform->SetPosition(m_params.basePosition + Math::Vector2{ 0.0f, m_params.height + m_params.interval } * static_cast<float>(m_Processes.size()));

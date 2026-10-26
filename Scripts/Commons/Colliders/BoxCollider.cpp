@@ -1,7 +1,7 @@
 /*
  * FileName:     BoxCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * 長方形の当たり判定
  */
@@ -27,14 +27,14 @@ Colliders::BoxCollider::BoxCollider(const ComponentDesc& desc, Ref<Renderings::I
 	, m_iColliderRendererRef{ iColliderRendererRef }
 {
 	// 描画者に長方形を追加
-	m_iColliderRendererRef->AddPBoxCollider(this);
+	m_iColliderRendererRef->AddPBoxCollider(Ref{ *this }.Const());
 }
 
 // デストラクタ
 Colliders::BoxCollider::~BoxCollider()
 {
 	// 描画者から長方形を削除
-	m_iColliderRendererRef->RemovePBoxCollider(this);
+	m_iColliderRendererRef->RemovePBoxCollider(Ref{ *this }.Const());
 }
 
 // 初期化処理

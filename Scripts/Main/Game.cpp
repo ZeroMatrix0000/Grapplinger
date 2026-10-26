@@ -1,7 +1,7 @@
 /*
  * FileName:     Game.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/26
  *
  * ゲーム
  */
@@ -20,7 +20,7 @@ Game::Game()
 	, m_hWindow{}
 	, m_deviceResources{}
 	, m_renderingResources{}
-	, m_deviceResources2D{ m_deviceResources }
+	, m_deviceResources2D{ Ref{ m_deviceResources }.Const() }
 	, m_renderer{}
 	, m_resources{}
 	, m_timer{}
@@ -73,16 +73,16 @@ void Game::Initialize(const HWND& hWindow)
 	// 描画の初期化
 	m_renderer.Initialize(device, context, swapChain, commonStates);
 	// テキスト描画を初期化
-	m_renderer.GetTextRenderer().Initialize
+	m_renderer.GetTextRendererRef()->Initialize
 	(
 		m_deviceResources2D.GetDevice(),
 		m_deviceResources2D.GetContext(),
 		m_deviceResources2D.GetBackBuffer()
 	);
-	m_renderer.GetModelRenderer().SetDepthStencilView(m_deviceResources.GetDepthStencilView());
-	m_renderer.GetModelRenderer().SetPVertexShader(&m_resources.GetVertexShader("InstancingTest").Get());
-	m_renderer.GetModelRenderer().SetPPixelShader(&m_resources.GetPixelShader("InstancingTest").Get());
-	m_renderer.GetTextRenderer().CreateFontCollection(L"Resources\\Fonts");
+	m_renderer.GetModelRendererRef()->SetDepthStencilView(m_deviceResources.GetDepthStencilView());
+	m_renderer.GetModelRendererRef()->SetPVertexShader(&m_resources.GetVertexShader("InstancingTest").Get());
+	m_renderer.GetModelRendererRef()->SetPPixelShader(&m_resources.GetPixelShader("InstancingTest").Get());
+	m_renderer.GetTextRendererRef()->CreateFontCollection(L"Resources\\Fonts");
 
 	// タイマーの初期化
 	m_timer.Initialize();
@@ -97,10 +97,10 @@ void Game::Initialize(const HWND& hWindow)
 	(
 		Ref{ m_componentManager },
 		Ref{ m_gameObjectManager },
-		Ref<Renderings::IModel3DRenderer>{ m_renderer.GetModelRenderer() },
-		Ref<Renderings::IImageRenderer>{ m_renderer.GetImageRenderer() },
-		Ref<Renderings::ITextRenderer>{ m_renderer.GetTextRenderer() },
-		Ref<Renderings::IColliderRenderer>{ m_renderer.GetColliderRenderer() },
+		m_renderer.GetModelRendererRef().Cast<Renderings::IModel3DRenderer>(),
+		m_renderer.GetImageRendererRef().Cast<Renderings::IImageRenderer>(),
+		m_renderer.GetTextRendererRef().Cast<Renderings::ITextRenderer>(),
+		m_renderer.GetColliderRendererRef().Cast<Renderings::IColliderRenderer>(),
 		Ref<Systems::IResources>{ m_resources }
 	);
 
@@ -204,8 +204,8 @@ void Game::OnWindowSizeChanged(const Math::Vector2Int& outputSize)
 
 	m_deviceResources2D.OnWindowSizeChanged();
 
-	m_renderer.GetModelRenderer().SetDepthStencilView(m_deviceResources.GetDepthStencilView());
-	m_renderer.GetTextRenderer().OnWindowSizeChanged(m_deviceResources2D.GetContext(), m_deviceResources2D.GetBackBuffer());
+	m_renderer.GetModelRendererRef()->SetDepthStencilView(m_deviceResources.GetDepthStencilView());
+	m_renderer.GetTextRendererRef()->OnWindowSizeChanged(m_deviceResources2D.GetContext(), m_deviceResources2D.GetBackBuffer());
 
 	m_sceneManager.OnWindowSizeChanged(outputSize);
 }

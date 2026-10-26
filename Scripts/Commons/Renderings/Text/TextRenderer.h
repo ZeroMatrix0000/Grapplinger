@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/30
+ * Last Updated: 2026/10/26
  *
  * テキスト描画
  */
@@ -36,23 +36,23 @@ namespace Renderings
 		// 描画開始
 		void Begin();
 		// 描画処理
-		void Draw(const Text* pText, bool isDebug);
+		void Draw(Ref<const Text> textRef, bool isDebug);
 		// 描画終了
 		void End();
 
 		// ウィンドウサイズ変更時の処理
 		void OnWindowSizeChanged(ID2D1DeviceContext7* pContext, ID2D1Bitmap1* pBackBuffer);
 
-		// テキストのポインタを追加
-		void AddPText(const Text* pText) override;
-		// テキストのポインタを削除
-		void RemovePText(const Text* pText) override;
+		// テキストの参照を追加
+		void AddTextRef(Ref<const Text> textRef) override;
+		// テキストの参照を削除
+		void RemoveTextRef(Ref<const Text> textRef) override;
 
-		// テキストのポインタリストをソート
-		void SortPTexts();
+		// テキストの参照リストをソート
+		void SortTextRefs();
 
-		// テキストのポインタリストを取得
-		const std::vector<const Text*> GetPTexts() const { return m_pTexts; }
+		// テキストの参照リストを取得
+		const std::vector<Ref<const Text>> GetTextRefs() const { return m_textRefs; }
 
 
 	private:
@@ -85,8 +85,8 @@ namespace Renderings
 		// デコレーション描画
 		DecorationTextRenderer m_decorationRenderer;
 
-		// テキストのポインタリスト
-		std::vector<const Text*> m_pTexts;
+		// テキストの参照リスト
+		std::vector<Ref<const Text>> m_textRefs;
 
 		// デバイスコンテキストのポインタ
 		ID2D1DeviceContext7* m_pContext;

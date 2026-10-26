@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * 当たり判定描画
  */
@@ -19,9 +19,9 @@ Renderings::ColliderRenderer::ColliderRenderer()
 	: IColliderRenderer{}
 	, m_primitiveBatch{}
 	, m_basicEffect{}
-	, m_pBoxColliders{}
-	, m_pSphereColliders{}
-	, m_pMeshColliders{}
+	, m_boxColliderRefs{}
+	, m_sphereColliderRefs{}
+	, m_meshColliderRefs{}
 	, m_pContext{}
 	, m_pCommonStates{}
 	, m_inputLayout{}
@@ -31,11 +31,11 @@ Renderings::ColliderRenderer::ColliderRenderer()
 // 初期化処理
 void Renderings::ColliderRenderer::Initialize(ID3D11Device5* pDevice, ID3D11DeviceContext4* pContext, const DirectX::CommonStates& commonStates)
 {
-	m_pContext      = pContext;
+	m_pContext = pContext;
 	m_pCommonStates = &commonStates;
 
 	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>(pContext);
-	m_basicEffect    = std::make_unique<DirectX::BasicEffect>(pDevice);
+	m_basicEffect = std::make_unique<DirectX::BasicEffect>(pDevice);
 	m_basicEffect->SetVertexColorEnabled(true);
 	Utility::ThrowIfFailed
 	(
@@ -57,36 +57,36 @@ void Renderings::ColliderRenderer::Render()
 	m_primitiveBatch->Begin();
 
 	// 長方形
-	for (const auto* pBoxCollider : m_pBoxColliders)
+	for (Ref boxColliderRef : m_boxColliderRefs)
 	{
 		// カメラ画面
-		for (Ref iCameraScreenRef : pBoxCollider->GetICameraScreenRefs())
+		for (Ref iCameraScreenRef : boxColliderRef->GetICameraScreenRefs())
 		{
 			m_basicEffect->SetMatrices(Math::Matrix::Identity, iCameraScreenRef->GetViewMatrix(), iCameraScreenRef->GetProjectionMatrix());
 			m_basicEffect->Apply(m_pContext);
-			DrawBox(pBoxCollider->GetWorldBox(), pBoxCollider->GetColor());
+			DrawBox(boxColliderRef->GetWorldBox(), boxColliderRef->GetColor());
 		}
 	}
 	// 球
-	for (const auto* pSphereCollider : m_pSphereColliders)
+	for (Ref sphereColliderRef : m_sphereColliderRefs)
 	{
 		// カメラ画面
-		for (Ref iCameraScreenRef : pSphereCollider->GetICameraScreenRefs())
+		for (Ref iCameraScreenRef : sphereColliderRef->GetICameraScreenRefs())
 		{
 			m_basicEffect->SetMatrices(Math::Matrix::Identity, iCameraScreenRef->GetViewMatrix(), iCameraScreenRef->GetProjectionMatrix());
 			m_basicEffect->Apply(m_pContext);
-			DrawSphere(pSphereCollider->GetWorldSphere(), pSphereCollider->GetColor(), iCameraScreenRef->GetEyePosition(), 48);
+			DrawSphere(sphereColliderRef->GetWorldSphere(), sphereColliderRef->GetColor(), iCameraScreenRef->GetEyePosition(), 48);
 		}
 	}
 	// メッシュ
-	for (const auto* pMeshCollider : m_pMeshColliders)
+	for (Ref meshColliderRef : m_meshColliderRefs)
 	{
 		// カメラ画面
-		for (Ref iCameraScreenRef : pMeshCollider->GetICameraScreenRefs())
+		for (Ref iCameraScreenRef : meshColliderRef->GetICameraScreenRefs())
 		{
 			m_basicEffect->SetMatrices(Math::Matrix::Identity, iCameraScreenRef->GetViewMatrix(), iCameraScreenRef->GetProjectionMatrix());
 			m_basicEffect->Apply(m_pContext);
-			DrawMesh(pMeshCollider->GetWorldMesh(), pMeshCollider->GetColor());
+			DrawMesh(meshColliderRef->GetWorldMesh(), meshColliderRef->GetColor());
 		}
 	}
 
@@ -94,51 +94,51 @@ void Renderings::ColliderRenderer::Render()
 	m_primitiveBatch->End();
 }
 
-// 長方形の当たり判定のポインタを追加
-void Renderings::ColliderRenderer::AddPBoxCollider(const Colliders::BoxCollider* pBoxCollider)
+// 長方形の当たり判定の参照を追加
+void Renderings::ColliderRenderer::AddPBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef)
 {
-	m_pBoxColliders.push_back(pBoxCollider);
+	m_boxColliderRefs.push_back(boxColliderRef);
 }
 
-// 長方形の当たり判定のポインタを削除
-void Renderings::ColliderRenderer::RemovePBoxCollider(const Colliders::BoxCollider* pBoxCollider)
+// 長方形の当たり判定の参照を削除
+void Renderings::ColliderRenderer::RemovePBoxCollider(Ref<const Colliders::BoxCollider> boxColliderRef)
 {
-	auto it = std::ranges::find(m_pBoxColliders, pBoxCollider);
-	if (it != m_pBoxColliders.end())
+	auto it = std::ranges::find(m_boxColliderRefs, boxColliderRef);
+	if (it != m_boxColliderRefs.end())
 	{
-		m_pBoxColliders.erase(it);
+		m_boxColliderRefs.erase(it);
 	}
 }
 
-// 球の当たり判定のポインタを追加
-void Renderings::ColliderRenderer::AddPSphereCollider(const Colliders::SphereCollider* pSphereCollider)
+// 球の当たり判定の参照を追加
+void Renderings::ColliderRenderer::AddPSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef)
 {
-	m_pSphereColliders.push_back(pSphereCollider);
+	m_sphereColliderRefs.push_back(sphereColliderRef);
 }
 
-// 球の当たり判定のポインタを削除
-void Renderings::ColliderRenderer::RemovePSphereCollider(const Colliders::SphereCollider* pSphereCollider)
+// 球の当たり判定の参照を削除
+void Renderings::ColliderRenderer::RemovePSphereCollider(Ref<const Colliders::SphereCollider> sphereColliderRef)
 {
-	auto it = std::ranges::find(m_pSphereColliders, pSphereCollider);
-	if (it != m_pSphereColliders.end())
+	auto it = std::ranges::find(m_sphereColliderRefs, sphereColliderRef);
+	if (it != m_sphereColliderRefs.end())
 	{
-		m_pSphereColliders.erase(it);
+		m_sphereColliderRefs.erase(it);
 	}
 }
 
-// メッシュの当たり判定のポインタを追加
-void Renderings::ColliderRenderer::AddPMeshCollider(const Colliders::MeshCollider* pMeshCollider)
+// メッシュの当たり判定の参照を追加
+void Renderings::ColliderRenderer::AddPMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef)
 {
-	m_pMeshColliders.push_back(pMeshCollider);
+	m_meshColliderRefs.push_back(meshColliderRef);
 }
 
-// メッシュの当たり判定のポインタを削除
-void Renderings::ColliderRenderer::RemovePMeshCollider(const Colliders::MeshCollider* pMeshCollider)
+// メッシュの当たり判定の参照を削除
+void Renderings::ColliderRenderer::RemovePMeshCollider(Ref<const Colliders::MeshCollider> meshColliderRef)
 {
-	auto it = std::ranges::find(m_pMeshColliders, pMeshCollider);
-	if (it != m_pMeshColliders.end())
+	auto it = std::ranges::find(m_meshColliderRefs, meshColliderRef);
+	if (it != m_meshColliderRefs.end())
 	{
-		m_pMeshColliders.erase(it);
+		m_meshColliderRefs.erase(it);
 	}
 }
 

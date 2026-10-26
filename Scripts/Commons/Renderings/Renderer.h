@@ -1,7 +1,7 @@
 /*
  * FileName:     Renderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/28
+ * Last Updated: 2026/10/26
  *
  * 描画
  */
@@ -49,14 +49,14 @@ namespace Renderings
 		// 描画モードを返る
 		void ChangeRenderMode();
 
-		// モデル描画インタフェースを取得
-		Renderings::Model3DRenderer&  GetModelRenderer()    { return m_modelRenderer; }
-		// 画像描画インタフェースを取得
-		Renderings::ImageRenderer&    GetImageRenderer()    { return m_imageRenderer; }
-		// テキスト描画インタフェースを取得
-		Renderings::TextRenderer&     GetTextRenderer()     { return m_textRenderer; }
-		// 当たり判定描画インタフェースを取得
-		Renderings::ColliderRenderer& GetColliderRenderer() { return m_colliderRenderer; }
+		// モデル描画インタフェースの参照を取得
+		Ref<Renderings::Model3DRenderer>  GetModelRendererRef()    { return Ref{ m_modelRenderer }; }
+		// 画像描画インタフェースの参照を取得
+		Ref<Renderings::ImageRenderer>    GetImageRendererRef()    { return Ref{ m_imageRenderer }; }
+		// テキスト描画インタフェースの参照を取得
+		Ref<Renderings::TextRenderer>     GetTextRendererRef()     { return Ref{ m_textRenderer }; }
+		// 当たり判定描画インタフェースの参照を取得
+		Ref<Renderings::ColliderRenderer> GetColliderRendererRef() { return Ref{ m_colliderRenderer }; }
 
 
 	private:
