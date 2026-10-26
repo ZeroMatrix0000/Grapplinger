@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleSample.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * パーティクルのサンプル
  */
@@ -12,15 +12,15 @@
 #include "Scripts/Commons/Components/Transform.h"
 
 // コンストラクタ
-Renderings::ParticleSample::ParticleSample(IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
-	: Particle{ pIModelRenderer, pIResources }
+Renderings::ParticleSample::ParticleSample(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+	: Particle{ iModelRendererRef, iResourcesRef }
 	, m_velocities{}
 	, m_isActiveTimer{}
 {
 }
 
 // 初期化処理
-void Renderings::ParticleSample::Initalize(const Transform& transform)
+void Renderings::ParticleSample::Initalize(Ref<const Transform> transformRef)
 {
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
@@ -31,7 +31,7 @@ void Renderings::ParticleSample::Initalize(const Transform& transform)
 		AddElement(&pUpdateElement, &pRenderElement);
 
 		// 管理者の位置に移動
-		pUpdateElement->position = transform.GetPosition();
+		pUpdateElement->position = transformRef->GetPosition();
 		// ランダムに回転
 		pUpdateElement->rotation = Math::Quaternion::CreateFromYawPitchRoll
 		(
@@ -43,7 +43,7 @@ void Renderings::ParticleSample::Initalize(const Transform& transform)
 		pUpdateElement->scale = Math::Vector3::One * 0.5f;
 
 		// モデルを設定
-		SetModelSource("Box", pRenderElement);
+		SetModelSource("Box", Ref{ *pRenderElement });
 
 		// 速度を設定
 		m_velocities.push_back(Math::Vector3::Transform
@@ -67,7 +67,7 @@ void Renderings::ParticleSample::Update(float elapsedTime)
 
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
-		GetPUpdateElement(i)->position += m_velocities.at(i) * elapsedTime;
+		GetUpdateElementRef(i)->position += m_velocities.at(i) * elapsedTime;
 	}
 		
 	ApplyTransform();

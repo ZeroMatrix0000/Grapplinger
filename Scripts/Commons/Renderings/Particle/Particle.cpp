@@ -17,13 +17,13 @@
 #include "Scripts/Commons/Systems/IResources.h"
 
 // コンストラクタ
-Renderings::Particle::Particle(IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
+Renderings::Particle::Particle(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
 	: m_updateElements{}
 	, m_renderElements{}
 	, m_isActive{ true }
-	, m_pICameraScreens{}
-	, m_pIModelRenderer{ pIModelRenderer }
-	, m_pIResources{ pIResources }
+	, m_iCameraScreenRefs{}
+	, m_iModelRendererRef{ iModelRendererRef }
+	, m_iResourcesRef{ iResourcesRef }
 {
 }
 
@@ -31,11 +31,11 @@ Renderings::Particle::Particle(IModel3DRenderer* pIModelRenderer, Systems::IReso
 Renderings::Particle::~Particle()
 {
 	// 描画者からパーティクルを削除
-	for (const auto* pICameraScreen : m_pICameraScreens)
+	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->RemoveParticleRef(Ref{ *pICameraScreen }, Ref{ *renderElement }.Const());
+			m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
 		}
 	}
 }
@@ -47,55 +47,55 @@ void Renderings::Particle::ApplyTransform()
 	{
 		// 更新情報
 		UpdateElement& updateElement = m_updateElements.at(i);
-		
+
 		// 描画情報を更新
-		m_renderElements.at(i)->matrix = 
+		m_renderElements.at(i)->matrix =
 			Math::Matrix::CreateScale(updateElement.scale) *
 			Math::Matrix::CreateFromQuaternion(updateElement.rotation) *
 			Math::Matrix::CreateTranslation(updateElement.position)
-		;
+			;
 	}
 }
 
 // モデルソースを設定
-void Renderings::Particle::SetModelSource(const std::string& modelSourceName, RenderElement* pRenderElement)
+void Renderings::Particle::SetModelSource(const std::string& modelSourceName, Ref<RenderElement> renderElementRef)
 {
 	// 描画者からパーティクルを削除
-	for (const auto* pICameraScreen : m_pICameraScreens)
+	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_pIModelRenderer->RemoveParticleRef(Ref{ *pICameraScreen }, Ref{ *pRenderElement }.Const());
+		m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, renderElementRef.Const());
 	}
-	pRenderElement->modelSourceRef = m_pIResources->GetModelSource(modelSourceName);
+	renderElementRef->modelSource = m_iResourcesRef->GetModelSource(modelSourceName);
 	// 描画者にパーティクルを追加
-	for (const auto* pICameraScreen : m_pICameraScreens)
+	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_pIModelRenderer->AddParticleRef(Ref{ *pICameraScreen }, Ref{ *pRenderElement }.Const());
+		m_iModelRendererRef->AddParticleRef(iCameraScreenRef, renderElementRef.Const());
 	}
 }
 
 // 映るカメラ画面を追加
-void Renderings::Particle::AddICameraScreen(const ICameraScreen& iCameraScreen)
+void Renderings::Particle::AddICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	if (std::ranges::find(m_pICameraScreens, &iCameraScreen) == m_pICameraScreens.end())
+	if (std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef) == m_iCameraScreenRefs.end())
 	{
-		m_pICameraScreens.push_back(&iCameraScreen);
+		m_iCameraScreenRefs.push_back(iCameraScreenRef);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->AddParticleRef(Ref{ iCameraScreen }, Ref{ *renderElement }.Const());
+			m_iModelRendererRef->AddParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
 		}
 	}
 }
 
 // 映るカメラ画面を削除
-void Renderings::Particle::RemoveICameraScreen(const ICameraScreen& iCameraScreen)
+void Renderings::Particle::RemoveICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	auto it = std::ranges::find(m_pICameraScreens, &iCameraScreen);
-	if (it != m_pICameraScreens.end())
+	auto it = std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef);
+	if (it != m_iCameraScreenRefs.end())
 	{
-		m_pICameraScreens.erase(it);
+		m_iCameraScreenRefs.erase(it);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_pIModelRenderer->RemoveParticleRef(Ref{ iCameraScreen }, Ref{ *renderElement }.Const());
+			m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
 		}
 	}
 }
@@ -109,7 +109,7 @@ void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderEle
 	}
 
 	auto& renderElement = m_renderElements.emplace_back();
-	renderElement = std::make_unique<RenderElement>(m_pIResources);
+	renderElement = std::make_unique<RenderElement>(m_iResourcesRef);
 	if (ppRenderElement)
 	{
 		*ppRenderElement = renderElement.get();
@@ -117,9 +117,9 @@ void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderEle
 }
 
 // コンストラクタ
-Renderings::Particle::RenderElement::RenderElement(Systems::IResources* pIResources)
+Renderings::Particle::RenderElement::RenderElement(Ref<Systems::IResources> iResourcesRef)
 	: matrix{ Math::Matrix::Identity }
 	, color{ DirectX::Colors::White }
-	, modelSourceRef{ pIResources->GetNullModelSource() }
+	, modelSource{ iResourcesRef->GetNullModelSource() }
 {
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     WindCutParticle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * 風切りパーティクル
  */
@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-WindCutParticle::WindCutParticle(Renderings::IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
-	: Particle{ pIModelRenderer, pIResources }
+WindCutParticle::WindCutParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+	: Particle{ iModelRendererRef, iResourcesRef }
 	, m_position{}
 	, m_length{}
 	, m_pUpdateElement{}
@@ -21,9 +21,9 @@ WindCutParticle::WindCutParticle(Renderings::IModel3DRenderer* pIModelRenderer, 
 }
 
 // 初期化処理
-void WindCutParticle::Initalize(const Transform& transform)
+void WindCutParticle::Initalize(Ref<const Transform> transformRef)
 {
-	Math::Quaternion rotation = transform.GetRotation() * Math::Euler
+	Math::Quaternion rotation = transformRef->GetRotation() * Math::Euler
 	{
 		Random::GetFloatRange(-10.0f, 10.0f),
 		Random::GetFloatRange(-10.0f, 10.0f),
@@ -32,7 +32,7 @@ void WindCutParticle::Initalize(const Transform& transform)
 
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::Backward, rotation);
 
-	Math::Vector3 position = transform.GetPosition() + Math::Vector3
+	Math::Vector3 position = transformRef->GetPosition() + Math::Vector3
 	{
 		Random::GetFloatRange(-0.75f, 0.75f),
 		Random::GetFloatRange(-0.75f, 0.75f),
@@ -50,7 +50,7 @@ void WindCutParticle::Initalize(const Transform& transform)
 	m_pUpdateElement->rotation = rotation;
 	m_pUpdateElement->scale = Math::Vector3{ 0.05f, 0.05f, 0.0f };
 	// モデルを設定
-	SetModelSource("Box", pRenderElement);
+	SetModelSource("Box", Ref{ *pRenderElement });
 	ApplyTransform();
 }
 

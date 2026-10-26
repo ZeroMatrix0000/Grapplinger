@@ -1,7 +1,7 @@
 /*
  * FileName:     MessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/26
  *
  * メッセージウィンドウ
  */
@@ -175,7 +175,7 @@ void MessageWindow::Update(float elapsedTime)
 		{
 			rubyStr = rubyStr.substr(0, rubyIndex);
 		}
-		Renderings::DecorationString::DeleteTag(&rubyStr);
+		Renderings::DecorationString::DeleteTag(Ref{ rubyStr });
 
 		std::wstring str = m_text.substr(0, Math::RoundInt(m_textCount));
 		str.append(L"<color=#00000000>");

@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/26
  *
  * 3Dモデル描画
  */
@@ -327,7 +327,7 @@ void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCamer
 	}
 
 	// モデルソース
-	Ref<const Model3DSource> modelSource = particleElementRef->modelSourceRef;
+	Ref<const Model3DSource> modelSource = particleElementRef->modelSource;
 	if (!modelSource->IsInitialized())
 	{
 		return;
@@ -357,7 +357,7 @@ void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCamer
 void Renderings::Model3DRenderer::RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
 {
 	// モデルソース
-	Ref<const Model3DSource> modelSource = particleElementRef->modelSourceRef;
+	Ref<const Model3DSource> modelSource = particleElementRef->modelSource;
 	if (!modelSource->IsInitialized())
 	{
 		return;

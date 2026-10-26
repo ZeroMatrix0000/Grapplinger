@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/26
  *
  * パーティクル
  */
@@ -50,26 +50,26 @@ namespace Renderings
 		struct RenderElement
 		{
 			// コンストラクタ
-			RenderElement(Systems::IResources* pIResources);
+			RenderElement(Ref<Systems::IResources> iResourcesRef);
 
 			// ワールド行列
 			Math::Matrix matrix;
 			// 色
 			Math::Color color;
-			// モデルソースの参照
-			Ref<const Model3DSource> modelSourceRef;
+			// モデルソース
+			Ref<const Model3DSource> modelSource;
 		};
 
 
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Particle(IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+		Particle(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 		// デストラクタ
 		virtual ~Particle();
 
 		// 初期化処理
-		virtual void Initalize(const Transform& transform) = 0;
+		virtual void Initalize(Ref<const Transform> transformRef) = 0;
 
 		// 更新処理
 		virtual void Update(float elapsedTime) = 0;
@@ -78,12 +78,12 @@ namespace Renderings
 		void ApplyTransform();
 
 		// モデルソースを設定
-		void SetModelSource(const std::string& modelSourceName, RenderElement* pRenderElement);
+		void SetModelSource(const std::string& modelSourceName, Ref<RenderElement> renderElementRef);
 
-		// 映るカメラ画面を追加
-		void AddICameraScreen(const ICameraScreen& iCameraScreen);
-		// 映るカメラ画面を削除
-		void RemoveICameraScreen(const ICameraScreen& iCameraScreen);
+		// 映るカメラ画面の参照を追加
+		void AddICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
+		// 映るカメラ画面参照を削除
+		void RemoveICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
 
 		// アクティブフラグを取得
 		bool IsActive() const { return m_isActive; }
@@ -97,8 +97,8 @@ namespace Renderings
 		// 要素を追加
 		void AddElement(UpdateElement** ppUpdateElement, RenderElement** ppRenderElement);
 
-		// 要素を取得
-		UpdateElement* GetPUpdateElement(size_t index) { return &m_updateElements.at(index); }
+		// 要素の参照を取得
+		Ref<UpdateElement> GetUpdateElementRef(size_t index) { return Ref{ m_updateElements.at(index) }; }
 
 		// 非アクティブ化
 		void Destroy() { m_isActive = false; }
@@ -117,14 +117,14 @@ namespace Renderings
 		// アクティブフラグ
 		bool m_isActive;
 
-		// 映るカメラ画面のポインタリスト
-		std::vector<const ICameraScreen*> m_pICameraScreens;
+		// 映るカメラ画面の参照リスト
+		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
 
-		// モデル描画インタフェースのポインタ
-		IModel3DRenderer* m_pIModelRenderer;
+		// モデル描画インタフェースの参照
+		Ref<IModel3DRenderer> m_iModelRendererRef;
 
-		// リソース管理のポインタ
-		Systems::IResources* m_pIResources;
+		// リソース管理の参照
+		Ref<Systems::IResources> m_iResourcesRef;
 
 	};
 }

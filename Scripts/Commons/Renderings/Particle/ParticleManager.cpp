@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/26
  *
  * パーティクル管理
  */
@@ -18,23 +18,23 @@
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
-Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
+Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
 	: Component{ desc }
 	, m_particles{}
-	, m_refTransform{ GetOwner()->GetNullComponent<Transform>().Const()}
-	, m_pICameraScreens{}
-	, m_pIModelRenderer{ pIModelRenderer }
-	, m_pIResources{ pIResources }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
+	, m_iCameraScreenRefs{}
+	, m_iModelRendererRef{ iModelRendererRef }
+	, m_iResourcesRef{ iResourcesRef }
 {
 }
 
 // 初期化処理
 void Renderings::ParticleManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
 {
-	m_refTransform = GetOwner()->GetComponent<Transform>().Const();
+	m_transformRef = GetOwner()->GetComponent<Transform>().Const();
 
 	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_pICameraScreens, "CameraScreens");
+	serializer.AddParameter(&m_iCameraScreenRefs, "CameraScreens");
 	serializer.Load(json);
 }
 
@@ -62,28 +62,28 @@ void Renderings::ParticleManager::Update(float elapsedTime)
 }
 
 // 映るカメラ画面を追加
-void Renderings::ParticleManager::AddICameraScreen(const ICameraScreen& iCameraScreen)
+void Renderings::ParticleManager::AddICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	if (std::ranges::find(m_pICameraScreens, &iCameraScreen) == m_pICameraScreens.end())
+	if (std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef) == m_iCameraScreenRefs.end())
 	{
-		m_pICameraScreens.push_back(&iCameraScreen);
+		m_iCameraScreenRefs.push_back(iCameraScreenRef);
 		for (auto& particle : m_particles)
 		{
-			particle->AddICameraScreen(iCameraScreen);
+			particle->AddICameraScreenRef(iCameraScreenRef);
 		}
 	}
 }
 
 // 映るカメラ画面を削除
-void Renderings::ParticleManager::RemoveICameraScreen(const ICameraScreen& iCameraScreen)
+void Renderings::ParticleManager::RemoveICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	auto it = std::ranges::find(m_pICameraScreens, &iCameraScreen);
-	if (it != m_pICameraScreens.end())
+	auto it = std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef);
+	if (it != m_iCameraScreenRefs.end())
 	{
-		m_pICameraScreens.erase(it);
+		m_iCameraScreenRefs.erase(it);
 		for (auto& particle : m_particles)
 		{
-			particle->RemoveICameraScreen(iCameraScreen);
+			particle->RemoveICameraScreenRef(iCameraScreenRef);
 		}
 	}
 }

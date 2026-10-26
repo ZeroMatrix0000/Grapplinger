@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleSample.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * パーティクルのサンプル
  */
@@ -22,10 +22,10 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		ParticleSample(IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+		ParticleSample(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 
 		// 初期化処理
-		void Initalize(const Transform& transform) override;
+		void Initalize(Ref<const Transform> transformRef) override;
 
 		// 更新処理
 		void Update(float elapsedTime) override;

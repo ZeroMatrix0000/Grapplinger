@@ -1,7 +1,7 @@
 /*
  * FileName:     DecorationString.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/30
+ * Last Updated: 2026/10/26
  *
  * デコレーション付き文字列
  */
@@ -82,12 +82,12 @@ void Renderings::DecorationString::SetStr(const std::wstring& str)
 }
 
 // タグを削除
-void Renderings::DecorationString::DeleteTag(std::wstring* pStr)
+void Renderings::DecorationString::DeleteTag(Ref<std::wstring> strRef)
 {
 	while (true)
 	{
 		// < を探す
-		size_t ltIndex = pStr->find(L"<");
+		size_t ltIndex = strRef->find(L"<");
 		// 見つからなければ終了
 		if (ltIndex == std::wstring::npos)
 		{
@@ -95,15 +95,15 @@ void Renderings::DecorationString::DeleteTag(std::wstring* pStr)
 		}
 
 		// > を探す
-		size_t gtIndex = pStr->find(L">", ltIndex);
+		size_t gtIndex = strRef->find(L">", ltIndex);
 		// 見つからなければ終了
 		if (gtIndex == std::wstring::npos)
 		{
-			*pStr = pStr->substr(0, ltIndex);
+			strRef.Get() = strRef->substr(0, ltIndex);
 			return;
 		}
 
-		pStr->erase(ltIndex, gtIndex - ltIndex);
+		strRef->erase(ltIndex, gtIndex - ltIndex);
 	}
 }
 

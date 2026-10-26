@@ -95,7 +95,7 @@ void ComponentsRegisterer::RegisterComponents
 	// パーティクル管理
 	componentManagerRef->RegisterCreate<Renderings::ParticleManager>([iModelRendererRef, iResourcesRef](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::ParticleManager>(desc, &iModelRendererRef.Get(), &iResourcesRef.Get());
+			return std::make_unique<Renderings::ParticleManager>(desc, iModelRendererRef, iResourcesRef);
 		});
 	// カメラ
 	componentManagerRef->RegisterCreate<Renderings::ICameraScreen>([](const ComponentDesc& desc)

@@ -1,7 +1,7 @@
 /*
  * FileName:     PoppingParticle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * 弾けパーティクル
  */
@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-PoppingParticle::PoppingParticle(Renderings::IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
-	: Particle{ pIModelRenderer, pIResources }
+PoppingParticle::PoppingParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+	: Particle{ iModelRendererRef, iResourcesRef }
 	, m_directions{}
 	, m_speed{}
 	, m_scale{}
@@ -21,7 +21,7 @@ PoppingParticle::PoppingParticle(Renderings::IModel3DRenderer* pIModelRenderer, 
 }
 
 // 初期化処理
-void PoppingParticle::Initalize(const Transform& transform)
+void PoppingParticle::Initalize(Ref<const Transform> transformRef)
 {
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
@@ -32,7 +32,7 @@ void PoppingParticle::Initalize(const Transform& transform)
 		AddElement(&pUpdateElement, &pRenderElement);
 
 		// 管理者の位置に移動
-		pUpdateElement->position = transform.GetPosition();
+		pUpdateElement->position = transformRef->GetPosition();
 		// ランダムに回転
 		pUpdateElement->rotation = Math::Euler
 		{
@@ -44,7 +44,7 @@ void PoppingParticle::Initalize(const Transform& transform)
 		pUpdateElement->scale = Math::Vector3::One * 0.2f;
 
 		// モデルを設定
-		SetModelSource("Box", pRenderElement);
+		SetModelSource("Box", Ref{ *pRenderElement });
 
 		// 方向
 		Math::Vector3 direction = Math::Vector3
@@ -89,9 +89,9 @@ void PoppingParticle::Update(float elapsedTime)
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
 		// 移動
-		GetPUpdateElement(i)->position += m_directions.at(i) * m_speed.GetMovement() * elapsedTime;
+		GetUpdateElementRef(i)->position += m_directions.at(i) * m_speed.GetMovement() * elapsedTime;
 		// 拡大
-		GetPUpdateElement(i)->scale = m_scale.GetMovement();
+		GetUpdateElementRef(i)->scale = m_scale.GetMovement();
 	}
 
 	ApplyTransform();

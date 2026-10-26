@@ -1,7 +1,7 @@
 /*
  * FileName:     WindCutParticle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * 風切りパーティクル
  */
@@ -28,10 +28,10 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	WindCutParticle(Renderings::IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+	WindCutParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 
 	// 初期化処理
-	void Initalize(const Transform& transform) override;
+	void Initalize(Ref<const Transform> transformRef) override;
 
 	// 更新処理
 	void Update(float elapsedTime) override;

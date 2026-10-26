@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * パーティクル管理
  */
@@ -31,7 +31,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		ParticleManager(const ComponentDesc& desc, IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+		ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 
 		// 初期化処理
 		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
@@ -39,10 +39,10 @@ namespace Renderings
 		// 更新処理
 		void Update(float elapsedTime);
 
-		// 映るカメラ画面を追加
-		void AddICameraScreen(const ICameraScreen& iCameraScreen);
-		// 映るカメラ画面を削除
-		void RemoveICameraScreen(const ICameraScreen& iCameraScreen);
+		// 映るカメラ画面の参照を追加
+		void AddICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
+		// 映るカメラ画面参照を削除
+		void RemoveICameraScreenRef(Ref<const ICameraScreen> iCameraScreenRef);
 
 		// パーティクルを生成
 		template<typename TParticle> requires IsDerived<TParticle, Particle>
@@ -50,14 +50,14 @@ namespace Renderings
 		{
 			// パーティクルを生成
 			auto& particle = m_particles.emplace_back();
-			particle = std::make_unique<TParticle>(m_pIModelRenderer, m_pIResources);
+			particle = std::make_unique<TParticle>(m_iModelRendererRef, m_iResourcesRef);
 			// カメラを設定
-			for (const auto* pICameraScreen : m_pICameraScreens)
+			for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 			{
-				particle->AddICameraScreen(*pICameraScreen);
+				particle->AddICameraScreenRef(iCameraScreenRef);
 			}
 			// 初期化処理
-			particle->Initalize(m_refTransform.Get());
+			particle->Initalize(m_transformRef);
 		}
 
 
@@ -70,16 +70,16 @@ namespace Renderings
 		std::vector<std::unique_ptr<Particle>> m_particles;
 
 		// トランスフォームの参照
-		Ref<const Transform> m_refTransform;
+		Ref<const Transform> m_transformRef;
 
-		// 映るカメラ画面のポインタリスト
-		std::vector<const ICameraScreen*> m_pICameraScreens;
+		// 映るカメラ画面の参照リスト
+		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
 
-		// モデル描画インタフェースのポインタ
-		IModel3DRenderer* m_pIModelRenderer;
+		// モデル描画インタフェースの参照
+		Ref<IModel3DRenderer> m_iModelRendererRef;
 
-		// リソース管理
-		Systems::IResources* m_pIResources;
+		// リソース管理の参照
+		Ref<Systems::IResources> m_iResourcesRef;
 
 	};
 }

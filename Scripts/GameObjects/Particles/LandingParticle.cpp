@@ -1,7 +1,7 @@
 /*
  * FileName:     LandingParticle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * 着地パーティクル
  */
@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-LandingParticle::LandingParticle(Renderings::IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources)
-	: Particle{ pIModelRenderer, pIResources }
+LandingParticle::LandingParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+	: Particle{ iModelRendererRef, iResourcesRef }
 	, m_directions{}
 	, m_speed{}
 	, m_scale{}
@@ -21,7 +21,7 @@ LandingParticle::LandingParticle(Renderings::IModel3DRenderer* pIModelRenderer, 
 }
 
 // 初期化処理
-void LandingParticle::Initalize(const Transform& transform)
+void LandingParticle::Initalize(Ref<const Transform> transformRef)
 {
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
@@ -32,7 +32,7 @@ void LandingParticle::Initalize(const Transform& transform)
 		AddElement(&pUpdateElement, &pRenderElement);
 
 		// 管理者の位置に移動
-		pUpdateElement->position = transform.GetPosition() + Math::Vector3{ 0.0f, 0.1f, 0.0f };
+		pUpdateElement->position = transformRef->GetPosition() + Math::Vector3{ 0.0f, 0.1f, 0.0f };
 		// ランダムに回転
 		pUpdateElement->rotation = Math::Euler
 		{
@@ -44,7 +44,7 @@ void LandingParticle::Initalize(const Transform& transform)
 		pUpdateElement->scale = Math::Vector3::One * 0.25f;
 
 		// モデルを設定
-		SetModelSource("Box", pRenderElement);
+		SetModelSource("Box", Ref{ *pRenderElement });
 
 		// 方向を設定
 		m_directions.push_back(Math::Vector3::Transform
@@ -81,9 +81,9 @@ void LandingParticle::Update(float elapsedTime)
 	for (int i = 0; i < ELEMENT_COUNT; i++)
 	{
 		// 移動
-		GetPUpdateElement(i)->position += m_directions.at(i) * m_speed.GetMovement() * elapsedTime;
+		GetUpdateElementRef(i)->position += m_directions.at(i) * m_speed.GetMovement() * elapsedTime;
 		// 拡大
-		GetPUpdateElement(i)->scale = m_scale.GetMovement();
+		GetUpdateElementRef(i)->scale = m_scale.GetMovement();
 	}
 
 	ApplyTransform();

@@ -1,7 +1,7 @@
 /*
  * FileName:     DecorationString.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/30
+ * Last Updated: 2026/10/26
  *
  * デコレーション付き文字列
  */
@@ -75,7 +75,7 @@ namespace Renderings
 		/* 静的関数 */
 
 		// タグを削除
-		static void DeleteTag(std::wstring* pStr);
+		static void DeleteTag(Ref<std::wstring> strRef);
 
 
 	private:

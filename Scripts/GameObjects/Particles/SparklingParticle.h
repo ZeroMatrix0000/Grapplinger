@@ -1,7 +1,7 @@
 /*
  * FileName:     SparklingParticle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/26
  *
  * 火花パーティクル
  */
@@ -20,10 +20,10 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	SparklingParticle(Renderings::IModel3DRenderer* pIModelRenderer, Systems::IResources* pIResources);
+	SparklingParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
 
 	// 初期化処理
-	void Initalize(const Transform& transform) override;
+	void Initalize(Ref<const Transform> transformRef) override;
 
 	// 更新処理
 	void Update(float elapsedTime) override;
