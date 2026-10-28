@@ -73,7 +73,7 @@ void GamePlayScene::Update(float elapsedTime)
 	m_currentState->Update(Ref{ m_internals }, elapsedTime);
 
 	// シェーダにプレイヤーの座標を設定
-	Ref constantBufferRef = m_internals.groundModelRef->GetPModelSource()->GetPixelShader()->GetConstantBufferRef();
+	Ref constantBufferRef = m_internals.groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
 	constantBufferRef->SetVariable
 	(
 		"ShadowPosition",

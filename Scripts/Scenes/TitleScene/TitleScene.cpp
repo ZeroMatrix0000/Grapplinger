@@ -67,7 +67,7 @@ void TitleScene::Initialize(const SceneTransitionData& data)
 	// 地面を取得
 	Ref<GameObject> ground = iGameObjectManager->Find("Ground");
 	ground->GetComponent<Colliders::MeshCollider>()->ApplyTransform();
-	ground->GetComponent<Renderings::Model3D>()->GetPModelSource()->GetPixelShader()->GetConstantBufferRef()->SetVariable("ShadowCount", 0);
+	ground->GetComponent<Renderings::Model3D>()->GetModelSource()->GetPixelShader()->GetConstantBufferRef()->SetVariable("ShadowCount", 0);
 
 	// 選択メニューを取得
 	m_selectMenuRef = iGameObjectManager->Find("TitleMenu")->GetComponent<SelectMenu>();

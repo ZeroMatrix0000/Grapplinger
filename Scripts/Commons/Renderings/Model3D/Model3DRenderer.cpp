@@ -266,7 +266,7 @@ void Renderings::Model3DRenderer::AddModelRef(Ref<const ICameraScreen> iCameraSc
 	}
 
 	// モデルソース
-	Ref<const Model3DSource> modelSource = modelRef->GetPModelSource();
+	Ref modelSource = modelRef->GetModelSource();
 	if (!modelSource->IsInitialized())
 	{
 		return;
@@ -296,7 +296,7 @@ void Renderings::Model3DRenderer::AddModelRef(Ref<const ICameraScreen> iCameraSc
 void Renderings::Model3DRenderer::RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef)
 {
 	// モデルソース
-	Ref<const Model3DSource> modelSource = modelRef->GetPModelSource();
+	Ref modelSource = modelRef->GetModelSource();
 	if (!modelSource->IsInitialized())
 	{
 		return;
@@ -331,7 +331,7 @@ void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCamer
 	}
 
 	// モデルソース
-	Ref<const Model3DSource> modelSource = particleElementRef->modelSource;
+	Ref modelSource = particleElementRef->modelSource;
 	if (!modelSource->IsInitialized())
 	{
 		return;
@@ -361,7 +361,7 @@ void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCamer
 void Renderings::Model3DRenderer::RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
 {
 	// モデルソース
-	Ref<const Model3DSource> modelSource = particleElementRef->modelSource;
+	Ref modelSource = particleElementRef->modelSource;
 	if (!modelSource->IsInitialized())
 	{
 		return;

@@ -89,7 +89,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->actionManagerRef = iGameObjectManager->Find("ActionManager")->GetComponent<ActionManager>();
 
 	// シェーダにプレイヤーの座標を設定
-	Ref constantBufferRef = internalsRef->groundModelRef->GetPModelSource()->GetPixelShader()->GetConstantBufferRef();
+	Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
 	constantBufferRef->SetVariable("ShadowPosition", internalsRef->playerRef->GetPosition() + Math::Vector3::Down * internalsRef->playerRef->GetBox().size.y / 2.0f);
 	constantBufferRef->SetVariable("ShadowRadius", 0.75f);
 	// NPC の当たり判定

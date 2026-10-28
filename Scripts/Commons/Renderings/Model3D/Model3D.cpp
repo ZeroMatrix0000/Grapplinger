@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * 3Dモデル
  */
@@ -18,7 +18,7 @@
 Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_color{ DirectX::Colors::White }
-	, m_modelSourceRef{ iResources->GetNullModelSource() }
+	, m_modelSource{ iResources->GetNullModelSource() }
 	, m_iCameraScreenRefs{}
 	, m_iModelRendererRef{ iModelRenderer }
 	, m_iResources{ iResources }
@@ -60,7 +60,7 @@ void Renderings::Model3D::SetModelSource(const std::string& modelSourceName)
 	{
 		m_iModelRendererRef->RemoveModelRef(iCameraScreenRef, Ref{ *this }.Const());
 	}
-	m_modelSourceRef = m_iResources->GetModelSource(modelSourceName);
+	m_modelSource = m_iResources->GetModelSource(modelSourceName);
 	// 描画者にモデルを追加
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{

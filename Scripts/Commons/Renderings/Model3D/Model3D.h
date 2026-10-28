@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/28
  *
  * 3Dモデル
  */
@@ -55,7 +55,7 @@ namespace Renderings
 		const Math::Color& GetColor() const { return m_color; }
 
 		// モデルソースを取得
-		Ref<const Model3DSource> GetPModelSource() const { return m_modelSourceRef; }
+		Ref<const Model3DSource> GetModelSource() const { return m_modelSource; }
 
 
 	private:
@@ -67,7 +67,7 @@ namespace Renderings
 		Math::Color m_color;
 
 		// モデルソースの参照
-		Ref<const Model3DSource> m_modelSourceRef;
+		Ref<const Model3DSource> m_modelSource;
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
