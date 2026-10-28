@@ -1,7 +1,7 @@
 /*
  * FileName:     DeviceResources.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/13
+ * Last Updated: 2026/10/27
  *
  * Direct3D 11に必要なリソース
  */
@@ -35,16 +35,16 @@ namespace Renderings
 		// ウィンドウサイズ変更時の処理
 		void OnWindowSizeChanged(const Math::Vector2Int& outputSize);
 
-		// デバイスの取得
-		auto* GetD3DDevice()  const { return m_d3dDevice.Get(); }
-		// デバイスコンテキストの取得
-		auto* GetD3DContext() const { return m_d3dContext.Get(); }
+		// デバイスの参照取得
+		Ref<ID3D11Device5> GetD3DDeviceRef() const { return Ref{ *m_d3dDevice.Get() }; }
+		// デバイスコンテキストの参照の取得
+		Ref<ID3D11DeviceContext4> GetD3DContextRef() const { return Ref{ *m_d3dContext.Get() }; }
 
-		// スワップチェインの取得
-		auto* GetSwapChain() const { return m_swapChain.Get(); }
+		// スワップチェインの参照の取得
+		Ref<IDXGISwapChain4> GetSwapChainRef() const { return Ref{ *m_swapChain.Get() }; }
 
-		// 深度ステンシルビューの取得
-		auto* GetDepthStencilView() const { return m_depthStencilView.Get(); }
+		// 深度ステンシルビューの参照の取得
+		Ref<ID3D11DepthStencilView> GetDepthStencilViewRef() const { return Ref{ *m_depthStencilView.Get() }; }
 
 		// DXGIデバイスを作成
 		Microsoft::WRL::ComPtr<IDXGIDevice4> CreateDXGIDevice() const;

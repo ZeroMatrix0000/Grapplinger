@@ -1,7 +1,7 @@
 /*
  * FileName:     InstancingEffectFactory.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/08
+ * Last Updated: 2026/10/27
  *
  * インスタンス描画用のエフェクトファクトリ
  */
@@ -12,10 +12,10 @@
 #include "Model3DSource.h"
 
 // コンストラクタ
-Renderings::InstancingEffectFactory::InstancingEffectFactory(ID3D11Device* pDevice)
+Renderings::InstancingEffectFactory::InstancingEffectFactory(Ref<ID3D11Device5> deviceRef)
 	: m_directory{}
 	, m_pModelSource{}
-	, m_pDevice{ pDevice }
+	, m_deviceRef{ deviceRef }
 {
 }
 
@@ -59,7 +59,7 @@ std::shared_ptr<DirectX::IEffect> Renderings::InstancingEffectFactory::CreateEff
 	// モデルソースに情報を追加
 	m_pModelSource->AddPartInfo(effectInfo, texture.Detach(), normalMap.Detach(), specularMap.Detach());
 
-	return std::make_unique<DirectX::BasicEffect>(m_pDevice);
+	return std::make_unique<DirectX::BasicEffect>(m_deviceRef.Get());
 }
 
 // テクスチャを作成
@@ -78,7 +78,7 @@ void Renderings::InstancingEffectFactory::CreateTexture(const wchar_t* name, ID3
 	{
 		Utility::ThrowIfFailed(DirectX::CreateDDSTextureFromFile
 		(
-			m_pDevice,
+			m_deviceRef.Get(),
 			path.c_str(),
 			nullptr,
 			ppTextureView
@@ -88,7 +88,7 @@ void Renderings::InstancingEffectFactory::CreateTexture(const wchar_t* name, ID3
 	{
 		Utility::ThrowIfFailed(DirectX::CreateWICTextureFromFile
 		(
-			m_pDevice,
+			m_deviceRef.Get(),
 			pContext,
 			path.c_str(),
 			nullptr,

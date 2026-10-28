@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCameraStateIdle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/07/08
+ * Last Updated: 2026/10/27
  *
  * デバッグ用カメラの待機状態
  */
@@ -18,39 +18,39 @@ DebugCameraStateIdle::DebugCameraStateIdle()
 }
 
 // 開始処理
-void DebugCameraStateIdle::Enter(DebugCameraInternals* pInternals)
+void DebugCameraStateIdle::Enter(Ref<DebugCameraInternals> internalsRef)
 {
 }
 
 // 更新処理
-void DebugCameraStateIdle::Update(DebugCameraInternals* pInternals, float elapsedTime)
+void DebugCameraStateIdle::Update(Ref<DebugCameraInternals> internalsRef, float elapsedTime)
 {
 	// カメラ
-	Camera::EulerTargetCamera camera = pInternals->pCameraScreen->GetCamera();
+	Camera::EulerTargetCamera camera = internalsRef->cameraScreenRef->GetCamera();
 
 	// マウスホイールでカメラの距離を変更
-	float ratio = Math::Pow(WHEEL_COEFFICIENT, static_cast<float>(-pInternals->mouseWheelDelta));
+	float ratio = Math::Pow(WHEEL_COEFFICIENT, static_cast<float>(-internalsRef->mouseWheelDelta));
 	camera.distance *= ratio;
 	if (camera.distance < Math::EPSILON)
 	{
 		camera.distance = Math::EPSILON;
 	}
 
-	pInternals->pCameraScreen->SetCamera(camera);
+	internalsRef->cameraScreenRef->SetCamera(camera);
 
 	// 右クリックで回転状態に遷移
-	if (pInternals->mouseButtonRight)
+	if (internalsRef->mouseButtonRight)
 	{
 		SetNextState(std::make_unique<DebugCameraStateRotate>());
 	}
 	// 中クリックで移動状態に遷移
-	if (pInternals->mouseButtonMiddle)
+	if (internalsRef->mouseButtonMiddle)
 	{
 		SetNextState(std::make_unique<DebugCameraStateMove>());
 	}
 }
 
 // 終了処理
-void DebugCameraStateIdle::Exit(DebugCameraInternals* pInternals)
+void DebugCameraStateIdle::Exit(Ref<DebugCameraInternals> internalsRef)
 {
 }

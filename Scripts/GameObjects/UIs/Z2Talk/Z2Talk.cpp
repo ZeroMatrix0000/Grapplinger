@@ -1,7 +1,7 @@
 /*
  * FileName:     Z2Talk.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * Z: はなす
  */
@@ -29,10 +29,10 @@ Z2Talk::Z2Talk(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void Z2Talk::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Z2Talk::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_alphaVelocity, "AlphaVelocity");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_alphaVelocity }, "AlphaVelocity");
 	serializer.Load(json);
 
 	m_alpha.Initialize(0.0f, 0.0f, 1.0f);

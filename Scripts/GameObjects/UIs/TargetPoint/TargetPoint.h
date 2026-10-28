@@ -62,7 +62,7 @@ public:
 	TargetPoint(const ComponentDesc& desc);
 
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -93,7 +93,7 @@ private:
 	Info m_info;
 
 	// 画像のトランスフォームの参照
-	Ref<RectTransform> m_refTransform;
+	Ref<RectTransform> m_transformRef;
 	// 画像の参照
 	Ref<Renderings::Image> m_refImage;
 

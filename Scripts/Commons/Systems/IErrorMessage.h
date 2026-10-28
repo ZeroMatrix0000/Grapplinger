@@ -1,7 +1,7 @@
 /*
  * FileName:     IErrorMessage.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/08
+ * Last Updated: 2026/10/27
  *
  * エラーメッセージのインタフェース
  */
@@ -37,7 +37,7 @@ namespace Systems
 		/* 静的関数 */
 
 		// インスタンスを取得
-		static IErrorMessage* GetInstance() { return s_instance; }
+		static Ref<IErrorMessage> GetInstance() { return Ref{ *s_instance }; }
 
 
 	private:

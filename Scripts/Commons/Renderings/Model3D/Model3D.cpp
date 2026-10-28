@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/27
  *
  * 3Dモデル
  */
@@ -12,17 +12,16 @@
 #include "IModel3DRenderer.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
-#include "Scripts/Commons/Renderings/ICameraScreen.h"
 #include "Scripts/Commons/Systems/IResources.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 
-Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_color{ DirectX::Colors::White }
-	, m_modelSourceRef{ iResourcesRef->GetNullModelSource() }
+	, m_modelSourceRef{ iResources->GetNullModelSource() }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRendererRef }
-	, m_iResourcesRef{ iResourcesRef }
+	, m_iModelRendererRef{ iModelRenderer }
+	, m_iResources{ iResources }
 {
 }
 
@@ -37,14 +36,14 @@ Renderings::Model3D::~Model3D()
 }
 
 // 初期化処理
-void Renderings::Model3D::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Renderings::Model3D::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	std::string modelSourceName{};
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&modelSourceName, "ModelSourceName");
-	serializer.AddParameter(&m_color, "Color");
-	serializer.AddParameter(&m_iCameraScreenRefs, "CameraScreens");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ modelSourceName }, "ModelSourceName");
+	serializer.AddParameter(Ref{ m_color }, "Color");
+	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
 
 	if (!modelSourceName.empty())
@@ -61,7 +60,7 @@ void Renderings::Model3D::SetModelSource(const std::string& modelSourceName)
 	{
 		m_iModelRendererRef->RemoveModelRef(iCameraScreenRef, Ref{ *this }.Const());
 	}
-	m_modelSourceRef = m_iResourcesRef->GetModelSource(modelSourceName);
+	m_modelSourceRef = m_iResources->GetModelSource(modelSourceName);
 	// 描画者にモデルを追加
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{

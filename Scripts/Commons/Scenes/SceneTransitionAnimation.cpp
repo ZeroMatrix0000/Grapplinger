@@ -1,7 +1,7 @@
 /*
  * FileName:     SceneTransitionAnimation.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * シーン遷移時のアニメーション
  */
@@ -14,7 +14,6 @@
 #include "../GameObjects/GameObject.h"
 #include "../GameObjects/IGameObjectInstantiator.h"
 #include "../Components/RectTransform.h"
-#include "../Components/IComponentManager.h"
 #include "../Systems/IsDerivedRegister.h"
 
 // コンストラクタ
@@ -27,17 +26,17 @@ Scenes::SceneTransitionAnimation::SceneTransitionAnimation()
 }
 
 // 初期化処理
-void Scenes::SceneTransitionAnimation::Initialize(const Math::Vector2& outputSize, IGameObjectInstantiator* pIGameObjectInstantiator)
+void Scenes::SceneTransitionAnimation::Initialize(const Math::Vector2& outputSize, Ref<IGameObjectInstantiator> iGameObjectInstantiator)
 {
 	// アニメーションの設定
 	SetAnimation(false);
 
 	// 画像の設定
-	Ref<GameObject> refObj = pIGameObjectInstantiator->Instantiate("Prefab_SceneTransitionAnimation", true);
-	m_pImageRectTransform = &refObj->GetComponent<RectTransform>().Get();
+	Ref<GameObject> refObj = iGameObjectInstantiator->Instantiate("Prefab_SceneTransitionAnimation", true);
+	m_pImageRectTransform = refObj->GetComponent<RectTransform>().Get();
 	Ref image = refObj->GetComponent<Renderings::Image>();
 	// キャンバスの設定
-	m_pCanvas = &pIGameObjectInstantiator->Instantiate("Prefab_Canvas", true)->GetComponent<Renderings::Canvas>().Get();
+	m_pCanvas = iGameObjectInstantiator->Instantiate("Prefab_Canvas", true)->GetComponent<Renderings::Canvas>().Get();
 	m_pCanvas->Initialize(Renderings::Canvas::FixedSize::None, outputSize);
 
 	// キャンバスに画像を映す

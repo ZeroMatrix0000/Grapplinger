@@ -1,7 +1,7 @@
 /*
  * FileName:     Text.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * テキスト
  */
@@ -26,12 +26,12 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Text(const ComponentDesc& desc, Ref<ITextRenderer> iTextRendererRef);
+		Text(const ComponentDesc& desc, Ref<ITextRenderer> iTextRenderer);
 		// デストラクタ
 		~Text();
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 文字列を設定
 		void SetStr(const std::wstring& str) { m_str.SetStr(str); }
@@ -134,7 +134,7 @@ namespace Renderings
 		Ref<const Canvas> m_canvasRef;
 
 		// テキスト描画インタフェースの参照
-		Ref<ITextRenderer> m_iTextRendererRef;
+		Ref<ITextRenderer> m_iTextRenderer;
 
 	};
 }

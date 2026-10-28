@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCameraStateIdle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/08
+ * Last Updated: 2026/10/27
  *
  * デバッグ用カメラの待機状態
  */
@@ -24,11 +24,11 @@ public:
 	DebugCameraStateIdle();
 
 	// 開始処理
-	void Enter(DebugCameraInternals* pInternals) override;
+	void Enter(Ref<DebugCameraInternals> internalsRef) override;
 	// 更新処理
-	void Update(DebugCameraInternals* pInternals, float elapsedTime) override;
+	void Update(Ref<DebugCameraInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
-	void Exit(DebugCameraInternals* pInternals) override;
+	void Exit(Ref<DebugCameraInternals> internalsRef) override;
 
 
 private:

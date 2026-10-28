@@ -32,10 +32,10 @@ namespace Systems
 
 		// パラメータを追加
 		template<typename T>
-		void AddParameter(T* ptr, const std::string& name)
+		void AddParameter(Ref<T> ref, const std::string& name)
 		{
 			// パラメータを追加
-			m_parameters.emplace(name, Parameter{ ptr, typeid(T) });
+			m_parameters.emplace(name, Parameter{ ref.Get(), typeid(T)});
 
 			// 関数を探す
 			auto it = s_methods.find(typeid(T));
@@ -75,6 +75,10 @@ namespace Systems
 			{
 				*ptr = json.get<T>();
 				return;
+			}
+			else
+			{
+				Utility::Throw();
 			}
 		}
 		// シリアライズ（列挙型）
@@ -191,13 +195,13 @@ namespace Systems
 		template<typename TComponent> requires IsDerived<TComponent, Component>
 		static void Serialize(TComponent** ptr, const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
 		{
-			*ptr = &iGameObjectFinderRef->Find(json.get<std::string>())->GetComponent<TComponent>().Get();
+			*ptr = iGameObjectFinderRef->Find(json.get<std::string>())->GetComponent<TComponent>().Get();
 		}
 		// シリアライズ（変更負荷コンポーネント）
 		template<typename TComponent> requires IsDerived<TComponent, Component>
 		static void Serialize(const TComponent** ptr, const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
 		{
-			*ptr = &iGameObjectFinderRef->Find(json.get<std::string>())->GetConstComponent<TComponent>().Get();
+			*ptr = iGameObjectFinderRef->Find(json.get<std::string>())->GetConstComponent<TComponent>().Get();
 		}
 
 		// シリアライズ（コンポーネント）

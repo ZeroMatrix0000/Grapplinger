@@ -1,7 +1,7 @@
 /*
  * FileName:     ConstantBuffer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/12
+ * Last Updated: 2026/10/27
  *
  * 定数バッファ
  */
@@ -24,7 +24,7 @@ namespace Renderings
 		ConstantBuffer();
 
 		// 初期化処理
-		void Initialize(ID3D11Device5* pDevice, ID3DBlob* pBlob);
+		void Initialize(Ref<ID3D11Device5> deviceRef, Ref<ID3DBlob> blobRef);
 
 		// 値を変更
 		template<typename T>
@@ -69,8 +69,8 @@ namespace Renderings
 		// データを取得
 		const std::vector<std::byte>& GetData(size_t index) const { return m_data.at(index); }
 
-		// d3dバッファを取得
-		auto* GetBuffer(size_t index) const { return m_buffer.at(index).Get(); }
+		// d3dバッファの参照を取得
+		Ref<ID3D11Buffer> GetBufferRef(size_t index) const { return Ref{ *m_buffer.at(index).Get() }; }
 		// 定数バッファ数を取得
 		size_t GetBufferCount() const { return m_buffer.size(); }
 

@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * ゲームオブジェクト管理
  */
@@ -14,47 +14,47 @@
 #include "../Systems/IErrorMessage.h"
 
 // コンストラクタ
-GameObjects::GameObjectManager::GameObjectManager(Ref<IComponentManager> iComponentManagerRef, Ref<Systems::IResources> iResourcesRef)
+GameObjects::GameObjectManager::GameObjectManager(Ref<IComponentManager> iComponentManager, Ref<Systems::IResources> iResources)
 	: IGameObjectManager{}
 	, m_AddComponentList{}
 	, m_nullReference{}
 	, m_dontDestroyOnLoadGameObjects{}
-	, m_gameObjectRefs{ m_dontDestroyOnLoadGameObjects }
-	, m_componentManagerRef{ iComponentManagerRef }
-	, m_iResourcesRef{ iResourcesRef }
+	, m_gameObjectsRef{ m_dontDestroyOnLoadGameObjects }
+	, m_iComponentManager{ iComponentManager }
+	, m_iResources{ iResources }
 {
-	m_nullReference = std::make_unique<GameObject>(iComponentManagerRef);
+	m_nullReference = std::make_unique<GameObject>(iComponentManager);
 }
 
-// 管理するゲームオブジェクトの参照を設定
+// 管理するゲームオブジェクトリストの参照を設定
 void GameObjects::GameObjectManager::SetGameObjectsRef(Ref<std::vector<std::unique_ptr<GameObject>>> gameObjects)
 {
-	m_gameObjectRefs = gameObjects;
+	m_gameObjectsRef = gameObjects;
 }
 
 // ゲームオブジェクトを読み込む
 void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 {
 	// Json
-	Ref json = m_iResourcesRef->GetJson(jsonName);
+	Ref json = m_iResources->GetJson(jsonName);
 
-	m_gameObjectRefs->clear();
+	m_gameObjectsRef->clear();
 
 	// ゲームオブジェクトを生成
-	for (const auto& element : json.Get())
+	for (const auto& element : json.GetValue())
 	{
-		m_gameObjectRefs->push_back(std::make_unique<GameObject>(m_componentManagerRef));
+		m_gameObjectsRef->push_back(std::make_unique<GameObject>(m_iComponentManager));
 		// 名前を設定
 		auto it = element.find("Name");
 		if (it != element.end() && it.value().is_string())
 		{
-			m_gameObjectRefs->back()->SetName(it.value());
+			m_gameObjectsRef->back()->SetName(it.value());
 		}
 	}
 
 	int i = -1;
 	// Prefab を読み込む
-	for (const auto& element : json.Get())
+	for (const auto& element : json.GetValue())
 	{
 		i++;
 
@@ -65,19 +65,19 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 			continue;
 		}
 		// Json
-		Ref prefabJson = m_iResourcesRef->GetJson(it.value().get<std::string>());
+		Ref prefabJson = m_iResources->GetJson(it.value().get<std::string>());
 
 		// コンポーネントを追加
-		std::vector<Component*> pComponents = AddComponents(prefabJson.Get(), Ref{*m_gameObjectRefs->at(i)});
+		std::vector<Component*> pComponents = AddComponents(prefabJson.GetValue(), Ref{*m_gameObjectsRef->at(i)});
 		// コンポーネントを初期化
-		InitializeComponents(prefabJson.Get(), pComponents);
+		InitializeComponents(prefabJson.GetValue(), pComponents);
 	}
 
 	i = -1;
 	// コンポーネントリスト
 	std::vector<std::vector<Component*>> pComponentsList{};
 	// コンポーネントを追加
-	for (const auto& element : json.Get())
+	for (const auto& element : json.GetValue())
 	{
 		i++;
 
@@ -90,12 +90,12 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 		}
 
 		// コンポーネントを追加
-		pComponentsList.push_back(AddComponents(it.value(), Ref{ *m_gameObjectRefs->at(i) }));
+		pComponentsList.push_back(AddComponents(it.value(), Ref{ *m_gameObjectsRef->at(i) }));
 	}
 
 	i = -1;
 	// コンポーネントを初期化
-	for (const auto& element : json.Get())
+	for (const auto& element : json.GetValue())
 	{
 		i++;
 
@@ -114,8 +114,8 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 // ゲームオブジェクトを名前で検索
 Ref<GameObject> GameObjects::GameObjectManager::Find(const std::string& name) const
 {
-	auto it = std::ranges::find_if(m_gameObjectRefs.Get(), [&](const std::unique_ptr<GameObject>& gameObject) {return gameObject->GetName() == name; });
-	if (it == m_gameObjectRefs->end())
+	auto it = std::ranges::find_if(m_gameObjectsRef.GetValue(), [&](const std::unique_ptr<GameObject>& gameObject) {return gameObject->GetName() == name; });
+	if (it == m_gameObjectsRef->end())
 	{
 		// エラーメッセージを追加
 		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
@@ -135,17 +135,17 @@ Ref<GameObject> GameObjects::GameObjectManager::Find(const std::string& name) co
 Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& jsonName, bool dontDestroyOnLoad)
 {
 	// Json
-	Ref json = m_iResourcesRef->GetJson(jsonName);
+	Ref json = m_iResources->GetJson(jsonName);
 
 	// ゲームオブジェクト
-	std::unique_ptr<GameObject> owner = std::make_unique<GameObject>(m_componentManagerRef);
+	std::unique_ptr<GameObject> owner = std::make_unique<GameObject>(m_iComponentManager);
 	// ポインタ
 	Ref<GameObject> refOwner{ *owner };
 	refOwner->SetName(jsonName);
 	// コンポーネントを追加
-	std::vector<Component*> pComponents = AddComponents(json.Get(), refOwner);
+	std::vector<Component*> pComponents = AddComponents(json.GetValue(), refOwner);
 	// コンポーネントを初期化
-	InitializeComponents(json.Get(), pComponents);
+	InitializeComponents(json.GetValue(), pComponents);
 
 	if (dontDestroyOnLoad)
 	{
@@ -153,7 +153,7 @@ Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& j
 	}
 	else
 	{
-		m_gameObjectRefs->push_back(std::move(owner));
+		m_gameObjectsRef->push_back(std::move(owner));
 	}
 
 	return refOwner;
@@ -181,7 +181,7 @@ std::vector<Component*> GameObjects::GameObjectManager::AddComponents(const nloh
 		}
 
 		// コンポーネントを追加
-		pComponents.push_back(&it->second(owner).Get());
+		pComponents.push_back(it->second(owner).Get());
 	}
 
 	return pComponents;

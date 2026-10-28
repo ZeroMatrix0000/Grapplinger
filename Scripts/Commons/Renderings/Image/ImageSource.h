@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageSource.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 画像ソース
  */
@@ -23,12 +23,12 @@ namespace Renderings
 		ImageSource();
 
 		// 初期化処理
-		void Initialize(Ref<ID3D11Device5> deviceRef, const std::wstring& filePath);
+		void Initialize(const std::wstring& filePath, Ref<ID3D11Device5> deviceRef);
 
-		// シェーダーリソースビューを取得
-		auto* GetTexture()  const { return m_texture.Get(); }
-		// リソースを取得
-		auto* GetResource() const { return m_resource.Get(); }
+		// シェーダーリソースビューの参照を取得
+		Ref<ID3D11ShaderResourceView> GetTextureRef() const { return Ref{ *m_texture.Get() }; }
+		// リソースの参照を取得
+		Ref<ID3D11Texture2D> GetResourceRef() const { return Ref{ *m_resource.Get() }; }
 
 		// 初期化済みかどうかを取得
 		bool IsInitialized() const { return m_texture.Get() && m_resource.Get(); }
@@ -37,7 +37,7 @@ namespace Renderings
 		/* 静的関数 */
 
 		// 生成
-		static ImageSource Create(Ref<ID3D11Device5> deviceRef, const std::wstring& filePath);
+		static ImageSource Create(const std::wstring& filePath, Ref<ID3D11Device5> deviceRef);
 
 
 	private:

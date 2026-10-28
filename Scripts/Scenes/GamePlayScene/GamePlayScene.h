@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/06
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーン
  */
@@ -33,7 +33,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	GamePlayScene(const ComponentDesc& desc);
+	GamePlayScene(const ComponentDesc& desc, Ref<const GameContext> context);
 
 	// 初期化処理
 	void Initialize(const SceneTransitionData& data) override;

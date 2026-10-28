@@ -1,7 +1,7 @@
 /*
  * FileName:     SceneManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/22
+ * Last Updated: 2026/10/27
  *
  * シーン管理
  */
@@ -40,10 +40,10 @@ namespace Scenes
 		}
 
 		// 初期化処理
-		void Initialize(const Math::Vector2& outputSize, IGameObjectInstantiator* pIGameObjectInstantiator)
+		void Initialize(const Math::Vector2& outputSize, Ref<IGameObjectInstantiator> iGameObjectInstantiator)
 		{
 			// アニメーションの初期化
-			m_animation.Initialize(outputSize, pIGameObjectInstantiator);
+			m_animation.Initialize(outputSize, iGameObjectInstantiator);
 		}
 		// 更新処理
 		void Update(float elapsedTime)
@@ -95,7 +95,6 @@ namespace Scenes
 		{
 			// シーンの初期化
 			m_currentScene = m_CreateComponentList.at(typeid(TScene))();
-			m_currentScene->SetContext(m_refContext);
 			m_currentScene->Initialize(data);
 		}
 

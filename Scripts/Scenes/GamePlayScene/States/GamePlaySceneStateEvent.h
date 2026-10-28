@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateEvent.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/06
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーンのイベント状態
  */
@@ -25,11 +25,11 @@ public:
 	GamePlaySceneStateEvent();
 
 	// 開始処理
-	void Enter(GamePlaySceneInternals* pInternals) override;
+	void Enter(Ref<GamePlaySceneInternals> internalsRef) override;
 	// 更新処理
-	void Update(GamePlaySceneInternals* pInternals, float elapsedTime) override;
+	void Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
-	void Exit(GamePlaySceneInternals* pInternals) override;
+	void Exit(Ref<GamePlaySceneInternals> internalsRef) override;
 
 
 private:
@@ -38,6 +38,6 @@ private:
 	/* メンバ関数 */
 
 	// プレイヤーを会話相手の方に向ける
-	void RotatePlayer(GamePlaySceneInternals* pInternals);
+	void RotatePlayer(Ref<GamePlaySceneInternals> internalsRef);
 
 };

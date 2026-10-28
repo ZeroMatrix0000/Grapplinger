@@ -25,25 +25,25 @@ PlayerStateStick::PlayerStateStick()
 }
 
 // 開始処理
-void PlayerStateStick::Enter(PlayerInternals* pInternals)
+void PlayerStateStick::Enter(Ref<PlayerInternals> internalsRef)
 {
 }
 
 // 更新処理
-void PlayerStateStick::Update(PlayerInternals* pInternals, float elapsedTime)
+void PlayerStateStick::Update(Ref<PlayerInternals> internalsRef, float elapsedTime)
 {
 	// カメラのY軸回転
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(pInternals->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
 	);
 
 	// 加速度がある
-	if (pInternals->MOVE != Math::Vector3::Zero)
+	if (internalsRef->MOVE != Math::Vector3::Zero)
 	{
-		Math::Vector3 direction = Math::Vector3::Transform(pInternals->MOVE, cameraRotation);
-		pInternals->rotation.SetTarget
+		Math::Vector3 direction = Math::Vector3::Transform(internalsRef->MOVE, cameraRotation);
+		internalsRef->rotation.SetTarget
 		(
 			Math::Quaternion::CreateFromAxisAngle(Math::Vector3::UnitY, Math::Arctan2(direction.x, direction.z)),
 			200.0f,
@@ -52,51 +52,51 @@ void PlayerStateStick::Update(PlayerInternals* pInternals, float elapsedTime)
 	}
 
 	// ジャンプ入力
-	if (pInternals->IS_JUMP)
+	if (internalsRef->IS_JUMP)
 	{
-		pInternals->jumpBufferTime = pInternals->jumpBufferTime.GetMax();
+		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMax();
 	}
-	pInternals->jumpBufferTime -= elapsedTime;
+	internalsRef->jumpBufferTime -= elapsedTime;
 
 	// ジャンプ
-	if (pInternals->jumpBufferTime != 0.0f)
+	if (internalsRef->jumpBufferTime != 0.0f)
 	{
 		SetNextState(std::make_unique<PlayerStateFalling>());
-		pInternals->fallSpeed = pInternals->fallSpeed.GetMin();
-		pInternals->jumpBufferTime = pInternals->jumpBufferTime.GetMin();
+		internalsRef->fallSpeed = internalsRef->fallSpeed.GetMin();
+		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
-		pInternals->pParticleManager->Play<JumpingParticle>();
+		internalsRef->pParticleManager->Play<JumpingParticle>();
 	}
 
 	// 糸の更新
-	pInternals->pWire->Update(elapsedTime);
+	internalsRef->pWire->Update(elapsedTime);
 
 	// 回転の更新
-	pInternals->rotation.Tick(elapsedTime);
+	internalsRef->rotation.Tick(elapsedTime);
 
 	// 回転させる
-	pInternals->pTransform->SetRotation(pInternals->rotation.GetCurrent());
+	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	pInternals->pBoxCollider->ApplyTransform();
+	internalsRef->pBoxCollider->ApplyTransform();
 
 	// パーティクルの更新
-	pInternals->pParticleManager->Update(elapsedTime);
+	internalsRef->pParticleManager->Update(elapsedTime);
 }
 
 // 終了処理
-void PlayerStateStick::Exit(PlayerInternals* pInternals)
+void PlayerStateStick::Exit(Ref<PlayerInternals> internalsRef)
 {
-	pInternals->pWire->UnDisplay();
+	internalsRef->pWire->UnDisplay();
 }
 
 // 座標補正
-void PlayerStateStick::PositionCorrect(PlayerInternals* pInternals, float distance, const Math::Vector3& direction)
+void PlayerStateStick::PositionCorrect(Ref<PlayerInternals> internalsRef, float distance, const Math::Vector3& direction)
 {
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// 距離が近い
-	if (distance < 0.0f || (distance < pInternals->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
@@ -104,20 +104,20 @@ void PlayerStateStick::PositionCorrect(PlayerInternals* pInternals, float distan
 		if (cos < -1.0f / 1.41421356f)
 		{
 			// 移動
-			pInternals->pTransform->Translate(displacement);
+			internalsRef->pTransform->Translate(displacement);
 			// トランスフォームを適用
-			pInternals->pBoxCollider->ApplyTransform();
+			internalsRef->pBoxCollider->ApplyTransform();
 			// 地面にいる状態にする
 			SetNextState(std::make_unique<PlayerStateOnGround>());
 			// 砂煙の再生
-			pInternals->pParticleManager->Play<LandingParticle>();
+			internalsRef->pParticleManager->Play<LandingParticle>();
 			return;
 		}
 		// 移動
-		pInternals->pTransform->Translate(displacement);
+		internalsRef->pTransform->Translate(displacement);
 		// トランスフォームを適用
-		pInternals->pBoxCollider->ApplyTransform();
+		internalsRef->pBoxCollider->ApplyTransform();
 
-		pInternals->pWire->SetPlayerPosition(pInternals->pBoxCollider->GetWorldBox().position);
+		internalsRef->pWire->SetPlayerPosition(internalsRef->pBoxCollider->GetWorldBox().position);
 	}
 }

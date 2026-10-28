@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerModel.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/27
  *
  * プレイヤーのモデル
  */
@@ -31,28 +31,28 @@ PlayerModel::PlayerModel(const ComponentDesc& desc)
 	, m_scaling{}
 	, m_dashAngle{}
 	, m_wireAngle{}
-	, m_refTransform{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_refSilhouette{ GetOwner()->GetNullComponent<Transform>() }
 	, m_pParticleManager{}
 {
 }
 
 // 初期化処理
-void PlayerModel::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void PlayerModel::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	float bounceTime = m_bounceTime.GetMax();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&bounceTime, "BounceTime");
-	serializer.AddParameter(&m_bounceHeight, "BounceHeight");
-	serializer.AddParameter(&m_fallSpeedCoefficient, "FallSpeedCoefficient");
-	serializer.AddParameter(&m_scalingMax, "ScalingMax");
-	serializer.AddParameter(&m_dashAngleMax, "DashAngleMax");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ bounceTime }, "BounceTime");
+	serializer.AddParameter(Ref{ m_bounceHeight }, "BounceHeight");
+	serializer.AddParameter(Ref{ m_fallSpeedCoefficient }, "FallSpeedCoefficient");
+	serializer.AddParameter(Ref{ m_scalingMax }, "ScalingMax");
+	serializer.AddParameter(Ref{ m_dashAngleMax }, "DashAngleMax");
 	serializer.Load(json);
 
 	m_bounceTime.Initialize(0.0f, 0.0f, bounceTime);
 
-	m_refTransform = GetOwner()->GetComponent<Transform>();
+	m_transformRef = GetOwner()->GetComponent<Transform>();
 
 	// シルエットを生成
 	if (m_refSilhouette == GetOwner()->GetNullComponent<Transform>())
@@ -86,9 +86,9 @@ void PlayerModel::Translate(float elapsedTime, const Player& player)
 		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
 		(
 			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
-			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_refTransform->GetRotation()
+			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
-		m_refTransform->SetPosition(position);
+		m_transformRef->SetPosition(position);
 		m_refSilhouette->SetPosition(position);
 	}
 	// 糸伸ばし状態
@@ -101,9 +101,9 @@ void PlayerModel::Translate(float elapsedTime, const Player& player)
 		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
 		(
 			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
-			Math::Euler{m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_refTransform->GetRotation()
+			Math::Euler{m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
-		m_refTransform->SetPosition(position);
+		m_transformRef->SetPosition(position);
 		m_refSilhouette->SetPosition(position);
 	}
 	else
@@ -125,9 +125,9 @@ void PlayerModel::Translate(float elapsedTime, const Player& player)
 		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * height + Math::Vector3::Transform
 		(
 			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
-			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_refTransform->GetRotation()
+			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
-		m_refTransform->SetPosition(position);
+		m_transformRef->SetPosition(position);
 		m_refSilhouette->SetPosition(position);
 	}
 }
@@ -151,7 +151,7 @@ void PlayerModel::Rotate(float elapsedTime, const Player& player)
 	m_wireAngle.Tick(elapsedTime);
 
 	float rotationX = m_dashAngle.GetCurrent() + m_wireAngle.GetCurrent();
-	m_refTransform->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_refTransform->GetRotation());
+	m_transformRef->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation());
 	m_refSilhouette->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_refSilhouette->GetRotation());
 }
 
@@ -172,8 +172,8 @@ void PlayerModel::Scaling(float elapsedTime, const Player& player)
 	}
 
 	m_scaling.Tick(elapsedTime);
-	Math::Vector3 scale = m_refTransform->GetScale() + m_scaling.GetCurrent();
-	m_refTransform->SetScale(scale);
+	Math::Vector3 scale = m_transformRef->GetScale() + m_scaling.GetCurrent();
+	m_transformRef->SetScale(scale);
 	m_refSilhouette->SetScale(scale);
 }
 
@@ -187,9 +187,9 @@ void PlayerModel::AddICameraScreen(Ref<const Renderings::ICameraScreen> iCameraS
 // トランスフォームを設定
 void PlayerModel::SetTransform(const Transform& transform)
 {
-	m_refTransform->SetPosition(transform.GetPosition());
-	m_refTransform->SetRotation(transform.GetRotation());
-	m_refTransform->SetScale(transform.GetScale());
+	m_transformRef->SetPosition(transform.GetPosition());
+	m_transformRef->SetRotation(transform.GetRotation());
+	m_transformRef->SetScale(transform.GetScale());
 	m_refSilhouette->SetPosition(transform.GetPosition());
 	m_refSilhouette->SetRotation(transform.GetRotation());
 	m_refSilhouette->SetScale(transform.GetScale());

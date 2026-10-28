@@ -12,11 +12,11 @@
 #include "../Components/Component.h"
 
 // コンストラクタ
-GameObjects::GameObject::GameObject(Ref<IComponentManager> iComponentManagerRef)
+GameObjects::GameObject::GameObject(Ref<IComponentManager> iComponentManager)
 	: m_name{}
 	, m_components{}
 	, m_componentRefs{}
-	, m_iComponentManagerRef{ iComponentManagerRef }
+	, m_iComponentManager{ iComponentManager }
 {
 }
 

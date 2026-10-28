@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionSetMessageWindowText.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * メッセージウィンドウ開アクション
  */
@@ -24,19 +24,19 @@ ActionSetMessageWindowText::ActionSetMessageWindowText(const ComponentDesc& desc
 }
 
 // 初期化処理
-void ActionSetMessageWindowText::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void ActionSetMessageWindowText::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_refMessageWindow, "MessageWindow");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(m_refMessageWindow.Nest(), "MessageWindow");
 	serializer.Load(json);
 }
 
 // パラメータを設定
-void ActionSetMessageWindowText::SetParams(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void ActionSetMessageWindowText::SetParams(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_text, "Text");
-	serializer.AddParameter(&m_character, "Character");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_text }, "Text");
+	serializer.AddParameter(Ref{ m_character }, "Character");
 	serializer.Load(json);
 }
 

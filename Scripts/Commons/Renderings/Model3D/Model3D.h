@@ -31,12 +31,12 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
+		Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
 		// デストラクタ
 		~Model3D();
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 色を設定
 		void SetColor(const Math::Color& color) { m_color = color; }
@@ -76,7 +76,7 @@ namespace Renderings
 		Ref<IModel3DRenderer> m_iModelRendererRef;
 
 		// リソース管理の参照
-		Ref<Systems::IResources> m_iResourcesRef;
+		Ref<Systems::IResources> m_iResources;
 
 	};
 }

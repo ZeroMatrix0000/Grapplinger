@@ -100,10 +100,10 @@ concept IsDerived = IsDerivedTrait<T, U>::value;
 template<typename T, typename... Args>
 concept IsSame = (std::same_as<T, Args> || ...);
 
-// 参照
-#include "Scripts/Commons/Libraries/Ref.h"
 // 便利関数群
 #include "Scripts/Commons/Libraries/Utility.h"
+// 参照
+#include "Scripts/Commons/Libraries/Ref.h"
 // 乱数
 #include "Scripts/Commons/Libraries/Random.h"
 // 数学関係

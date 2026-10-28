@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerWire.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * プレイヤーの糸
  */
@@ -42,28 +42,28 @@ PlayerWire::PlayerWire(const ComponentDesc& desc)
 	, m_toAir{}
 	, m_particleTimer{}
 	, m_isDisplay{}
-	, m_refTransform{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_refParticleManager{ GetOwner()->GetNullComponent<Renderings::ParticleManager>() }
 	, m_refParticleManagerTransform{ GetOwner()->GetNullComponent<Transform>() }
 {
 }
 
 // 初期化処理
-void PlayerWire::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void PlayerWire::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_refTransform = GetOwner()->GetComponent<Transform>();
+	m_transformRef = GetOwner()->GetComponent<Transform>();
 
 	m_rotationAngle.Initialize(0.0f, -180.0f, 180.0f);
 
 	m_currentState = State::None;
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&THICKNESS, "Thickness");
-	serializer.AddParameter(&EXPAND_SPEED, "ExpandSpeed");
-	serializer.AddParameter(&ROTATION_SPEED, "RotationSpeed");
-	serializer.AddParameter(&STAY_TIME, "StayTime");
-	serializer.AddParameter(&CONTRACT_ACCELERATION, "ContractAcceleration");
-	serializer.AddParameter(&MIN_LENGTH, "MinLength");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ THICKNESS }, "Thickness");
+	serializer.AddParameter(Ref{ EXPAND_SPEED }, "ExpandSpeed");
+	serializer.AddParameter(Ref{ ROTATION_SPEED }, "RotationSpeed");
+	serializer.AddParameter(Ref{ STAY_TIME }, "StayTime");
+	serializer.AddParameter(Ref{ CONTRACT_ACCELERATION }, "ContractAcceleration");
+	serializer.AddParameter(Ref{ MIN_LENGTH }, "MinLength");
 	serializer.Load(json);
 
 	// パーティクル管理生成
@@ -163,7 +163,7 @@ void PlayerWire::Translate(float elapsedTime)
 	}
 
 	// 移動
-	m_refTransform->SetPosition((m_playerPosition + m_currentPosition) / 2.0f);
+	m_transformRef->SetPosition((m_playerPosition + m_currentPosition) / 2.0f);
 }
 
 // 回転
@@ -176,7 +176,7 @@ void PlayerWire::Rotate(float elapsedTime)
 	}
 
 	// 回転
-	m_refTransform->SetRotation(Math::Euler{ 0.0f, 0.0f, m_rotationAngle }.CreateQuaternion() * m_baseRotation);
+	m_transformRef->SetRotation(Math::Euler{ 0.0f, 0.0f, m_rotationAngle }.CreateQuaternion() * m_baseRotation);
 	m_refParticleManagerTransform->SetRotation(Math::Euler{ 0.0f, 0.0f, m_rotationAngle }.CreateQuaternion() * m_baseRotation);
 }
 
@@ -185,11 +185,11 @@ void PlayerWire::Scaling(float elapsedTime)
 {
 	if (m_currentState == State::None && !m_isDisplay)
 	{
-		m_refTransform->SetScale(Math::Vector3::Zero);
+		m_transformRef->SetScale(Math::Vector3::Zero);
 	}
 	else
 	{
-		m_refTransform->SetScale(Math::Vector3{ THICKNESS, THICKNESS, m_length });
+		m_transformRef->SetScale(Math::Vector3{ THICKNESS, THICKNESS, m_length });
 	}
 }
 

@@ -25,10 +25,10 @@ public:
 	GamePlaySceneStateField();
 
 	// 開始処理
-	void Enter(GamePlaySceneInternals* pInternals) override;
+	void Enter(Ref<GamePlaySceneInternals> internalsRef) override;
 	// 更新処理
-	void Update(GamePlaySceneInternals* pInternals, float elapsedTime) override;
+	void Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
-	void Exit(GamePlaySceneInternals* pInternals) override;
+	void Exit(Ref<GamePlaySceneInternals> internalsRef) override;
 
 };

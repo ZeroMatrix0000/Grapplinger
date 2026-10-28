@@ -1,7 +1,7 @@
 /*
  * FileName:     MessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * メッセージウィンドウ
  */
@@ -39,14 +39,14 @@ MessageWindow::MessageWindow(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void MessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void MessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Ref canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() };
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_moveTime, "MoveTime");
-	serializer.AddParameter(&m_textVelocity, "TextVelocity");
-	serializer.AddParameter(&canvasRef, "Canvas");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_moveTime }, "MoveTime");
+	serializer.AddParameter(Ref{ m_textVelocity }, "TextVelocity");
+	serializer.AddParameter(canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	// メッセージウィンドウを生成
@@ -63,10 +63,13 @@ void MessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjec
 		m_refText = refObj->GetComponent<Renderings::Text>();
 	}
 
-	// キャンバスを設定
-	m_refBackground->SetCanvasRef(canvasRef);
-	m_refCharacter->SetCanvasRef(canvasRef);
-	m_refText->SetCanvasRef(canvasRef);
+	if (canvasRef != GetOwner()->GetNullComponent<Renderings::Canvas>().Const())
+	{
+		// キャンバスを設定
+		m_refBackground->SetCanvasRef(canvasRef);
+		m_refCharacter->SetCanvasRef(canvasRef);
+		m_refText->SetCanvasRef(canvasRef);
+	}
 
 	// 移動率を初期化
 	m_moveRate.SetMovement(0.0f, 0.0f);

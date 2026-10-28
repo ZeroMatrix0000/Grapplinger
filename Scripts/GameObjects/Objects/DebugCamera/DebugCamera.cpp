@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * デバッグ用カメラ
  */
@@ -16,7 +16,7 @@
 // コンストラクタ
 DebugCamera::DebugCamera(const ComponentDesc& desc)
 	: Component{ desc }
-	, m_internals{}
+	, m_internals{ GetOwner() }
 	, m_currentState{}
 {
 	// 現在の状態を初期化
@@ -24,7 +24,7 @@ DebugCamera::DebugCamera(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void DebugCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void DebugCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	SetPCameraScreen();
 }
@@ -40,13 +40,13 @@ void DebugCamera::Update(float elapsedTime)
 	}
 
 	// 状態ごとの処理
-	m_currentState->Update(&m_internals, elapsedTime);
+	m_currentState->Update(Ref{ m_internals }, elapsedTime);
 }
 
 // カメラ画面を設定
 void DebugCamera::SetPCameraScreen()
 {
-	m_internals.pCameraScreen = &GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
+	m_internals.cameraScreenRef = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
 }
 
 // 入力を設定
@@ -63,8 +63,8 @@ void DebugCamera::SetState(std::unique_ptr<Systems::State<DebugCameraInternals>>
 {
 	if (m_currentState != nullptr)
 	{
-		m_currentState->Exit(&m_internals);
+		m_currentState->Exit(Ref{ m_internals });
 	}
 	m_currentState = std::move(state);
-	m_currentState->Enter(&m_internals);
+	m_currentState->Enter(Ref{ m_internals });
 }

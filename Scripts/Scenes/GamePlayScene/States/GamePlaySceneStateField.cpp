@@ -30,60 +30,60 @@ GamePlaySceneStateField::GamePlaySceneStateField()
 }
 
 // 開始処理
-void GamePlaySceneStateField::Enter(GamePlaySceneInternals* pInternals)
+void GamePlaySceneStateField::Enter(Ref<GamePlaySceneInternals> internalsRef)
 {
 	// レティクルを表示
-	pInternals->reticleRef->SetColor(DirectX::Colors::White);
+	internalsRef->reticleRef->SetColor(DirectX::Colors::White);
 	// ターゲット照準を表示
-	pInternals->targetPointRef->Appear(true);
+	internalsRef->targetPointRef->Appear(true);
 }
 
 // 更新処理
-void GamePlaySceneStateField::Update(GamePlaySceneInternals* pInternals, float elapsedTime)
+void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime)
 {
 	// ゲーム入力
-	auto* pIGameInput = pInternals->gameContextRef->GetPIGameInput();
+	auto* pIGameInput = internalsRef->gameContextRef->GetPIGameInput();
 
 	// 糸伸ばし入力で糸を伸ばす
-	if (pIGameInput->GetPlayerExpandWire() && pInternals->playerRef->CanExpandWire())
+	if (pIGameInput->GetPlayerExpandWire() && internalsRef->playerRef->CanExpandWire())
 	{
-		TargetPoint::Info info = pInternals->targetPointRef->GetTargetInfo();
-		pInternals->playerRef->ExpandWire(info.position, static_cast<PlayerInternals::TargetType>(info.type));
+		TargetPoint::Info info = internalsRef->targetPointRef->GetTargetInfo();
+		internalsRef->playerRef->ExpandWire(info.position, static_cast<PlayerInternals::TargetType>(info.type));
 	}
 
 	// NPCの更新
-	pInternals->nPCManagerRef->SetRotation(pInternals->playerRef->GetPosition());
-	pInternals->nPCManagerRef->Update(elapsedTime);
-	pInternals->nPCManagerRef->SetCursor(pInternals->iCameraScreenRef.Get());
+	internalsRef->nPCManagerRef->SetRotation(internalsRef->playerRef->GetPosition());
+	internalsRef->nPCManagerRef->Update(elapsedTime);
+	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.GetValue());
 
 	// プレイヤーの更新
-	pInternals->playerRef->Update(elapsedTime, pIGameInput->GetPlayerMove(), pIGameInput->GetPlayerDash(), pIGameInput->GetPlayerJump());
-	pInternals->nPCManagerRef->PlayerCollide(&pInternals->playerRef.Get());
-	pInternals->playerRef->MeshCorrect(pInternals->groundMeshRef->GetWorldMesh());
-	pInternals->playerRef->UpdateModel(elapsedTime);
+	internalsRef->playerRef->Update(elapsedTime, pIGameInput->GetPlayerMove(), pIGameInput->GetPlayerDash(), pIGameInput->GetPlayerJump());
+	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef.Get());
+	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
+	internalsRef->playerRef->UpdateModel(elapsedTime);
 
 	// カメラの更新
-	pInternals->playerCameraRef->SetTarget(pInternals->playerRef->GetCameraTarget());
-	pInternals->playerCameraRef->Rotate(pIGameInput->GetPlayerCameraRotate());
-	pInternals->playerCameraRef->MeshCorrect(pInternals->groundMeshRef->GetWorldMesh(), pInternals->playerRef->GetPosition());
-	pInternals->playerCameraRef->Update(elapsedTime);
-	pInternals->iCameraScreenRef->UpdateViewMatrix();
+	internalsRef->playerCameraRef->SetTarget(internalsRef->playerRef->GetCameraTarget());
+	internalsRef->playerCameraRef->Rotate(pIGameInput->GetPlayerCameraRotate());
+	internalsRef->playerCameraRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh(), internalsRef->playerRef->GetPosition());
+	internalsRef->playerCameraRef->Update(elapsedTime);
+	internalsRef->iCameraScreenRef->UpdateViewMatrix();
 
 	// プレイヤーが話せる状態か
-	bool canSpeak = pInternals->playerRef->IsState<PlayerStateOnGround>();
+	bool canSpeak = internalsRef->playerRef->IsState<PlayerStateOnGround>();
 
 	// 糸伸ばし中ならカーソルを非表示
-	pInternals->nPCManagerRef->HideCursor(!canSpeak);
+	internalsRef->nPCManagerRef->HideCursor(!canSpeak);
 
 	// はなすの更新
-	pInternals->z2TalkRef->SetPosition(pInternals->playerRef->GetBox(), pInternals->iCameraScreenRef.Get());
-	pInternals->z2TalkRef->Update(elapsedTime, pInternals->nPCManagerRef->GetPFocusedNPC() != nullptr && canSpeak);
+	internalsRef->z2TalkRef->SetPosition(internalsRef->playerRef->GetBox(), internalsRef->iCameraScreenRef.GetValue());
+	internalsRef->z2TalkRef->Update(elapsedTime, internalsRef->nPCManagerRef->GetPFocusedNPC() != nullptr && canSpeak);
 
 	// 上下の黒帯の更新
-	pInternals->blackBeltRef->Update(elapsedTime);
+	internalsRef->blackBeltRef->Update(elapsedTime);
 
 	// 話しかけられるNPC
-	const NPC* pFocusedNPC = pInternals->nPCManagerRef->GetPFocusedNPC();
+	const NPC* pFocusedNPC = internalsRef->nPCManagerRef->GetPFocusedNPC();
 	// 糸を伸ばしていないかつ
 	// NPCに話しかけられる状態かつ
 	// プレイヤーが話せる状態かつ
@@ -99,13 +99,13 @@ void GamePlaySceneStateField::Update(GamePlaySceneInternals* pInternals, float e
 	}
 
 	// メッセージウィンドウの更新
-	pInternals->messageWindowRef->Update(elapsedTime);
+	internalsRef->messageWindowRef->Update(elapsedTime);
 
 	// ターゲットの更新
-	pInternals->targetPointRef->Update(elapsedTime);
+	internalsRef->targetPointRef->Update(elapsedTime);
 }
 
 // 終了処理
-void GamePlaySceneStateField::Exit(GamePlaySceneInternals* pInternals)
+void GamePlaySceneStateField::Exit(Ref<GamePlaySceneInternals> internalsRef)
 {
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     DecorationTextRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/28
+ * Last Updated: 2026/10/27
  *
  * テキストのデコレーション描画
  */
@@ -84,7 +84,7 @@ namespace Renderings
 		ULONG Release() override { return 0; }
 
 		// 初期化処理
-		void Initialize(ID2D1DeviceContext7* pContext, ID2D1SolidColorBrush* pBrush);
+		void Initialize(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1SolidColorBrush> brushRef);
 
 
 	private:

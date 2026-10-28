@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateExpandWire.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/19
+ * Last Updated: 2026/10/27
  *
  * プレイヤーの糸を伸ばす状態
  */
@@ -24,14 +24,14 @@ public:
 	PlayerStateExpandWire(const Math::Vector3& targetPosition, PlayerInternals::TargetType targetType);
 
 	// 開始処理
-	void Enter(PlayerInternals* pInternals) override;
+	void Enter(Ref<PlayerInternals> internalsRef) override;
 	// 更新処理
-	void Update(PlayerInternals* pInternals, float elapsedTime) override;
+	void Update(Ref<PlayerInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
-	void Exit(PlayerInternals* pInternals) override;
+	void Exit(Ref<PlayerInternals> internalsRef) override;
 
 	// 座標補正
-	void PositionCorrect(PlayerInternals* pInternals, float distance, const Math::Vector3& direction) override;
+	void PositionCorrect(Ref<PlayerInternals> internalsRef, float distance, const Math::Vector3& direction) override;
 
 
 private:

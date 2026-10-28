@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * テキスト描画
  */
@@ -21,7 +21,7 @@
 // コンストラクタ
 Renderings::TextRenderer::TextRenderer()
 	: ITextRenderer{}
-	, m_helper{ *this }
+	, m_helper{ Ref{ *this } }
 	, m_dWriteFactory{}
 	, m_textContext{}
 	, m_fontCollection{}
@@ -36,11 +36,8 @@ Renderings::TextRenderer::TextRenderer()
 }
 
 // 初期化処理
-void Renderings::TextRenderer::Initialize(ID2D1Device7* pDevice, ID2D1DeviceContext7* pContext, ID2D1Bitmap1* pBackBuffer)
+void Renderings::TextRenderer::Initialize(Ref<ID2D1Device7> deviceRef, Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef)
 {
-	m_pContext = pContext;
-	m_pBackBuffer = pBackBuffer;
-
 	// DirectWrite
 	Utility::ThrowIfFailed(DWriteCreateFactory
 	(
@@ -50,10 +47,10 @@ void Renderings::TextRenderer::Initialize(ID2D1Device7* pDevice, ID2D1DeviceCont
 	));
 
 	// コンテキスト
-	Utility::ThrowIfFailed(pDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, m_textContext.GetAddressOf()));
+	Utility::ThrowIfFailed(deviceRef->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, m_textContext.GetAddressOf()));
 
 	// ブラシ
-	Utility::ThrowIfFailed(m_pContext->CreateSolidColorBrush
+	Utility::ThrowIfFailed(contextRef->CreateSolidColorBrush
 	(
 		D2D1_COLOR_F{},
 		m_brush.GetAddressOf()
@@ -68,7 +65,7 @@ void Renderings::TextRenderer::Initialize(ID2D1Device7* pDevice, ID2D1DeviceCont
 	m_textContext->CreateEffect(CLSID_D2D1Composite, m_compositeEffect.GetAddressOf());
 	m_compositeEffect->SetValue(D2D1_COMPOSITE_PROP_MODE, D2D1_COMPOSITE_MODE_SOURCE_IN);
 
-	OnWindowSizeChanged(pContext, pBackBuffer);
+	OnWindowSizeChanged(contextRef, backBufferRef);
 }
 
 // フォントコレクションの作成
@@ -147,6 +144,13 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 		return;
 	}
 
+	// 所有者
+	Ref owner = textRef->GetConstOwner();
+	if (owner == textRef->GetNullGameObject().Const())
+	{
+		return;
+	}
+
 	// テキストの所有者の2Dトランスフォーム
 	Ref<const RectTransform> rectTransform = textRef->GetConstOwner()->GetConstComponent<RectTransform>();
 
@@ -174,17 +178,15 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 	float fontSize = textRef->GetFontSize() * canvasRatio;
 
 	// テキストフォーマット
-	Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat;
-	m_helper.CreateTextFormat
+	Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat = m_helper.CreateTextFormat
 	(
 		textRef->GetFontName(),
 		fontSize,
 		textRef->GetLineSpace(),
 		textRef->GetTextAlignment(),
 		textRef->GetParagraphAlignment(),
-		m_dWriteFactory.Get(),
-		m_fontCollection.Get(),
-		textFormat.GetAddressOf()
+		Ref{ *m_dWriteFactory.Get() },
+		Ref{ *m_fontCollection.Get() }
 	);
 
 	// 描画する文字列
@@ -252,13 +254,13 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 		(
 			canvasRatio,
 			Math::Vector2{ outlineWidth + 1.0f - metrics.left, outlineWidth + 1.0f + fontSize - metrics.top },
-			textRef.Get(),
-			m_textContext.Get(),
-			m_dWriteFactory.Get(),
-			m_fontCollection.Get(),
-			textLayout.Get(),
-			m_brush.Get(),
-			&m_decorationRenderer
+			textRef,
+			Ref{ *m_textContext.Get() },
+			Ref{ *m_dWriteFactory.Get() },
+			Ref{ *m_fontCollection.Get() },
+			Ref{ *textLayout.Get() },
+			Ref{ *m_brush.Get() },
+			Ref{ m_decorationRenderer }
 		);
 
 		// 描画終了
@@ -352,13 +354,13 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 		(
 			canvasRatio,
 			transformRect.position - transformRect.size / 2.0f,
-			textRef.Get(),
-			m_pContext,
-			m_dWriteFactory.Get(),
-			m_fontCollection.Get(),
-			textLayout.Get(),
-			m_brush.Get(),
-			&m_decorationRenderer
+			textRef,
+			Ref{ *m_pContext },
+			Ref{ *m_dWriteFactory.Get() },
+			Ref{ *m_fontCollection.Get() },
+			Ref{ *textLayout.Get() },
+			Ref{ *m_brush.Get() },
+			Ref{ m_decorationRenderer }
 		);
 
 		// デバッグ表示
@@ -389,10 +391,10 @@ void Renderings::TextRenderer::End()
 }
 
 // ウィンドウサイズ変更時の処理
-void Renderings::TextRenderer::OnWindowSizeChanged(ID2D1DeviceContext7* pContext, ID2D1Bitmap1* pBackBuffer)
+void Renderings::TextRenderer::OnWindowSizeChanged(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef)
 {
-	m_pContext = pContext;
-	m_pBackBuffer = pBackBuffer;
+	m_pContext = contextRef.Get();
+	m_pBackBuffer = backBufferRef.Get();
 }
 
 // テキストの参照を追加

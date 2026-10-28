@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 3Dモデル描画
  */
@@ -17,7 +17,6 @@
 #include "../Shader/PixelShader.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/Components/Transform.h"
-#include "Scripts/Commons/Systems/IResources.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
  // コンストラクタ
@@ -37,11 +36,16 @@ Renderings::Model3DRenderer::Model3DRenderer()
 }
 
 // 初期化処理
-void Renderings::Model3DRenderer::Initialize(ID3D11Device5* pDevice, ID3D11DeviceContext4* pContext, const DirectX::CommonStates& commonStates)
+void Renderings::Model3DRenderer::Initialize
+(
+	Ref<ID3D11Device5> deviceRef,
+	Ref<ID3D11DeviceContext4> contextRef,
+	Ref<const DirectX::CommonStates> commonStatesRef
+)
 {
-	m_pDevice = pDevice;
-	m_pContext = pContext;
-	m_pCommonStates = &commonStates;
+	m_pDevice = deviceRef.Get();
+	m_pContext = contextRef.Get();
+	m_pCommonStates = commonStatesRef.Get();
 
 	// バッファの詳細
 	D3D11_BUFFER_DESC desc{};
@@ -50,7 +54,7 @@ void Renderings::Model3DRenderer::Initialize(ID3D11Device5* pDevice, ID3D11Devic
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	// インスタンスバッファを作成
-	Utility::ThrowIfFailed(pDevice->CreateBuffer
+	Utility::ThrowIfFailed(m_pDevice->CreateBuffer
 	(
 		&desc,
 		nullptr,
@@ -64,8 +68,8 @@ void Renderings::Model3DRenderer::Initialize(ID3D11Device5* pDevice, ID3D11Devic
 void Renderings::Model3DRenderer::Render(bool isInstance)
 {
 	// シェーダを設定
-	m_pContext->VSSetShader(m_pVertexShader->GetD3DShader(), nullptr, 0);
-	m_pContext->PSSetShader(m_pPixelShader->GetD3DShader(), nullptr, 0);
+	m_pContext->VSSetShader(m_pVertexShader->GetD3DShaderRef().Get(), nullptr, 0);
+	m_pContext->PSSetShader(m_pPixelShader->GetD3DShaderRef().Get(), nullptr, 0);
 
 	// サンプラーを設定
 	auto sampler = m_pCommonStates->LinearWrap();
@@ -75,21 +79,21 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 	m_pContext->OMSetDepthStencilState(m_pCommonStates->DepthDefault(), 0);
 
 	// 定数バッファ
-	ConstantBuffer* pVSConstantBuffer = m_pVertexShader->GetConstantBuffer();
+	Ref vSConstantBufferRef = m_pVertexShader->GetConstantBufferRef();
 	// 定数バッファ
-	ConstantBuffer* pPSConstantBuffer = m_pPixelShader->GetConstantBuffer();
+	Ref pSConstantBufferRef = m_pPixelShader->GetConstantBufferRef();
 
 	for (const auto& [iCameraScreenRef, renderObjectsList] : m_renderObjects)
 	{
 		// 定数バッファを設定
-		pVSConstantBuffer->SetVariable("View", iCameraScreenRef->GetViewMatrix().Transpose());
-		pVSConstantBuffer->SetVariable("Projection", iCameraScreenRef->GetProjectionMatrix().Transpose());
-		m_pVertexShader->SetConstantBuffer(m_pDevice, m_pContext, 0);
-		pPSConstantBuffer->SetVariable("AmbientColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
-		pPSConstantBuffer->SetVariable("LightDirection", Math::Vector3{ -0.25f, -1.0f, -0.5f });
-		pPSConstantBuffer->SetVariable("LightColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
-		pPSConstantBuffer->SetVariable("EyePosition", iCameraScreenRef->GetEyePosition());
-		m_pPixelShader->SetConstantBuffer(m_pDevice, m_pContext, 0);
+		vSConstantBufferRef->SetVariable("View", iCameraScreenRef->GetViewMatrix().Transpose());
+		vSConstantBufferRef->SetVariable("Projection", iCameraScreenRef->GetProjectionMatrix().Transpose());
+		m_pVertexShader->SetConstantBuffer(0, Ref{ *m_pContext });
+		pSConstantBufferRef->SetVariable("AmbientColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
+		pSConstantBufferRef->SetVariable("LightDirection", Math::Vector3{ -0.25f, -1.0f, -0.5f });
+		pSConstantBufferRef->SetVariable("LightColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
+		pSConstantBufferRef->SetVariable("EyePosition", iCameraScreenRef->GetEyePosition());
+		m_pPixelShader->SetConstantBuffer(0, Ref{ *m_pContext });
 
 		// モデルソースリスト
 		std::vector<Ref<const Model3DSource>> modelSources{};
@@ -105,17 +109,17 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 
 		for (const auto& modelSource : modelSources)
 		{
-			// 描画オブジェクトリスト
-			const RenderObjects& renderObjects = renderObjectsList.at(modelSource);
+			// 描画オブジェクトリストの参照
+			Ref<const RenderObjects> renderObjectsRef{ renderObjectsList.at(modelSource) };
 
 			// ピクセルシェーダ
-			const PixelShader* pPixelShader = modelSource->GetPPixelShader();
-			if (pPixelShader->IsInitialized())
+			Ref pixelShader = modelSource->GetPixelShader();
+			if (pixelShader->IsInitialized())
 			{
 				// ピクセルシェーダを設定
-				m_pContext->PSSetShader(pPixelShader->GetD3DShader(), nullptr, 0);
+				m_pContext->PSSetShader(pixelShader->GetD3DShaderRef().Get(), nullptr, 0);
 				// 定数バッファを設定
-				pPixelShader->SetConstantBuffer(m_pDevice, m_pContext, 2);
+				pixelShader->SetConstantBuffer(2, Ref{ *m_pContext });
 			}
 
 			// 深度ステンシルステート
@@ -129,9 +133,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 
 			// 行列リスト
 			std::vector<InputElement> inputElements{};
-			inputElements.reserve(renderObjects.modelRefs.size() + renderObjects.particleElementRefs.size());
+			inputElements.reserve(renderObjectsRef->modelRefs.size() + renderObjectsRef->particleElementRefs.size());
 
-			for (Ref modelRef : renderObjects.modelRefs)
+			for (Ref modelRef : renderObjectsRef->modelRefs)
 			{
 				// モデルの所有者のトランスフォーム
 				Ref transform{ modelRef->GetConstOwner()->GetConstComponent<Transform>() };
@@ -147,9 +151,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				}
 
 				// 入力要素リストに追加
-				InputElement& inputElement = inputElements.emplace_back();
-				DirectX::XMStoreFloat3x4(&inputElement.instMatrix, transform->GetWorldMatrix());
-				inputElement.color = modelRef->GetColor();
+				Ref<InputElement> inputElementRef{ inputElements.emplace_back() };
+				DirectX::XMStoreFloat3x4(&inputElementRef->instMatrix, transform->GetWorldMatrix());
+				inputElementRef->color = modelRef->GetColor();
 
 				// インスタンス描画じゃないなら
 				if (!isInstance)
@@ -177,12 +181,12 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				}
 			}
 
-			for (Ref elementRef : renderObjects.particleElementRefs)
+			for (Ref elementRef : renderObjectsRef->particleElementRefs)
 			{
 				// 入力要素リストに追加
-				InputElement& inputElement = inputElements.emplace_back();
-				DirectX::XMStoreFloat3x4(&inputElement.instMatrix, elementRef->matrix);
-				inputElement.color = elementRef->color;
+				Ref<InputElement> inputElementRef{ inputElements.emplace_back() };
+				DirectX::XMStoreFloat3x4(&inputElementRef->instMatrix, elementRef->matrix);
+				inputElementRef->color = elementRef->color;
 
 				// インスタンス描画じゃないなら
 				if (!isInstance)
@@ -229,9 +233,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 			}
 
 			// ピクセルシェーダを元に戻す
-			if (pPixelShader->IsInitialized())
+			if (pixelShader->IsInitialized())
 			{
-				m_pContext->PSSetShader(m_pPixelShader->GetD3DShader(), nullptr, 0);
+				m_pContext->PSSetShader(m_pPixelShader->GetD3DShaderRef().Get(), nullptr, 0);
 			}
 
 			// 深度ステンシルを元に戻す
@@ -247,9 +251,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 }
 
 // 頂点シェーダを設定
-void Renderings::Model3DRenderer::SetPVertexShader(const VertexShader* pVertexShader)
+void Renderings::Model3DRenderer::SetVertexShader(Ref<const VertexShader> vertexShader)
 {
-	m_pVertexShader = pVertexShader;
+	m_pVertexShader = vertexShader.Get();
 	CreateInputLayout();
 }
 
@@ -510,8 +514,8 @@ void Renderings::Model3DRenderer::CreateInputLayout()
 	(
 		inputElements,
 		_countof(inputElements),
-		m_pVertexShader->GetBlob()->GetBufferPointer(),
-		m_pVertexShader->GetBlob()->GetBufferSize(),
+		m_pVertexShader->GetBlobRef()->GetBufferPointer(),
+		m_pVertexShader->GetBlobRef()->GetBufferSize(),
 		m_inputLayout.GetAddressOf()
 	));
 }
@@ -541,13 +545,13 @@ void Renderings::Model3DRenderer::SetPartInfo(const Model3DSource::PartInfo& par
 	m_pContext->PSSetShaderResources(0, 1, partInfo.texture.Get() ? partInfo.texture.GetAddressOf() : m_whiteTexture.GetAddressOf());
 
 	// 定数バッファ
-	ConstantBuffer* pConstantBuffer = m_pPixelShader->GetConstantBuffer();
+	Ref constantBufferRef = m_pPixelShader->GetConstantBufferRef();
 	// 定数バッファを設定
-	pConstantBuffer->SetVariable("DiffuseColor", partInfo.effectInfo.diffuseColor);
-	pConstantBuffer->SetVariable("EmissiveColor", partInfo.effectInfo.emissiveColor);
-	pConstantBuffer->SetVariable("SpecularColor", partInfo.effectInfo.specularColor);
-	pConstantBuffer->SetVariable("SpecularPower", partInfo.effectInfo.specularPower);
-	m_pPixelShader->SetConstantBuffer(m_pDevice, m_pContext, 1);
+	constantBufferRef->SetVariable("DiffuseColor", partInfo.effectInfo.diffuseColor);
+	constantBufferRef->SetVariable("EmissiveColor", partInfo.effectInfo.emissiveColor);
+	constantBufferRef->SetVariable("SpecularColor", partInfo.effectInfo.specularColor);
+	constantBufferRef->SetVariable("SpecularPower", partInfo.effectInfo.specularPower);
+	m_pPixelShader->SetConstantBuffer(1, Ref{ *m_pContext });
 }
 
 // 描画

@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * ターゲット照準
  */
@@ -28,7 +28,7 @@ TargetPoint::TargetPoint(const ComponentDesc& desc)
 	, m_brightInterval{}
 	, m_brightTimer{}
 	, m_info{}
-	, m_refTransform{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_refImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_refPlayer{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
 	, m_refICameraScreen{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>() }
@@ -38,19 +38,19 @@ TargetPoint::TargetPoint(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_refImage = GetOwner()->GetComponent<Renderings::Image>();
-	m_refTransform = GetOwner()->GetComponent<RectTransform>();
+	m_transformRef = GetOwner()->GetComponent<RectTransform>();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_targetDistance, "TargetDistance");
-	serializer.AddParameter(&m_rayLength, "RayLength");
-	serializer.AddParameter(&m_brightInterval, "BrightInterval");
-	serializer.AddParameter(&m_refPlayer, "Player");
-	serializer.AddParameter(&m_refICameraScreen, "CameraScreen");
-	serializer.AddParameter(&m_pTargetObjects, "TargetObjects");
-	serializer.AddParameter(&m_pGrounds, "Grounds");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_targetDistance }, "TargetDistance");
+	serializer.AddParameter(Ref{ m_rayLength }, "RayLength");
+	serializer.AddParameter(Ref{ m_brightInterval }, "BrightInterval");
+	serializer.AddParameter(m_refPlayer.Nest(), "Player");
+	serializer.AddParameter(m_refICameraScreen.Nest(), "CameraScreen");
+	serializer.AddParameter(Ref{ m_pTargetObjects }, "TargetObjects");
+	serializer.AddParameter(Ref{ m_pGrounds }, "Grounds");
 	serializer.Load(json);
 }
 
@@ -121,7 +121,7 @@ void TargetPoint::Update(float elapsedTime)
 			m_refImage->GetCanvasRef()->GetSize()
 		);
 
-		m_refTransform->SetPosition(screenPosition);
+		m_transformRef->SetPosition(screenPosition);
 		return;
 	}
 
@@ -164,13 +164,13 @@ void TargetPoint::Update(float elapsedTime)
 	// ターゲットが地面なら
 	if (m_info.type == Type::Ground)
 	{
-		m_refTransform->SetPosition(m_refImage->GetCanvasRef()->GetSize() / 2.0f);
+		m_transformRef->SetPosition(m_refImage->GetCanvasRef()->GetSize() / 2.0f);
 		return;
 	}
 
 	distanceMin = Math::Geometry::AngledDistance(eyePosition, Math::Sphere{ playerPosition, m_targetDistance }, eyeDirection).second;
 	m_info.position = eyePosition + eyeDirection * distanceMin;
-	m_refTransform->SetPosition(Math::Vector2{ -10.0f, -10.0f });
+	m_transformRef->SetPosition(Math::Vector2{ -10.0f, -10.0f });
 }
 
 // ターゲットを表示

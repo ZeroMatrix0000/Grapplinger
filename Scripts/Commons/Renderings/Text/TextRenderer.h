@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * テキスト描画
  */
@@ -29,7 +29,7 @@ namespace Renderings
 		TextRenderer();
 
 		// 初期化処理
-		void Initialize(ID2D1Device7* pDevice, ID2D1DeviceContext7* pContext, ID2D1Bitmap1* pBackBuffer);
+		void Initialize(Ref<ID2D1Device7> deviceRef, Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef);
 		// フォントコレクションの作成
 		void CreateFontCollection(const std::wstring& directoryPath);
 
@@ -41,7 +41,7 @@ namespace Renderings
 		void End();
 
 		// ウィンドウサイズ変更時の処理
-		void OnWindowSizeChanged(ID2D1DeviceContext7* pContext, ID2D1Bitmap1* pBackBuffer);
+		void OnWindowSizeChanged(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef);
 
 		// テキストの参照を追加
 		void AddTextRef(Ref<const Text> textRef) override;

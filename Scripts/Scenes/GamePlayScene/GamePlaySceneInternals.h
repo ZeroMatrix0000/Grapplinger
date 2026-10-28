@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーンの内部データ
  */
@@ -46,7 +46,7 @@ struct GamePlaySceneInternals
 	(
 		Ref<std::vector<std::unique_ptr<GameObject>>> gameObjectsRef,
 		Ref<const GameContext> gameContextRef,
-		Ref<GameObject> ownerRef
+		Ref<GameObject> owner
 	);
 
 
@@ -56,8 +56,6 @@ struct GamePlaySceneInternals
 	Ref<std::vector<std::unique_ptr<GameObject>>> gameObjectsRef;
 	// ゲームコンテキストの参照
 	Ref<const GameContext> gameContextRef;
-	// 所有者の参照
-	Ref<GameObject> ownerRef;
 
 	// プレイヤー
 	Ref<Player> playerRef;

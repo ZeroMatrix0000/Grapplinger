@@ -1,7 +1,7 @@
 /*
  * FileName:     Canvas.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/09/11
+ * Last Updated: 2026/10/27
  *
  * カメラ画面
  */
@@ -21,14 +21,14 @@ Renderings::Canvas::Canvas(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void Renderings::Canvas::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Renderings::Canvas::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	// 出力サイズ
 	Math::Vector2 outputSize{};
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_fixedSize, "FixedSize");
-	serializer.AddParameter(&outputSize, "Size");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_fixedSize }, "FixedSize");
+	serializer.AddParameter(Ref{ outputSize }, "Size");
 	serializer.Load(json);
 
 	if(outputSize != Math::Vector2::Zero)

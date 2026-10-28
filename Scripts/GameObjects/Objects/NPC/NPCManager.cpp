@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * NPC管理
  */
@@ -32,13 +32,13 @@ NPCManager::NPCManager(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void NPCManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void NPCManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	const Renderings::Canvas* pCanvas = nullptr;
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_pNPCList, "NPCList");
-	serializer.AddParameter(&pCanvas, "Canvas");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_pNPCList }, "NPCList");
+	serializer.AddParameter(Ref{ pCanvas }, "Canvas");
 	serializer.Load(json);
 
 	// NPC の数だけテキストを追加

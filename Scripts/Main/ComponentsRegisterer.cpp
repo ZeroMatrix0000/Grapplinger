@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/27
  *
  * コンポーネント登録者
  */
@@ -45,67 +45,83 @@
 #include "../Commons/Systems/IResources.h"
 
 #define REGISTER(T, U) \
-componentManagerRef->RegisterCreate<T>([](const ComponentDesc& desc) { return std::make_unique<T>(desc); }); \
-gameObjectManagerRef->Register<T>(U)
+componentManager->RegisterCreate<T>([](const ComponentDesc& desc) { return std::make_unique<T>(desc); }); \
+gameObjectManager->Register<T>(U)
 #define REGISTER_GAMEOBJECT_MANAGER_ONLY(T, U) \
-gameObjectManagerRef->Register<T>(U)
+gameObjectManager->Register<T>(U)
 
 // コンポーネント登録
 void ComponentsRegisterer::RegisterComponents
 (
-	Ref<ComponentManager>              componentManagerRef,
-	Ref<GameObjectManager>             gameObjectManagerRef,
-	Ref<Renderings::IModel3DRenderer>  iModelRendererRef,
-	Ref<Renderings::IImageRenderer>    iImageRendererRef,
-	Ref<Renderings::ITextRenderer>     iTextRendererRef,
-	Ref<Renderings::IColliderRenderer> iColliderRendererRef,
-	Ref<Systems::IResources>           iResourcesRef
+	Ref<ComponentManager>              componentManager,
+	Ref<GameObjectManager>             gameObjectManager,
+	Ref<Renderings::IModel3DRenderer>  iModelRenderer,
+	Ref<Renderings::IImageRenderer>    iImageRenderer,
+	Ref<Renderings::ITextRenderer>     iTextRenderer,
+	Ref<Renderings::IColliderRenderer> iColliderRenderer,
+	Ref<Systems::IResources>           iResources,
+	Ref<const GameContext>             context
 )
 {
 	// 長方形の当たり判定
-	componentManagerRef->RegisterCreate<Colliders::BoxCollider>([iColliderRendererRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Colliders::BoxCollider>([iColliderRenderer](const ComponentDesc& desc)
 		{
-			return std::make_unique<Colliders::BoxCollider>(desc, iColliderRendererRef);
+			return std::make_unique<Colliders::BoxCollider>(desc, iColliderRenderer);
 		});
 	// 球の当たり判定
-	componentManagerRef->RegisterCreate<Colliders::SphereCollider>([iColliderRendererRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Colliders::SphereCollider>([iColliderRenderer](const ComponentDesc& desc)
 		{
-			return std::make_unique<Colliders::SphereCollider>(desc, iColliderRendererRef);
+			return std::make_unique<Colliders::SphereCollider>(desc, iColliderRenderer);
 		});
 	// メッシュの当たり判定
-	componentManagerRef->RegisterCreate<Colliders::MeshCollider>([iColliderRendererRef, iResourcesRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Colliders::MeshCollider>([iColliderRenderer, iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Colliders::MeshCollider>(desc, iColliderRendererRef, iResourcesRef);
+			return std::make_unique<Colliders::MeshCollider>(desc, iColliderRenderer, iResources);
 		});
 	// 3Dモデル
-	componentManagerRef->RegisterCreate<Renderings::Model3D>([iModelRendererRef, iResourcesRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::Model3D>([iModelRenderer, iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Model3D>(desc, iModelRendererRef, iResourcesRef);
+			return std::make_unique<Renderings::Model3D>(desc, iModelRenderer, iResources);
 		});
 	// 画像
-	componentManagerRef->RegisterCreate<Renderings::Image>([iImageRendererRef, iResourcesRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::Image>([iImageRenderer, iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Image>(desc, iImageRendererRef, iResourcesRef);
+			return std::make_unique<Renderings::Image>(desc, iImageRenderer, iResources);
 		});
 	// テキスト
-	componentManagerRef->RegisterCreate<Renderings::Text>([iTextRendererRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::Text>([iTextRenderer](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Text>(desc, iTextRendererRef);
+			return std::make_unique<Renderings::Text>(desc, iTextRenderer);
 		});
 	// パーティクル管理
-	componentManagerRef->RegisterCreate<Renderings::ParticleManager>([iModelRendererRef, iResourcesRef](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::ParticleManager>([iModelRenderer, iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::ParticleManager>(desc, iModelRendererRef, iResourcesRef);
+			return std::make_unique<Renderings::ParticleManager>(desc, iModelRenderer, iResources);
 		});
 	// カメラ
-	componentManagerRef->RegisterCreate<Renderings::ICameraScreen>([](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::ICameraScreen>([](const ComponentDesc& desc)
 		{
 			return std::make_unique<Renderings::CameraScreen<Camera::QuaternionCamera>>(desc);
 		});
-	// アクション管理
-	componentManagerRef->RegisterCreate<ActionManager>([iResourcesRef](const ComponentDesc& desc)
+	// サンプルシーン
+	componentManager->RegisterCreate<SampleScene>([context](const ComponentDesc& desc)
 		{
-			return std::make_unique<ActionManager>(desc, &iResourcesRef.Get());
+			return std::make_unique<SampleScene>(desc, context);
+		});
+	// タイトルシーン
+	componentManager->RegisterCreate<TitleScene>([context](const ComponentDesc& desc)
+		{
+			return std::make_unique<TitleScene>(desc, context);
+		});
+	// ゲームプレイシーン
+	componentManager->RegisterCreate<GamePlayScene>([context](const ComponentDesc& desc)
+		{
+			return std::make_unique<GamePlayScene>(desc, context);
+		});
+	// アクション管理
+	componentManager->RegisterCreate<ActionManager>([iResources](const ComponentDesc& desc)
+		{
+			return std::make_unique<ActionManager>(desc, iResources.Get());
 		});
 
 	// トランスフォーム
@@ -132,9 +148,9 @@ void ComponentsRegisterer::RegisterComponents
 	// キャンバス
 	REGISTER(Renderings::Canvas, "Canvas");
 	// シーン
-	REGISTER(SampleScene, "SampleScene");
-	REGISTER(TitleScene, "TitleScene");
-	REGISTER(GamePlayScene, "GamePlayScene");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(SampleScene, "SampleScene");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(TitleScene, "TitleScene");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(GamePlayScene, "GamePlayScene");
 	// アクション
 	REGISTER(Action, "Action");
 	REGISTER(ActionOpenMessageWindow, "ActionOpenMessageWindow");

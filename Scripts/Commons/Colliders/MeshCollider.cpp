@@ -1,7 +1,7 @@
 /*
  * FileName:     MeshCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * メッシュの当たり判定
  */
@@ -21,40 +21,40 @@
 Colliders::MeshCollider::MeshCollider
 (
 	const ComponentDesc& desc,
-	Ref<Renderings::IColliderRenderer> iColliderRendererRef,
-	Ref<Systems::IResources> iResourcesRef
+	Ref<Renderings::IColliderRenderer> iColliderRenderer,
+	Ref<Systems::IResources> iResources
 )
 	: Component{ desc }
 	, m_color{ DirectX::Colors::LightGreen }
 	, m_worldMesh{}
-	, m_meshRef{ iResourcesRef->GetNullMesh() }
+	, m_mesh{ iResources->GetNullMesh() }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_iCameraScreenRefs{}
-	, m_iColliderRendererRef{ iColliderRendererRef }
-	, m_iResourcesRef{ iResourcesRef }
+	, m_iColliderRenderer{ iColliderRenderer }
+	, m_iResources{ iResources }
 {
 	// 描画者に長方形を追加
-	m_iColliderRendererRef->AddPMeshCollider(Ref{ *this }.Const());
+	m_iColliderRenderer->AddPMeshCollider(Ref{ *this }.Const());
 }
 
 // デストラクタ
 Colliders::MeshCollider::~MeshCollider()
 {
 	// 描画者から長方形を削除
-	m_iColliderRendererRef->RemovePMeshCollider(Ref{ *this }.Const());
+	m_iColliderRenderer->RemovePMeshCollider(Ref{ *this }.Const());
 }
 
 // 初期化処理
-void Colliders::MeshCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Colliders::MeshCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 
 	std::string meshName{};
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&meshName, "MeshName");
-	serializer.AddParameter(&m_color, "Color");
-	serializer.AddParameter(&m_iCameraScreenRefs, "CameraScreens");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ meshName }, "MeshName");
+	serializer.AddParameter(Ref{ m_color }, "Color");
+	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
 
 	if (!meshName.empty())
@@ -66,10 +66,10 @@ void Colliders::MeshCollider::Initalize(const nlohmann::ordered_json& json, Ref<
 // メッシュを設定
 void Colliders::MeshCollider::SetMesh(const std::string& meshName)
 {
-	m_meshRef = m_iResourcesRef->GetMesh(meshName);
+	m_mesh = m_iResources->GetMesh(meshName);
 }
 
-// 映るカメラ画面を追加
+// 映るカメラ画面の参照を追加
 void Colliders::MeshCollider::AddICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
 	if (std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef) == m_iCameraScreenRefs.end())
@@ -78,7 +78,7 @@ void Colliders::MeshCollider::AddICameraScreenRef(Ref<const Renderings::ICameraS
 	}
 }
 
-// 映るカメラ画面を削除
+// 映るカメラ画面の参照を削除
 void Colliders::MeshCollider::RemoveICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
 	auto it = std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef);
@@ -91,6 +91,6 @@ void Colliders::MeshCollider::RemoveICameraScreenRef(Ref<const Renderings::ICame
 // トランスフォームを適用
 void Colliders::MeshCollider::ApplyTransform()
 {
-	m_worldMesh = m_meshRef.Get();
+	m_worldMesh = m_mesh.GetValue();
 	m_worldMesh.ApplyMatrix(m_transformRef->GetWorldMatrix());
 }

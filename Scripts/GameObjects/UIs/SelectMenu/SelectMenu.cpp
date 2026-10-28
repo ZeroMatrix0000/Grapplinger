@@ -1,7 +1,7 @@
 /*
  * FileName:     SelectMenu.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 選択メニュー
  */
@@ -34,7 +34,7 @@ SelectMenu::SelectMenu(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	if (m_refCursorImage == GetOwner()->GetNullComponent<Renderings::Image>())
 	{
@@ -51,19 +51,19 @@ void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 	float cursorSwayTime = m_cursorSwayTimer.GetMax();
 	Ref canvasRef = m_refCursorImage->GetCanvasRef();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_params.width, "Width");
-	serializer.AddParameter(&m_params.height, "Height");
-	serializer.AddParameter(&m_params.interval, "Interval");
-	serializer.AddParameter(&m_params.basePosition, "Position");
-	serializer.AddParameter(&m_params.cursorMoveTime, "CursorMoveTime");
-	serializer.AddParameter(&m_params.cursorEasingType, "CursorEasingType");
-	serializer.AddParameter(&m_params.cursorEasingInOut, "CursorEasingInOut");
-	serializer.AddParameter(&cursorSwayTime, "CursorSwayTime");
-	serializer.AddParameter(&m_params.cursorSwaySize, "CursorSwaySize");
-	serializer.AddParameter(&m_params.fontSizeBegin, "FontSizeBegin");
-	serializer.AddParameter(&m_params.fontSizeEnd, "FontSizeEnd");
-	serializer.AddParameter(&canvasRef, "Canvas");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_params.width }, "Width");
+	serializer.AddParameter(Ref{ m_params.height }, "Height");
+	serializer.AddParameter(Ref{ m_params.interval }, "Interval");
+	serializer.AddParameter(Ref{ m_params.basePosition }, "Position");
+	serializer.AddParameter(Ref{ m_params.cursorMoveTime }, "CursorMoveTime");
+	serializer.AddParameter(Ref{ m_params.cursorEasingType }, "CursorEasingType");
+	serializer.AddParameter(Ref{ m_params.cursorEasingInOut }, "CursorEasingInOut");
+	serializer.AddParameter(Ref{ cursorSwayTime }, "CursorSwayTime");
+	serializer.AddParameter(Ref{ m_params.cursorSwaySize }, "CursorSwaySize");
+	serializer.AddParameter(Ref{ m_params.fontSizeBegin }, "FontSizeBegin");
+	serializer.AddParameter(Ref{ m_params.fontSizeEnd }, "FontSizeEnd");
+	serializer.AddParameter(canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	m_cursorSwayTimer.Initialize(0.0f, 0.0f, cursorSwayTime);

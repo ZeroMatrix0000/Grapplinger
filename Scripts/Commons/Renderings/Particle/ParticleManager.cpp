@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * パーティクル管理
  */
@@ -10,31 +10,28 @@
 #include "ParticleManager.h"
 
 #include "../Model3D/IModel3DRenderer.h"
-#include "Scripts/Commons/Components/Transform.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
-#include "Scripts/Commons/Renderings/CameraScreen.h"
-#include "Scripts/Commons/Systems/IResources.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
-Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_particles{}
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRendererRef }
-	, m_iResourcesRef{ iResourcesRef }
+	, m_iModelRendererRef{ iModelRenderer }
+	, m_iResources{ iResources }
 {
 }
 
 // 初期化処理
-void Renderings::ParticleManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Renderings::ParticleManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_transformRef = GetOwner()->GetComponent<Transform>().Const();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_iCameraScreenRefs, "CameraScreens");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
 }
 

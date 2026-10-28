@@ -1,7 +1,7 @@
 /*
  * FileName:     DeviceResources2D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * Direct2D に必要なリソース
  */
@@ -35,16 +35,16 @@ namespace Renderings
 		// ウィンドウサイズ変更時の処理
 		void OnWindowSizeChanged();
 
-		// ファクトリの取得
-		auto* GetFactory() const { return m_d2dFactory.Get(); }
+		// ファクトリの参照の取得
+		Ref<ID2D1Factory8> GetFactoryRef() const { return Ref{ *m_d2dFactory.Get() }; }
 
-		// デバイスの取得
-		auto* GetDevice()  const { return m_d2dDevice.Get(); }
-		// コンテキストの取得
-		auto* GetContext() const { return m_d2dContext.Get(); }
+		// デバイスの参照の取得
+		Ref<ID2D1Device7> GetDeviceRef()  const { return Ref{ *m_d2dDevice.Get() }; }
+		// コンテキストの参照の取得
+		Ref<ID2D1DeviceContext7> GetContextRef() const { return Ref{ *m_d2dContext.Get() }; }
 
-		// 描画ターゲットの取得
-		auto* GetBackBuffer() const { return m_backBuffer.Get(); }
+		// 描画ターゲットの参照の取得
+		Ref<ID2D1Bitmap1> GetBackBufferRef() const { return Ref{ *m_backBuffer.Get() }; }
 
 
 	private:

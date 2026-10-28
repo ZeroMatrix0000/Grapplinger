@@ -1,7 +1,7 @@
 /*
  * FileName:     InteractCursor.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 話しかける・調べる際のカーソル
  */
@@ -30,10 +30,10 @@ InteractCursor::InteractCursor(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void InteractCursor::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void InteractCursor::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_alphaVelocity, "AlphaVelocity");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_alphaVelocity }, "AlphaVelocity");
 	serializer.Load(json);
 
 	m_alpha.Initialize(0.0f, 0.0f, 1.0f);
@@ -93,5 +93,5 @@ void InteractCursor::SetPosition(const Math::Vector2& position)
 // キャンバスを取得
 const Renderings::Canvas& InteractCursor::GetCanvas() const
 {
-	return m_refText->GetCanvasRef().Get();
+	return m_refText->GetCanvasRef().GetValue();
 }

@@ -24,11 +24,11 @@ public:
 	DebugCameraStateRotate();
 
 	// 開始処理
-	void Enter(DebugCameraInternals* pInternals) override;
+	void Enter(Ref<DebugCameraInternals> internalsRef) override;
 	// 更新処理
-	void Update(DebugCameraInternals* pInternals, float elapsedTime) override;
+	void Update(Ref<DebugCameraInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
-	void Exit(DebugCameraInternals* pInternals) override;
+	void Exit(Ref<DebugCameraInternals> internalsRef) override;
 
 
 private:

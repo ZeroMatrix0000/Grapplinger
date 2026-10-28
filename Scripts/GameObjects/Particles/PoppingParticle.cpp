@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-PoppingParticle::PoppingParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
-	: Particle{ iModelRendererRef, iResourcesRef }
+PoppingParticle::PoppingParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
+	: Particle{ iModelRenderer, iResources }
 	, m_directions{}
 	, m_speed{}
 	, m_scale{}

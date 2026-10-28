@@ -17,32 +17,32 @@ DebugCameraStateRotate::DebugCameraStateRotate()
 }
 
 // 開始処理
-void DebugCameraStateRotate::Enter(DebugCameraInternals* pInternals)
+void DebugCameraStateRotate::Enter(Ref<DebugCameraInternals> internalsRef)
 {
 }
 
 // 更新処理
-void DebugCameraStateRotate::Update(DebugCameraInternals* pInternals, float elapsedTime)
+void DebugCameraStateRotate::Update(Ref<DebugCameraInternals> internalsRef, float elapsedTime)
 {
 	// カメラ
-	Camera::EulerTargetCamera camera = pInternals->pCameraScreen->GetCamera();
+	Camera::EulerTargetCamera camera = internalsRef->cameraScreenRef->GetCamera();
 
 	// 回転量
-	Math::Vector2 rotate = pInternals->mouseMovement * MOUSE_COEFFICIENT;
+	Math::Vector2 rotate = internalsRef->mouseMovement * MOUSE_COEFFICIENT;
 
 	camera.rotation.y -= rotate.x;
 	camera.rotation.x -= rotate.y;
 
-	pInternals->pCameraScreen->SetCamera(camera);
+	internalsRef->cameraScreenRef->SetCamera(camera);
 
 	// 右クリックを離したら待機状態に戻る
-	if (!pInternals->mouseButtonRight)
+	if (!internalsRef->mouseButtonRight)
 	{
 		SetNextState(std::make_unique<DebugCameraStateIdle>());
 	}
 }
 
 // 終了処理
-void DebugCameraStateRotate::Exit(DebugCameraInternals* pInternals)
+void DebugCameraStateRotate::Exit(Ref<DebugCameraInternals> internalsRef)
 {
 }

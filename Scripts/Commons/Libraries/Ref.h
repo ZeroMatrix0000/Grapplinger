@@ -1,7 +1,7 @@
 /*
  * FileName:     Ref.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 自作参照型（参照先変更可能・nullptr禁止）
  */
@@ -24,10 +24,15 @@ namespace Libraries
 		explicit Ref(T& ref)
 			: m_ptr{ &ref }
 		{
+			Utility::ThrowIf(!&ref);
 		}
 
 		// 参照の取得
-		T& Get() const { return *m_ptr; }
+		T& GetValue() const { return *m_ptr; }
+		// ポインタの取得
+		T* Get() const { return m_ptr; }
+		// アドレスの取得
+		T* const* GetAddress() const { return &m_ptr; }
 
 		// 定数化
 		Ref<const T> Const() const { return Ref<const T>{ *m_ptr }; }
@@ -39,6 +44,9 @@ namespace Libraries
 		// 強制キャスト
 		template<typename U>
 		Ref<U> ReinterpretCast() const { return Ref<U>{ *reinterpret_cast<U*>(m_ptr) }; }
+
+		// 自分自身の参照
+		Ref<Ref<T>> Nest() { return Ref<Ref<T>>{ *this }; }
 
 		
 		/* 演算子オーバーロード */
@@ -63,7 +71,7 @@ namespace Libraries
 	};
 
 	template<typename T>
-	bool operator==(const Ref<T>& a, const Ref<T>& b) { return &a.Get() == &b.Get(); }
+	bool operator==(const Ref<T>& a, const Ref<T>& b) { return a.Get() == b.Get(); }
 
 	// ハッシュ関数
 	
@@ -76,7 +84,7 @@ namespace std
 	{
 		size_t operator()(const Libraries::Ref<T>& ref) const
 		{
-			return hash<T*>()(&ref.Get());
+			return hash<T*>()(ref.Get());
 		}
 	};
 }

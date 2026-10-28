@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 画像描画
  */
@@ -13,7 +13,6 @@
 #include "../Shader/PixelShader.h"
 #include "Image.h"
 #include "../Canvas.h"
-#include "Scripts/Commons/Systems/IResources.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/Components/RectTransform.h"
 #include "Scripts/Commons/Systems/IErrorMessage.h"
@@ -38,9 +37,9 @@ void Renderings::ImageRenderer::Initialize
 	Ref<const DirectX::CommonStates> commonStatesRef
 )
 {
-	m_pDevice = &deviceRef.Get();
-	m_pContext = &contextRef.Get();
-	m_pCommonStates = &commonStatesRef.Get();
+	m_pDevice = deviceRef.Get();
+	m_pContext = contextRef.Get();
+	m_pCommonStates = commonStatesRef.Get();
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_pContext);
 }
 
@@ -72,7 +71,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 		// エラーメッセージを追加
 		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
 		(
-			L"ImageSource が設定されていません。 | %s",
+			L"ImageSource が設定されていません。 | name: %s",
 			Utility::string2wstring(imageRef->GetConstOwner()->GetName()).c_str()
 		));
 		return;
@@ -85,7 +84,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 		// エラーメッセージを追加
 		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
 		(
-			L"RectTransform コンポーネントが見つかりません。 | %s",
+			L"RectTransform コンポーネントが見つかりません。 | name: %s",
 			Utility::string2wstring(imageRef->GetConstOwner()->GetName()).c_str()
 		));
 		return;
@@ -106,7 +105,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 
 	// テクスチャの詳細
 	D3D11_TEXTURE2D_DESC textureDesc;
-	imageSource->GetResource()->GetDesc(&textureDesc);
+	imageSource->GetResourceRef()->GetDesc(&textureDesc);
 
 	// テクスチャの中心
 	Math::Vector2 origin = Math::Vector2
@@ -202,15 +201,15 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 	if (pixelShader->IsInitialized())
 	{
 		// ピクセルシェーダを設定
-		m_pContext->PSSetShader(pixelShader->GetD3DShader(), nullptr, 0);
+		m_pContext->PSSetShader(pixelShader->GetD3DShaderRef().Get(), nullptr, 0);
 		// 定数バッファを設定
-		pixelShader->SetConstantBuffer(m_pDevice, m_pContext, 0);
+		pixelShader->SetConstantBuffer(0, Ref{ *m_pContext });
 	}
 
 	// 描画
 	m_spriteBatch->Draw
 	(
-		imageSource->GetTexture(),
+		imageSource->GetTextureRef().Get(),
 		RECT
 		{
 			Math::RoundInt(rect.position.x),
@@ -260,12 +259,18 @@ Math::Vector2 Renderings::ImageRenderer::GetImageSize(Ref<const Image> imageRef)
 	Ref<const ImageSource> imageSource = imageRef->GetImageSource();
 	if (!imageSource->IsInitialized())
 	{
+		// エラーメッセージを追加
+		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
+		(
+			L"ImageSource が設定されていません。 | %s",
+			Utility::string2wstring(imageRef->GetConstOwner()->GetName()).c_str()
+		));
 		return Math::Vector2::Zero;
 	}
 
 	// テクスチャの詳細
 	D3D11_TEXTURE2D_DESC textureDesc;
-	imageSource->GetResource()->GetDesc(&textureDesc);
+	imageSource->GetResourceRef()->GetDesc(&textureDesc);
 
 	return Math::Vector2
 	{
@@ -275,7 +280,7 @@ Math::Vector2 Renderings::ImageRenderer::GetImageSize(Ref<const Image> imageRef)
 }
 
 // 画像のポインタリストのソート
-void Renderings::ImageRenderer::SortPImages()
+void Renderings::ImageRenderer::SortImageRefs()
 {
 	// レイヤー順にソート
 	std::ranges::sort(m_imageRefs, [](Ref<const Image> ref1, Ref<const Image> ref2) {return ref1->GetOrderInLayer() < ref2->GetOrderInLayer(); });

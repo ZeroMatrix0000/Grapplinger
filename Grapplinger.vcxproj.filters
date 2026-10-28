@@ -433,6 +433,8 @@
     <ClCompile Include="Scripts\Main\ResourcesInitializer.cpp">
       <Filter>Scripts\Main</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\DebugCameraInternals.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -859,6 +861,8 @@
     <ClInclude Include="Scripts\Main\ResourcesInitializer.h">
       <Filter>Scripts\Main</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Commons\Systems\IsDerivedRegister.h" />
+    <ClInclude Include="Scripts\Main\IsDerivedRegister.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

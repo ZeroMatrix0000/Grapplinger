@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.hpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーンの内部データ
  */
@@ -16,23 +16,22 @@ GamePlaySceneInternals::GamePlaySceneInternals
 (
 	Ref<std::vector<std::unique_ptr<GameObject>>> gameObjectsRef,
 	Ref<const GameContext> gameContextRef,
-	Ref<GameObject> ownerRef
+	Ref<GameObject> owner
 )
 	: gameObjectsRef{ gameObjectsRef }
 	, gameContextRef{ gameContextRef }
-	, ownerRef{ ownerRef }
-	, playerRef{ ownerRef->GetNullComponent<Player>() }
-	, playerCameraRef{ ownerRef->GetNullComponent<PlayerCamera>() }
-	, nPCManagerRef{ ownerRef->GetNullComponent<NPCManager>() }
-	, groundMeshRef{ ownerRef->GetNullComponent<Colliders::MeshCollider>() }
-	, groundModelRef{ ownerRef->GetNullComponent<Renderings::Model3D>() }
-	, reticleRef{ ownerRef->GetNullComponent<Renderings::Image>() }
-	, z2TalkRef{ ownerRef->GetNullComponent<Z2Talk>() }
-	, blackBeltRef{ ownerRef->GetNullComponent<BlackBelt>() }
-	, messageWindowRef{ ownerRef->GetNullComponent<MessageWindow>() }
-	, targetPointRef{ ownerRef->GetNullComponent<TargetPoint>() }
-	, iCameraScreenRef{ ownerRef->GetNullComponent<Renderings::ICameraScreen>() }
-	, canvasRef{ ownerRef->GetNullComponent<Renderings::Canvas>() }
-	, actionManagerRef{ ownerRef->GetNullComponent<ActionManager>() }
+	, playerRef{ owner->GetNullComponent<Player>() }
+	, playerCameraRef{ owner->GetNullComponent<PlayerCamera>() }
+	, nPCManagerRef{ owner->GetNullComponent<NPCManager>() }
+	, groundMeshRef{ owner->GetNullComponent<Colliders::MeshCollider>() }
+	, groundModelRef{ owner->GetNullComponent<Renderings::Model3D>() }
+	, reticleRef{ owner->GetNullComponent<Renderings::Image>() }
+	, z2TalkRef{ owner->GetNullComponent<Z2Talk>() }
+	, blackBeltRef{ owner->GetNullComponent<BlackBelt>() }
+	, messageWindowRef{ owner->GetNullComponent<MessageWindow>() }
+	, targetPointRef{ owner->GetNullComponent<TargetPoint>() }
+	, iCameraScreenRef{ owner->GetNullComponent<Renderings::ICameraScreen>() }
+	, canvasRef{ owner->GetNullComponent<Renderings::Canvas>() }
+	, actionManagerRef{ owner->GetNullComponent<ActionManager>() }
 {
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     Transform.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * トランスフォーム
  */
@@ -25,7 +25,7 @@ namespace Components
 		Transform(const ComponentDesc& desc);
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 座標を設定
 		void SetPosition(const Math::Vector3& position);

@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * ゲームオブジェクト管理
  */
@@ -28,9 +28,9 @@ namespace GameObjects
 		/* メンバ関数 */
 
 		// コンストラクタ
-		GameObjectManager(Ref<IComponentManager> iComponentManagerRef, Ref<Systems::IResources> iResourcesRef);
+		GameObjectManager(Ref<IComponentManager> iComponentManager, Ref<Systems::IResources> iResources);
 
-		// 管理するゲームオブジェクトの参照を設定
+		// 管理するゲームオブジェクトリストの参照を設定
 		void SetGameObjectsRef(Ref<std::vector<std::unique_ptr<GameObject>>> gameObjects) override;
 
 		// ゲームオブジェクトを読み込む
@@ -83,13 +83,13 @@ namespace GameObjects
 		std::vector<std::unique_ptr<GameObject>> m_dontDestroyOnLoadGameObjects;
 
 		// 管理するゲームオブジェクトリストの参照
-		Ref<std::vector<std::unique_ptr<GameObject>>> m_gameObjectRefs;
+		Ref<std::vector<std::unique_ptr<GameObject>>> m_gameObjectsRef;
 
-		// コンポーネント管理の参照
-		Ref<IComponentManager> m_componentManagerRef;
+		// コンポーネント管理のインタフェース
+		const Ref<IComponentManager> m_iComponentManager;
 
-		// リソースのインタフェースの参照
-		Ref<Systems::IResources> m_iResourcesRef;
+		// リソースのインタフェース
+		const Ref<Systems::IResources> m_iResources;
 
 	};
 }

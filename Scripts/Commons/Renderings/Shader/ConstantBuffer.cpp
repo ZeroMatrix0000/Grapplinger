@@ -1,7 +1,7 @@
 /*
  * FileName:     ConstantBuffer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/12
+ * Last Updated: 2026/10/27
  *
  * 定数バッファ
  */
@@ -18,14 +18,14 @@ Renderings::ConstantBuffer::ConstantBuffer()
 }
 
 // 初期化処理
-void Renderings::ConstantBuffer::Initialize(ID3D11Device5* pDevice, ID3DBlob* pBlob)
+void Renderings::ConstantBuffer::Initialize(Ref<ID3D11Device5> deviceRef, Ref<ID3DBlob> blobRef)
 {
 	// シェーダ情報
 	Microsoft::WRL::ComPtr<ID3D11ShaderReflection> reflection{};
 	Utility::ThrowIfFailed(D3DReflect
 	(
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
+		blobRef->GetBufferPointer(),
+		blobRef->GetBufferSize(),
 		IID_PPV_ARGS(reflection.GetAddressOf())
 	));
 
@@ -74,6 +74,6 @@ void Renderings::ConstantBuffer::Initialize(ID3D11Device5* pDevice, ID3DBlob* pB
 		// 定数バッファの詳細
 		CD3D11_BUFFER_DESC cbDesc{ static_cast<UINT>(m_data.at(i).size()), D3D11_BIND_CONSTANT_BUFFER};
 		// d3dバッファ
-		Utility::ThrowIfFailed(pDevice->CreateBuffer(&cbDesc, nullptr, m_buffer.at(i).GetAddressOf()));
+		Utility::ThrowIfFailed(deviceRef->CreateBuffer(&cbDesc, nullptr, m_buffer.at(i).GetAddressOf()));
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     ErrorMessage.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/27
  *
  * エラーメッセージ
  */
@@ -40,7 +40,7 @@ namespace Systems
 		void Update(float elapsedTime);
 
 		// オブジェクト生成
-		void CreateObjects(IGameObjectInstantiator* pIGameObjectInstantiator);
+		void CreateObjects(Ref<IGameObjectInstantiator> iGameObjectInstantiator);
 
 		// メッセージを追加
 		void AddMessage(const std::wstring& text) override;

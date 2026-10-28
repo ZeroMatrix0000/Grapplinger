@@ -1,7 +1,7 @@
 /*
  * FileName:     Game.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * ゲーム
  */
@@ -49,18 +49,18 @@ void Game::Initialize(const HWND& hWindow)
 	m_deviceResources2D.Initialize();
 
 	// デバイス
-	auto* device = m_deviceResources.GetD3DDevice();
+	Ref deviceRef = m_deviceResources.GetD3DDeviceRef();
 	// コンテキスト
-	auto* context = m_deviceResources.GetD3DContext();
+	Ref contextRef = m_deviceResources.GetD3DContextRef();
 	// スワップチェイン
-	auto* swapChain = m_deviceResources.GetSwapChain();
+	Ref swapChainRef = m_deviceResources.GetSwapChainRef();
 
 	// 描画リソースの初期化
-	m_renderingResources.Initialize(device);
+	m_renderingResources.Initialize(deviceRef);
 	m_renderingResources.SetEffectFactoryDirectory(L"Resources\\Models");
 
 	// コモンステート
-	const auto& commonStates = m_renderingResources.GetCommonStates();
+	Ref commonStatesRef = m_renderingResources.GetCommonStatesRef();
 
 	// リソースの初期化
 	ResourcesInitializer::InitializeResources
@@ -71,18 +71,18 @@ void Game::Initialize(const HWND& hWindow)
 	);
 
 	// 描画の初期化
-	m_renderer.Initialize(device, context, swapChain, commonStates);
+	m_renderer.Initialize(deviceRef, contextRef, commonStatesRef);
 	// テキスト描画を初期化
-	m_renderer.GetTextRendererRef()->Initialize
+	m_renderer.GetTextRenderer()->Initialize
 	(
-		m_deviceResources2D.GetDevice(),
-		m_deviceResources2D.GetContext(),
-		m_deviceResources2D.GetBackBuffer()
+		m_deviceResources2D.GetDeviceRef(),
+		m_deviceResources2D.GetContextRef(),
+		m_deviceResources2D.GetBackBufferRef()
 	);
-	m_renderer.GetModelRendererRef()->SetDepthStencilView(m_deviceResources.GetDepthStencilView());
-	m_renderer.GetModelRendererRef()->SetPVertexShader(&m_resources.GetVertexShader("InstancingTest").Get());
-	m_renderer.GetModelRendererRef()->SetPPixelShader(&m_resources.GetPixelShader("InstancingTest").Get());
-	m_renderer.GetTextRendererRef()->CreateFontCollection(L"Resources\\Fonts");
+	m_renderer.GetModelRenderer()->SetDepthStencilView(m_deviceResources.GetDepthStencilViewRef());
+	m_renderer.GetModelRenderer()->SetVertexShader(m_resources.GetVertexShader("InstancingTest"));
+	m_renderer.GetModelRenderer()->SetPixelShader(m_resources.GetPixelShader("InstancingTest"));
+	m_renderer.GetTextRenderer()->CreateFontCollection(L"Resources\\Fonts");
 
 	// タイマーの初期化
 	m_timer.Initialize();
@@ -97,15 +97,16 @@ void Game::Initialize(const HWND& hWindow)
 	(
 		Ref{ m_componentManager },
 		Ref{ m_gameObjectManager },
-		m_renderer.GetModelRendererRef().Cast<Renderings::IModel3DRenderer>(),
-		m_renderer.GetImageRendererRef().Cast<Renderings::IImageRenderer>(),
-		m_renderer.GetTextRendererRef().Cast<Renderings::ITextRenderer>(),
-		m_renderer.GetColliderRendererRef().Cast<Renderings::IColliderRenderer>(),
-		Ref<Systems::IResources>{ m_resources }
+		m_renderer.GetModelRenderer().Cast<Renderings::IModel3DRenderer>(),
+		m_renderer.GetImageRenderer().Cast<Renderings::IImageRenderer>(),
+		m_renderer.GetTextRenderer().Cast<Renderings::ITextRenderer>(),
+		m_renderer.GetColliderRenderer().Cast<Renderings::IColliderRenderer>(),
+		Ref<Systems::IResources>{ m_resources },
+		Ref{ m_context }.Const()
 	);
 
 	// エラーメッセージのオブジェクトを生成
-	m_errorMessage.CreateObjects(&m_gameObjectManager);
+	m_errorMessage.CreateObjects(Ref<IGameObjectInstantiator>{ m_gameObjectManager });
 
 	// シーン管理の初期化
 	InitializeSceneManager();
@@ -120,8 +121,6 @@ void Game::Initialize(const HWND& hWindow)
 		&m_sceneManager,
 		&m_gameInput
 	);
-
-	Scenes::Scene<SceneTransitionData, GameContext>::SetContext(Ref{ m_context }.Const());
 
 	// 最初のシーンを設定
 	//m_sceneManager.SetFirstScene<SampleScene>();
@@ -204,8 +203,8 @@ void Game::OnWindowSizeChanged(const Math::Vector2Int& outputSize)
 
 	m_deviceResources2D.OnWindowSizeChanged();
 
-	m_renderer.GetModelRendererRef()->SetDepthStencilView(m_deviceResources.GetDepthStencilView());
-	m_renderer.GetTextRendererRef()->OnWindowSizeChanged(m_deviceResources2D.GetContext(), m_deviceResources2D.GetBackBuffer());
+	m_renderer.GetModelRenderer()->SetDepthStencilView(m_deviceResources.GetDepthStencilViewRef());
+	m_renderer.GetTextRenderer()->OnWindowSizeChanged(m_deviceResources2D.GetContextRef(), m_deviceResources2D.GetBackBufferRef());
 
 	m_sceneManager.OnWindowSizeChanged(outputSize);
 }
@@ -232,5 +231,5 @@ void Game::InitializeSceneManager()
 			return std::unique_ptr<GamePlayScene>{ static_cast<GamePlayScene*>(iComponentManager->Create<GamePlayScene>(nullGameObject).release()) };
 		});
 	// シーン管理の初期化
-	m_sceneManager.Initialize(m_windowController.GetOutputSize(), &m_gameObjectManager);
+	m_sceneManager.Initialize(m_windowController.GetOutputSize(), Ref<IGameObjectInstantiator>{ m_gameObjectManager });
 }

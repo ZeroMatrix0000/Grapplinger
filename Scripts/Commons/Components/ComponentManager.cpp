@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * コンポーネント管理
  */
@@ -14,19 +14,19 @@
 #include "../GameObjects/IGameObjectInstantiator.h"
 
 // コンストラクタ
-Components::ComponentManager::ComponentManager(Ref<IGameObjectInstantiator> iGameObjectInstantiatorRef)
+Components::ComponentManager::ComponentManager(Ref<IGameObjectInstantiator> iGameObjectInstantiator)
 	: IComponentManager{}
 	, m_permit{}
 	, m_CreateComponentList{}
 	, m_nullReferences{}
-	, m_iGameObjectInstantiatorRef{ iGameObjectInstantiatorRef }
+	, m_iGameObjectInstantiator{ iGameObjectInstantiator }
 {
 }
 
 // コンポーネントを作成
 std::unique_ptr<Component> Components::ComponentManager::Create(const std::type_index& index, Ref<GameObject> owner)
 {
-	return m_CreateComponentList.at(index)(ComponentDesc{ owner, m_iGameObjectInstantiatorRef, m_permit });
+	return m_CreateComponentList.at(index)(ComponentDesc{ owner, m_iGameObjectInstantiator, m_permit });
 }
 
 // 未参照コンポーネントを取得
@@ -48,8 +48,8 @@ Ref<Component> Components::ComponentManager::GetNullComponent(const std::type_in
 		// コンポーネントを追加
 		m_nullReferences.emplace(index, m_CreateComponentList.at(index)(ComponentDesc
 			{
-				m_iGameObjectInstantiatorRef->GetNullGameObject(),
-				Ref{ m_iGameObjectInstantiatorRef },
+				m_iGameObjectInstantiator->GetNullGameObject(),
+				Ref{ m_iGameObjectInstantiator },
 				m_permit
 			}));
 		return Ref{ *m_nullReferences.at(index) };

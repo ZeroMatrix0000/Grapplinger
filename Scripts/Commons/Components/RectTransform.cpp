@@ -1,7 +1,7 @@
 /*
  * FileName:     RectTransform.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 2D用トランスフォーム
  */
@@ -22,13 +22,13 @@ Components::RectTransform::RectTransform(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void Components::RectTransform::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Components::RectTransform::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_rect.position, "Position");
-	serializer.AddParameter(&m_rect.size, "Size");
-	serializer.AddParameter(&m_angle, "Angle");
-	serializer.AddParameter(&m_pivot, "Pivot");
-	serializer.AddParameter(&m_anchor, "Anchor");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_rect.position }, "Position");
+	serializer.AddParameter(Ref{ m_rect.size }, "Size");
+	serializer.AddParameter(Ref{ m_angle }, "Angle");
+	serializer.AddParameter(Ref{ m_pivot }, "Pivot");
+	serializer.AddParameter(Ref{ m_anchor }, "Anchor");
 	serializer.Load(json);
 }

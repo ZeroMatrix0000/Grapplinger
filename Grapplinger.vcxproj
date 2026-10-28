@@ -201,6 +201,7 @@
     <ClCompile Include="Scripts\Commons\Systems\Resources.cpp" />
     <ClCompile Include="Scripts\Commons\Systems\Timer.cpp" />
     <ClCompile Include="Scripts\Commons\Systems\WindowController.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\DebugCameraInternals.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\NPC\NPC.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\NPC\NPCManager.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\Player.cpp" />

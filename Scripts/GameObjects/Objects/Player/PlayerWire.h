@@ -46,7 +46,7 @@ public:
 	PlayerWire(const ComponentDesc& desc);
 
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -136,7 +136,7 @@ private:
 	bool m_isDisplay;
 
 	// トランスフォームのポインタ
-	Ref<Transform> m_refTransform;
+	Ref<Transform> m_transformRef;
 
 	// パーティクル管理のポインタ
 	Ref<Renderings::ParticleManager> m_refParticleManager;

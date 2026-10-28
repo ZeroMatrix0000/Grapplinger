@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * NPC
  */
@@ -27,29 +27,29 @@ NPC::NPC(const ComponentDesc& desc)
 	, m_baseRotation{}
 	, m_rotation{}
 	, m_spinAngle{}
-	, m_refTransform{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_refBoxCollider{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
 	, m_refSphereCollider{ GetOwner()->GetNullComponent<Colliders::SphereCollider>() }
 {
 }
 
 // 初期化処理
-void NPC::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void NPC::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_refTransform = GetOwner()->GetComponent<Transform>();
+	m_transformRef = GetOwner()->GetComponent<Transform>();
 	m_refBoxCollider = GetOwner()->GetComponent<Colliders::BoxCollider>();
 	m_refBoxCollider->ApplyTransform();
 	m_refSphereCollider = GetOwner()->GetComponent<Colliders::SphereCollider>();
 	m_refSphereCollider->ApplyTransform();
 
-	m_baseRotation = m_refTransform->GetRotation();
+	m_baseRotation = m_transformRef->GetRotation();
 	m_rotation.SetValue(m_baseRotation);
 	m_spinAngle.SetMovement(0.0f, 0.0f);
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_name, "Name");
-	serializer.AddParameter(&m_eventName, "EventName");
-	serializer.AddParameter(&m_focusDistance, "FocusDistance");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_name }, "Name");
+	serializer.AddParameter(Ref{ m_eventName }, "EventName");
+	serializer.AddParameter(Ref{ m_focusDistance }, "FocusDistance");
 	serializer.Load(json);
 }
 
@@ -65,7 +65,7 @@ void NPC::Update(float elapsedTime)
 		m_rotation.Tick(elapsedTime);
 	}
 
-	m_refTransform->SetRotation(m_rotation.GetCurrent() * Math::Euler{ 0.0f, m_spinAngle.GetMovement(), 0.0f }.CreateQuaternion());
+	m_transformRef->SetRotation(m_rotation.GetCurrent() * Math::Euler{ 0.0f, m_spinAngle.GetMovement(), 0.0f }.CreateQuaternion());
 	m_refBoxCollider->ApplyTransform();
 	m_refSphereCollider->ApplyTransform();
 }

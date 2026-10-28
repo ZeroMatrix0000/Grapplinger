@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 当たり判定描画
  */
@@ -25,7 +25,12 @@ namespace Renderings
 		ColliderRenderer();
 
 		// 初期化処理
-		void Initialize(ID3D11Device5* pDevice, ID3D11DeviceContext4* pContext, const DirectX::CommonStates& commonStates);
+		void Initialize
+		(
+			Ref<ID3D11Device5> deviceRef,
+			Ref<ID3D11DeviceContext4> contextRef,
+			Ref<const DirectX::CommonStates> commonStatesRef
+		);
 		// 描画処理
 		void Render();
 
@@ -69,6 +74,9 @@ namespace Renderings
 		// ベーシックエフェクト
 		std::unique_ptr<DirectX::BasicEffect>                                  m_basicEffect;
 
+		// 入力レイアウト
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
 		// 長方形の当たり判定の参照リスト
 		std::vector<Ref<const Colliders::BoxCollider>>    m_boxColliderRefs;
 		// 球の当たり判定の参照リスト
@@ -80,9 +88,6 @@ namespace Renderings
 		ID3D11DeviceContext4*        m_pContext;
 		// コモンステート
 		const DirectX::CommonStates* m_pCommonStates;
-
-		// 入力レイアウト
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	};
 }

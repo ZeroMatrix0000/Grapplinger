@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCameraInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/27
  *
  * デバッグ用カメラの内部データ
  */
@@ -13,15 +13,25 @@
 // デバッグ用カメラの内部データ
 struct DebugCameraInternals
 {
+
+	/* メンバ関数 */
+
+	// コンストラクタ
+	DebugCameraInternals(Ref<GameObject> owner);
+
+
+	/* メンバ変数 */
+
 	// マウスの移動量
-	Math::Vector2Int mouseMovement{};
+	Math::Vector2Int mouseMovement;
 	// 右クリックの状態
-	bool mouseButtonRight{};
+	bool mouseButtonRight;
 	// 中クリックの状態
-	bool mouseButtonMiddle{};
+	bool mouseButtonMiddle;
 	// マウスホイールの回転量
-	int mouseWheelDelta{};
+	int mouseWheelDelta;
 
 	// カメラ画面の参照
-	Renderings::CameraScreen<Camera::EulerTargetCamera>* pCameraScreen{};
+	Ref<Renderings::CameraScreen<Camera::EulerTargetCamera>> cameraScreenRef;
+
 };

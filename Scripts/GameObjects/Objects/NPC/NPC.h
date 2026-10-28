@@ -39,7 +39,7 @@ public:
 	NPC(const ComponentDesc& desc);
 
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -89,7 +89,7 @@ private:
 	Easing::Value<float> m_spinAngle;
 
 	// トランスフォームの参照
-	Ref<Transform> m_refTransform;
+	Ref<Transform> m_transformRef;
 	// 長方形の当たり判定の参照
 	Ref<Colliders::BoxCollider> m_refBoxCollider;
 	// 球の当たり判定の参照

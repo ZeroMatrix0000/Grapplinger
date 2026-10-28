@@ -28,7 +28,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	WindCutParticle(Ref<Renderings::IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
+	WindCutParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
 
 	// 初期化処理
 	void Initalize(Ref<const Transform> transformRef) override;

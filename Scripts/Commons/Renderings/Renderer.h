@@ -1,7 +1,7 @@
 /*
  * FileName:     Renderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 描画
  */
@@ -38,10 +38,9 @@ namespace Renderings
 		// 初期化処理
 		void Initialize
 		(
-			ID3D11Device5*               pDevice,
-			ID3D11DeviceContext4*        pContext,
-			IDXGISwapChain4*             pSwapChain,
-			const DirectX::CommonStates& commonStates
+			Ref<ID3D11Device5>               deviceRef,
+			Ref<ID3D11DeviceContext4>        contextRef,
+			Ref<const DirectX::CommonStates> commonStatesRef
 		);
 		// 描画処理
 		void Render();
@@ -49,14 +48,14 @@ namespace Renderings
 		// 描画モードを返る
 		void ChangeRenderMode();
 
-		// モデル描画インタフェースの参照を取得
-		Ref<Renderings::Model3DRenderer>  GetModelRendererRef()    { return Ref{ m_modelRenderer }; }
-		// 画像描画インタフェースの参照を取得
-		Ref<Renderings::ImageRenderer>    GetImageRendererRef()    { return Ref{ m_imageRenderer }; }
-		// テキスト描画インタフェースの参照を取得
-		Ref<Renderings::TextRenderer>     GetTextRendererRef()     { return Ref{ m_textRenderer }; }
-		// 当たり判定描画インタフェースの参照を取得
-		Ref<Renderings::ColliderRenderer> GetColliderRendererRef() { return Ref{ m_colliderRenderer }; }
+		// モデル描画インタフェースを取得
+		Ref<Renderings::Model3DRenderer>  GetModelRenderer()    { return Ref{ m_modelRenderer }; }
+		// 画像描画インタフェースを取得
+		Ref<Renderings::ImageRenderer>    GetImageRenderer()    { return Ref{ m_imageRenderer }; }
+		// テキスト描画インタフェースを取得
+		Ref<Renderings::TextRenderer>     GetTextRenderer()     { return Ref{ m_textRenderer }; }
+		// 当たり判定描画インタフェースを取得
+		Ref<Renderings::ColliderRenderer> GetColliderRenderer() { return Ref{ m_colliderRenderer }; }
 
 
 	private:

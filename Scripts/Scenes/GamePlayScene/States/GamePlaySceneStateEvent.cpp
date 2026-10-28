@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateEvent.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーンのイベント状態
  */
@@ -30,92 +30,92 @@ GamePlaySceneStateEvent::GamePlaySceneStateEvent()
 }
 
 // 開始処理
-void GamePlaySceneStateEvent::Enter(GamePlaySceneInternals* pInternals)
+void GamePlaySceneStateEvent::Enter(Ref<GamePlaySceneInternals> internalsRef)
 {
 	// イベントを設定
-	pInternals->actionManagerRef->LoadEvent(pInternals->nPCManagerRef->GetPFocusedNPC()->GetEventName());
+	internalsRef->actionManagerRef->LoadEvent(internalsRef->nPCManagerRef->GetPFocusedNPC()->GetEventName());
 
 	// レティクルを非表示
-	pInternals->reticleRef->SetColor(DirectX::Colors::Transparent);
+	internalsRef->reticleRef->SetColor(DirectX::Colors::Transparent);
 
 	// カーソルを隠す
-	pInternals->nPCManagerRef->HideCursor(true);
+	internalsRef->nPCManagerRef->HideCursor(true);
 
 	// 黒帯を出現させる
-	pInternals->blackBeltRef->Appear(true);
+	internalsRef->blackBeltRef->Appear(true);
 
 	// ターゲット照準を非表示
-	pInternals->targetPointRef->Appear(false);
+	internalsRef->targetPointRef->Appear(false);
 }
 
 // 更新処理
-void GamePlaySceneStateEvent::Update(GamePlaySceneInternals* pInternals, float elapsedTime)
+void GamePlaySceneStateEvent::Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime)
 {
 	// NPCの更新
-	pInternals->nPCManagerRef->SetRotation(pInternals->playerRef->GetPosition());
-	pInternals->nPCManagerRef->Update(elapsedTime);
-	pInternals->nPCManagerRef->SetCursor(pInternals->iCameraScreenRef.Get());
+	internalsRef->nPCManagerRef->SetRotation(internalsRef->playerRef->GetPosition());
+	internalsRef->nPCManagerRef->Update(elapsedTime);
+	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.GetValue());
 
 	// ゲーム入力
-	auto* pIGameInput = pInternals->gameContextRef->GetPIGameInput();
+	auto* pIGameInput = internalsRef->gameContextRef->GetPIGameInput();
 
 	// プレイヤーの更新
-	RotatePlayer(pInternals);
-	pInternals->playerRef->Update(elapsedTime, Math::Vector3::Zero, false, false);
-	pInternals->nPCManagerRef->PlayerCollide(&pInternals->playerRef.Get());
-	pInternals->playerRef->MeshCorrect(pInternals->groundMeshRef->GetWorldMesh());
-	pInternals->playerRef->UpdateModel(elapsedTime);
+	RotatePlayer(internalsRef);
+	internalsRef->playerRef->Update(elapsedTime, Math::Vector3::Zero, false, false);
+	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef.Get());
+	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
+	internalsRef->playerRef->UpdateModel(elapsedTime);
 
 	// はなすの更新
-	pInternals->z2TalkRef->SetPosition(pInternals->playerRef->GetBox(), pInternals->iCameraScreenRef.Get());
-	pInternals->z2TalkRef->Update(elapsedTime, false);
+	internalsRef->z2TalkRef->SetPosition(internalsRef->playerRef->GetBox(), internalsRef->iCameraScreenRef.GetValue());
+	internalsRef->z2TalkRef->Update(elapsedTime, false);
 
 	// 上下の黒帯の更新
-	pInternals->blackBeltRef->Update(elapsedTime);
+	internalsRef->blackBeltRef->Update(elapsedTime);
 
 	// カメラの更新
-	pInternals->playerCameraRef->SetTarget
+	internalsRef->playerCameraRef->SetTarget
 	(
-		(pInternals->playerRef->GetCameraTarget() + pInternals->nPCManagerRef->GetPFocusedNPC()->GetPosition()) / 2.0f
+		(internalsRef->playerRef->GetCameraTarget() + internalsRef->nPCManagerRef->GetPFocusedNPC()->GetPosition()) / 2.0f
 	);
-	pInternals->playerCameraRef->Rotate(pIGameInput->GetPlayerCameraRotate());
-	pInternals->playerCameraRef->MeshCorrect(pInternals->groundMeshRef->GetWorldMesh(), pInternals->playerRef->GetPosition());
-	pInternals->playerCameraRef->Update(elapsedTime);
-	pInternals->iCameraScreenRef->UpdateViewMatrix();
+	internalsRef->playerCameraRef->Rotate(pIGameInput->GetPlayerCameraRotate());
+	internalsRef->playerCameraRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh(), internalsRef->playerRef->GetPosition());
+	internalsRef->playerCameraRef->Update(elapsedTime);
+	internalsRef->iCameraScreenRef->UpdateViewMatrix();
 
 	// メッセージウィンドウの更新
-	pInternals->messageWindowRef->Update(elapsedTime);
+	internalsRef->messageWindowRef->Update(elapsedTime);
 
 	// アクション管理の更新
-	pInternals->actionManagerRef->Update(elapsedTime, *pIGameInput);
+	internalsRef->actionManagerRef->Update(elapsedTime, *pIGameInput);
 	// 全てのアクションが終了したら状態遷移
-	if (pInternals->actionManagerRef->IsCompleted())
+	if (internalsRef->actionManagerRef->IsCompleted())
 	{
 		SetNextState(std::make_unique<GamePlaySceneStateField>());
 	}
 }
 
 // 終了処理
-void GamePlaySceneStateEvent::Exit(GamePlaySceneInternals* pInternals)
+void GamePlaySceneStateEvent::Exit(Ref<GamePlaySceneInternals> internalsRef)
 {
 	// カーソルを表示
-	pInternals->nPCManagerRef->HideCursor(false);
+	internalsRef->nPCManagerRef->HideCursor(false);
 
 	// 黒帯を隠す
-	pInternals->blackBeltRef->Appear(false);
+	internalsRef->blackBeltRef->Appear(false);
 }
 
 // プレイヤーを会話相手の方に向ける
-void GamePlaySceneStateEvent::RotatePlayer(GamePlaySceneInternals* pInternals)
+void GamePlaySceneStateEvent::RotatePlayer(Ref<GamePlaySceneInternals> internalsRef)
 {
 	// プレイヤーを会話相手の方に向ける
 	// 向く方向
-	Math::Vector3 direction = pInternals->nPCManagerRef->GetPFocusedNPC()->GetBox().position - pInternals->playerRef->GetPosition();
+	Math::Vector3 direction = internalsRef->nPCManagerRef->GetPFocusedNPC()->GetBox().position - internalsRef->playerRef->GetPosition();
 	// Y軸方向は無視
 	direction.y = 0.0f;
 	// 正規化
 	direction.Normalize();
 	// 回転
 	Math::Quaternion rotation = Math::Quaternion::FromToRotation(Math::Vector3::Backward, direction);
-	pInternals->playerRef->SetRotation(rotation);
+	internalsRef->playerRef->SetRotation(rotation);
 }

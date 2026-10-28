@@ -29,8 +29,8 @@ namespace GameObjects
 		{
 		}
 
-		// 管理するゲームオブジェクトの参照を設定
-		virtual void SetGameObjectsRef(Ref<std::vector<std::unique_ptr<GameObject>>> gameObjects) = 0;
+		// 管理するゲームオブジェクトリストの参照を設定
+		virtual void SetGameObjectsRef(Ref<std::vector<std::unique_ptr<GameObject>>> gameObjectsRef) = 0;
 
 		// ゲームオブジェクトを読み込む
 		virtual void Load(const std::string& jsonName) = 0;

@@ -1,7 +1,7 @@
 /*
  * FileName:     Resources.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * リソース管理
  */
@@ -19,50 +19,17 @@ Systems::Resources::Resources()
 	, m_meshes{}
 	, m_vertexShaders{}
 	, m_pixelShaders{}
+	, m_nullModelSource{ Ref{ m_nullPixelShader }.Const() }
+	, m_nullImageSource{}
+	, m_nullJson{}
+	, m_nullMesh{}
+	, m_nullVertexShader{}
+	, m_nullPixelShader{}
 {
 }
 
-// モデルを追加
-void Systems::Resources::LoadModelSources(ID3D11Device5* device, Renderings::InstancingEffectFactory* fx, const std::wstring& directoryPath)
-{
-	// パスが存在しないなら
-	if (!std::filesystem::exists(directoryPath))
-	{
-		// エラーメッセージを追加
-		IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
-		(
-			L"パスが間違っています。 | path: %s",
-			directoryPath.c_str()
-		));
-		return;
-	}
-	
-	// ディレクトリ内を全て検索
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(directoryPath))
-	{
-		// ファイルなら
-		if (entry.is_regular_file())
-		{
-			m_modelSources.emplace(entry.path().stem().string(), Renderings::Model3DSource::Create(device, fx, &m_nullPixelShader, entry.path().wstring()));
-			//try
-			//{
-			//	m_modelSources.emplace(entry.path().stem().string(), Renderings::Model3DSource::Create(device, fx, entry.path().wstring()));
-			//}
-			//catch (std::exception e)
-			//{
-			//	// エラーメッセージを追加
-			//	IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
-			//	(
-			//		L"モデルの読み込みに失敗しました。 | path: %s",
-			//		entry.path().c_str()
-			//	));
-			//}
-		}
-	}
-}
-
-// 画像を読み込む
-void Systems::Resources::LoadImageSources(ID3D11Device5* device, const std::wstring& directoryPath)
+// モデルを読み込む
+void Systems::Resources::LoadModelSources(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef, Ref<Renderings::InstancingEffectFactory> fxRef)
 {
 	// パスが存在しないなら
 	if (!std::filesystem::exists(directoryPath))
@@ -84,7 +51,51 @@ void Systems::Resources::LoadImageSources(ID3D11Device5* device, const std::wstr
 		{
 			try
 			{
-				m_imageSources.emplace(entry.path().stem().string(), Renderings::ImageSource::Create(Ref{ *device }, entry.path().wstring()));
+				m_modelSources.emplace(entry.path().stem().string(), Renderings::Model3DSource::Create
+				(
+					Ref{ m_nullPixelShader }.Const(),
+					entry.path().wstring(),
+					deviceRef,
+					fxRef
+				));
+			}
+			catch (std::exception e)
+			{
+				// エラーメッセージを追加
+				IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
+				(
+					L"モデルの読み込みに失敗しました。 | path: %s",
+					entry.path().c_str()
+				));
+			}
+		}
+	}
+}
+
+// 画像を読み込む
+void Systems::Resources::LoadImageSources(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef)
+{
+	// パスが存在しないなら
+	if (!std::filesystem::exists(directoryPath))
+	{
+		// エラーメッセージを追加
+		IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
+		(
+			L"パスが間違っています。 | path: %s",
+			directoryPath.c_str()
+		));
+		return;
+	}
+
+	// ディレクトリ内を全て検索
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(directoryPath))
+	{
+		// ファイルなら
+		if (entry.is_regular_file())
+		{
+			try
+			{
+				m_imageSources.emplace(entry.path().stem().string(), Renderings::ImageSource::Create(entry.path().wstring(), deviceRef));
 			}
 			catch (std::exception e)
 			{
@@ -211,7 +222,7 @@ void Systems::Resources::LoadMeshes(const std::wstring& directoryPath)
 }
 
 // 頂点シェーダを読み込む
-void Systems::Resources::LoadVertexShaders(ID3D11Device5* device, const std::wstring& directoryPath)
+void Systems::Resources::LoadVertexShaders(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef)
 {
 	// パスが存在しないなら
 	if (!std::filesystem::exists(directoryPath))
@@ -233,7 +244,7 @@ void Systems::Resources::LoadVertexShaders(ID3D11Device5* device, const std::wst
 		{
 			try
 			{
-				m_vertexShaders.emplace(entry.path().stem().string(), Renderings::VertexShader::Create(device, entry.path().wstring()));
+				m_vertexShaders.emplace(entry.path().stem().string(), Renderings::VertexShader::Create(entry.path().wstring(), deviceRef));
 			}
 			catch (std::exception e)
 			{
@@ -249,7 +260,7 @@ void Systems::Resources::LoadVertexShaders(ID3D11Device5* device, const std::wst
 }
 
 // ピクセルシェーダを読み込む
-void Systems::Resources::LoadPixelShaders(ID3D11Device5* device, const std::wstring& directoryPath)
+void Systems::Resources::LoadPixelShaders(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef)
 {
 	// パスが存在しないなら
 	if (!std::filesystem::exists(directoryPath))
@@ -271,7 +282,7 @@ void Systems::Resources::LoadPixelShaders(ID3D11Device5* device, const std::wstr
 		{
 			try
 			{
-				m_pixelShaders.emplace(entry.path().stem().string(), Renderings::PixelShader::Create(device, entry.path().wstring()));
+				m_pixelShaders.emplace(entry.path().stem().string(), Renderings::PixelShader::Create(entry.path().wstring(), deviceRef));
 			}
 			catch (std::exception e)
 			{

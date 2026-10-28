@@ -1,7 +1,7 @@
 /*
  * FileName:     Image.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 画像
  */
@@ -32,12 +32,12 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Image(const ComponentDesc& desc, Ref<IImageRenderer> iImageRendererRef, Ref<Systems::IResources> iResources);
+		Image(const ComponentDesc& desc, Ref<IImageRenderer> iImageRenderer, Ref<Systems::IResources> iResources);
 		// デストラクタ
 		~Image();
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 色を設定
 		void SetColor(const Math::Color& color) { m_color = color; }
@@ -91,11 +91,11 @@ namespace Renderings
 		// キャンバスの参照
 		Ref<const Canvas> m_canvasRef;
 
-		// 画像描画インタフェースの参照
-		Ref<IImageRenderer> m_iImageRendererRef;
+		// 画像描画インタフェース
+		const Ref<IImageRenderer> m_iImageRenderer;
 
-		// リソース管理の参照
-		Ref<Systems::IResources> m_iResourcesRef;
+		// リソース管理
+		const Ref<Systems::IResources> m_iResources;
 
 	};
 }

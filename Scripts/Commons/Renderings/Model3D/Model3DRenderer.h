@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/27
  *
  * 3Dモデル描画
  */
@@ -34,17 +34,22 @@ namespace Renderings
 		Model3DRenderer();
 
 		// 初期化処理
-		void Initialize(ID3D11Device5* pDevice, ID3D11DeviceContext4* pContext, const DirectX::CommonStates& commonStates);
+		void Initialize
+		(
+			Ref<ID3D11Device5> deviceRef,
+			Ref<ID3D11DeviceContext4> contextRef,
+			Ref<const DirectX::CommonStates> commonStatesRef
+		);
 		// 描画処理
 		void Render(bool isInstance);
 
 		// 深度ステンシルビューを設定
-		void SetDepthStencilView(ID3D11DepthStencilView* pDepthStencilView) { m_pDepthStencilView = pDepthStencilView; };
+		void SetDepthStencilView(Ref<ID3D11DepthStencilView> depthStencilViewRef) { m_pDepthStencilView = depthStencilViewRef.Get(); };
 
-		// 頂点シェーダのポインタを設定
-		void SetPVertexShader(const VertexShader* pVertexShader);
+		// 頂点シェーダを設定
+		void SetVertexShader(Ref<const VertexShader> vertexShader);
 		// ピクセルシェーダを設定
-		void SetPPixelShader(const PixelShader* pPixelShader) { m_pPixelShader = pPixelShader; }
+		void SetPixelShader(Ref<const PixelShader> pixelShader) { m_pPixelShader = pixelShader.Get(); }
 
 		// モデルの参照を追加
 		void AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) override;

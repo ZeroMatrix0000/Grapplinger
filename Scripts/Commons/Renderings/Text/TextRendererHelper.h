@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRendererHelper.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * テキスト描画のヘルパー関数群
  */
@@ -23,7 +23,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		TextRenderHelper(TextRenderer& renderer);
+		TextRenderHelper(Ref<TextRenderer> renderer);
 
 		// 長方形をキャンバス情報とピボットとアンカーに沿って移動
 		Math::Rect AdjustRect
@@ -39,37 +39,36 @@ namespace Renderings
 		Math::Vector2 GetRotateOrigin(const Math::Rect& rect, Utility::AlignmentPoint pivot);
 
 		// テキストフォーマットを生成
-		void CreateTextFormat
+		Microsoft::WRL::ComPtr<IDWriteTextFormat> CreateTextFormat
 		(
-			const std::wstring&        fontName,
-			float                      fontSize,
-			float                      lineSpace,
-			DWRITE_TEXT_ALIGNMENT      textAlignment,
-			DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment,
-			IDWriteFactory8*           pDWriteFactory,
-			IDWriteFontCollection3*    pFontCollection,
-			IDWriteTextFormat**        ppTextFormat
+			const std::wstring&         fontName,
+			float                       fontSize,
+			float                       lineSpace,
+			DWRITE_TEXT_ALIGNMENT       textAlignment,
+			DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment,
+			Ref<IDWriteFactory8>        dWriteFactoryRef,
+			Ref<IDWriteFontCollection3> fontCollectionRef
 		);
 		
 		// 文字を描画
 		void DrawTextLayout
 		(
-			float                   canvasRatio,
-			const Math::Vector2&    position,
-			const Text&             text,
-			ID2D1DeviceContext7*    pContext,
-			IDWriteFactory8*        pDWriteFactory,
-			IDWriteFontCollection3* pFontCollection,
-			IDWriteTextLayout*      pTextLayout,
-			ID2D1SolidColorBrush*   pBrush,
-			DecorationTextRenderer* pDecorationRenderer
+			float                       canvasRatio,
+			const Math::Vector2&        position,
+			Ref<const Text>             textRef,
+			Ref<ID2D1DeviceContext7>    contextRef,
+			Ref<IDWriteFactory8>        dWriteFactoryRef,
+			Ref<IDWriteFontCollection3> fontCollectionRef,
+			Ref<IDWriteTextLayout>      textLayoutRef,
+			Ref<ID2D1SolidColorBrush>   brushRef,
+			Ref<DecorationTextRenderer> DecorationRendererRef
 		);
 
 
 		/* メンバ変数 */
 
 		// テキスト描画
-		TextRenderer& m_refRenderer;
+		Ref<TextRenderer> m_renderer;
 
 	};
 }

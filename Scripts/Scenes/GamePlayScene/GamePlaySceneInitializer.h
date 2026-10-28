@@ -18,7 +18,7 @@ public:
 
 	/* 演算子オーバーロード */
 
-	void operator()(GamePlaySceneInternals* pInternals) const;
+	void operator()(Ref<GamePlaySceneInternals> internalsRef) const;
 
 
 };

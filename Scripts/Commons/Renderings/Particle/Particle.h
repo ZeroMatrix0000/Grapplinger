@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * パーティクル
  */
@@ -50,7 +50,7 @@ namespace Renderings
 		struct RenderElement
 		{
 			// コンストラクタ
-			RenderElement(Ref<Systems::IResources> iResourcesRef);
+			RenderElement(Ref<Systems::IResources> iResources);
 
 			// ワールド行列
 			Math::Matrix matrix;
@@ -64,7 +64,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Particle(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef);
+		Particle(Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
 		// デストラクタ
 		virtual ~Particle();
 
@@ -124,7 +124,7 @@ namespace Renderings
 		Ref<IModel3DRenderer> m_iModelRendererRef;
 
 		// リソース管理の参照
-		Ref<Systems::IResources> m_iResourcesRef;
+		Ref<Systems::IResources> m_iResources;
 
 	};
 }

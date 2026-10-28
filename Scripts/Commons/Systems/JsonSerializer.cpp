@@ -1,7 +1,7 @@
 /*
  * FileName:     JsonSerializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/22
+ * Last Updated: 2026/10/27
  *
  * Jsonのシリアライズ
  */
@@ -14,9 +14,9 @@
 std::unordered_map<std::type_index, std::function<void(void*, const nlohmann::ordered_json&, Ref<IGameObjectFinder>)>> Systems::JsonSerializer::s_methods{};
 
 // コンストラクタ
-Systems::JsonSerializer::JsonSerializer(Ref<IGameObjectFinder> iGameObjectFinderRef)
+Systems::JsonSerializer::JsonSerializer(Ref<IGameObjectFinder> iGameObjectFinder)
 	: m_parameters{}
-	, m_refIGameObjectFinder{ iGameObjectFinderRef }
+	, m_refIGameObjectFinder{ iGameObjectFinder }
 {
 }
 

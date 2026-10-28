@@ -1,7 +1,7 @@
 /*
  * FileName:     SceneTransitionAnimation.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/27
  *
  * シーン遷移時のアニメーション
  */
@@ -37,7 +37,7 @@ namespace Scenes
 		SceneTransitionAnimation();
 
 		// 初期化処理
-		void Initialize(const Math::Vector2& outputSize, IGameObjectInstantiator* pIGameObjectInstantiator);
+		void Initialize(const Math::Vector2& outputSize, Ref<IGameObjectInstantiator> iGameObjectInstantiator);
 		// 更新処理
 		void Update(float elapsedTime);
 

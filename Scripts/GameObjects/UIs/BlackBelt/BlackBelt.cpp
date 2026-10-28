@@ -1,7 +1,7 @@
 /*
  * FileName:     BlackBelt.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 上下の黒帯
  */
@@ -29,15 +29,15 @@ BlackBelt::BlackBelt(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void BlackBelt::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void BlackBelt::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_moveRate.SetMovement(0.0f, 0.0f);
 
 	Ref canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() };
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_moveTime, "MoveTime");
-	serializer.AddParameter(&canvasRef, "Canvas");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_moveTime }, "MoveTime");
+	serializer.AddParameter(canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	// 画像を生成

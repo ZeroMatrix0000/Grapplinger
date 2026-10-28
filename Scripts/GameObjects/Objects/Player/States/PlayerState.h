@@ -27,6 +27,6 @@ public:
 	virtual ~PlayerState() = default;
 
 	// 座標補正
-	virtual void PositionCorrect(PlayerInternals* pInternals, float distance, const Math::Vector3& direction) = 0;
+	virtual void PositionCorrect(Ref<PlayerInternals> internalsRef, float distance, const Math::Vector3& direction) = 0;
 
 };

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * アクション管理
  */
@@ -27,9 +27,9 @@ ActionManager::ActionManager(const ComponentDesc& desc, Systems::IResources* pIR
 }
 
 // 初期化処理
-void ActionManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void ActionManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_pIGameObjectFinder = &iGameObjectFinderRef.Get();
+	m_pIGameObjectFinder = iGameObjectFinder.Get();
 }
 
 // 更新処理
@@ -54,7 +54,7 @@ void ActionManager::Update(float elapsedTime, const IGameInput& iGameInput)
 // イベントを設定
 void ActionManager::LoadEvent(const std::string& eventName)
 {
-	m_pEvent = &m_pIResources->GetJson(eventName).Get();
+	m_pEvent = m_pIResources->GetJson(eventName).Get();
 
 	m_eventCount = m_pEvent->size();
 	m_eventIndex = 0;
@@ -84,25 +84,25 @@ void ActionManager::InitializeCurrentAction()
 	auto it = eventList.find("ActionType");
 	if (it == eventList.end())
 	{
-		m_pCurrentAction = &GetOwner()->GetComponent<Action>().Get();
+		m_pCurrentAction = GetOwner()->GetComponent<Action>().Get();
 	}
 	else
 	{
 		if (it.value() == "OpenMessageWindow")
 		{
-			m_pCurrentAction = &GetOwner()->GetComponent<ActionOpenMessageWindow>().Get();
+			m_pCurrentAction = GetOwner()->GetComponent<ActionOpenMessageWindow>().Get();
 		}
 		else if (it.value() == "CloseMessageWindow")
 		{
-			m_pCurrentAction = &GetOwner()->GetComponent<ActionCloseMessageWindow>().Get();
+			m_pCurrentAction = GetOwner()->GetComponent<ActionCloseMessageWindow>().Get();
 		}
 		else if (it.value() == "SetMessageWindowText")
 		{
-			m_pCurrentAction = &GetOwner()->GetComponent<ActionSetMessageWindowText>().Get();
+			m_pCurrentAction = GetOwner()->GetComponent<ActionSetMessageWindowText>().Get();
 		}
 		else
 		{
-			m_pCurrentAction = &GetOwner()->GetComponent<Action>().Get();
+			m_pCurrentAction = GetOwner()->GetComponent<Action>().Get();
 		}
 	}
 

@@ -1,15 +1,15 @@
 /*
  * FileName:     DecorationTextRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/09/30
+ * Last Updated: 2026/10/27
  *
  * テキストのデコレーション描画
  */
 
 #include "Pch.h"
 #include "DecorationTextRenderer.h"
-#include "Text.h"
-#include "Scripts/Commons/Components/RectTransform.h"
+
+#include "TextColorEffect.h"
 
 // コンストラクタ
 Renderings::DecorationTextRenderer::DecorationTextRenderer()
@@ -81,10 +81,10 @@ HRESULT Renderings::DecorationTextRenderer::GetPixelsPerDip(void* clientDrawingC
 }
 
 // 初期化処理
-void Renderings::DecorationTextRenderer::Initialize(ID2D1DeviceContext7* pContext, ID2D1SolidColorBrush* pBrush)
+void Renderings::DecorationTextRenderer::Initialize(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1SolidColorBrush> brushRef)
 {
-	m_pContext = pContext;
-	m_pBrush = pBrush;
+	m_pContext = contextRef.Get();
+	m_pBrush = brushRef.Get();
 }
 
 // ピクセルスナップ設定

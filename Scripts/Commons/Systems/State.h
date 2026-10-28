@@ -1,7 +1,7 @@
 /*
  * FileName:     State.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/14
+ * Last Updated: 2026/10/27
  *
  * 状態
  */
@@ -26,11 +26,11 @@ namespace Systems
 		virtual ~State() = default;
 
 		// 開始処理
-		virtual void Enter(TInternals* pInternals) = 0;
+		virtual void Enter(Ref<TInternals> internalsRef) = 0;
 		// 更新処理
-		virtual void Update(TInternals* pInternals, float elapsedTime) = 0;
+		virtual void Update(Ref<TInternals> internalsRef, float elapsedTime) = 0;
 		// 終了処理
-		virtual void Exit(TInternals* pInternals) = 0;
+		virtual void Exit(Ref<TInternals> internalsRef) = 0;
 
 		// 次のシーンをリセット
 		void ResetNextState() { m_nextState.reset(); }

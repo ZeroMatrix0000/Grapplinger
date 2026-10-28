@@ -1,7 +1,7 @@
 /*
  * FileName:     ResourcesInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * リソース初期化
  */
@@ -22,15 +22,15 @@ void ResourcesInitializer::InitializeResources
 )
 {
 	// デバイス
-	auto* device = deviceResources.GetD3DDevice();
+	Ref deviceRef = deviceResources.GetD3DDeviceRef();
 
 	// エフェクトファクトリー
-	auto* fx = renderingResources.GetEffectFactory();
+	Ref fxRef = renderingResources.GetEffectFactoryRef();
 
 	// 画像の読み込み
-	resources->LoadImageSources(device, L"Resources\\Images");
+	resources->LoadImageSources(L"Resources\\Images", deviceRef);
 	// モデルソースの読み込み
-	resources->LoadModelSources(device, fx, L"Resources\\Models");
+	resources->LoadModelSources(L"Resources\\Models", deviceRef, fxRef);
 	// Jsonの読み込み
 	resources->LoadJsons(L"Resources\\Jsons");
 	resources->AddJsonFromStr
@@ -100,13 +100,13 @@ void ResourcesInitializer::InitializeResources
 	// メッシュの読み込み
 	resources->LoadMeshes(L"Resources\\Meshes");
 	// 頂点シェーダの読み込み
-	resources->LoadVertexShaders(device, L"Resources\\Shaders\\VertexShaders");
+	resources->LoadVertexShaders(L"Resources\\Shaders\\VertexShaders", deviceRef);
 	// ピクセルシェーダの読み込み
-	resources->LoadPixelShaders(device, L"Resources\\Shaders\\PixelShaders");
+	resources->LoadPixelShaders(L"Resources\\Shaders\\PixelShaders", deviceRef);
 
 	// シェーダを適用
-	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(&resources->GetPixelShader("PlayerShadow").Get());
-	resources->GetEditableModelSource("PlayerSilhouette")->SetPixelShader(&resources->GetPixelShader("PlayerSilhouette").Get());
+	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(resources->GetPixelShader("PlayerShadow"));
+	resources->GetEditableModelSource("PlayerSilhouette")->SetPixelShader(resources->GetPixelShader("PlayerSilhouette"));
 
 	// 描画順を設定
 	resources->GetEditableModelSource("PlayerSilhouette")->SetDrawingOrder(1000);
@@ -141,5 +141,5 @@ void ResourcesInitializer::InitializeResources
 	desc.BackFace = stencilOp;
 
 	// 深度ステンシルステートを設定
-	resources->GetEditableModelSource("PlayerSilhouette")->SetDepthStencilState(desc, device);
+	resources->GetEditableModelSource("PlayerSilhouette")->SetDepthStencilState(desc, deviceRef);
 }

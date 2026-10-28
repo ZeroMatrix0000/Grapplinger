@@ -1,7 +1,7 @@
 /*
  * FileName:     InstancingEffectFactory.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * インスタンス描画用のエフェクトファクトリ
  */
@@ -21,7 +21,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		InstancingEffectFactory(ID3D11Device* pDevice);
+		InstancingEffectFactory(Ref<ID3D11Device5> deviceRef);
 
 		// エフェクトを作成
 		std::shared_ptr<DirectX::IEffect> CreateEffect
@@ -42,7 +42,7 @@ namespace Renderings
 		void SetDirectory(const std::wstring& filePath) { m_directory = filePath; };
 
 		// モデルソースを設定
-		void SetModel3DSource(Ref<Model3DSource> modelSource) { m_pModelSource = &modelSource.Get(); }
+		void SetModel3DSource(Ref<Model3DSource> modelSource) { m_pModelSource = modelSource.Get(); }
 
 
 	private:
@@ -57,7 +57,7 @@ namespace Renderings
 		Model3DSource* m_pModelSource;
 
 		// デバイス
-		ID3D11Device* m_pDevice;
+		const Ref<ID3D11Device5> m_deviceRef;
 
 	};
 }

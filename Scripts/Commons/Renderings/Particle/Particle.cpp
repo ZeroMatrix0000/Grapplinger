@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/25
+ * Last Updated: 2026/10/27
  *
  * パーティクル
  */
@@ -12,18 +12,17 @@
 #include "../Model3D/IModel3DRenderer.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
-#include "Scripts/Commons/Renderings/CameraScreen.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 #include "Scripts/Commons/Systems/IResources.h"
 
 // コンストラクタ
-Renderings::Particle::Particle(Ref<IModel3DRenderer> iModelRendererRef, Ref<Systems::IResources> iResourcesRef)
+Renderings::Particle::Particle(Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
 	: m_updateElements{}
 	, m_renderElements{}
 	, m_isActive{ true }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRendererRef }
-	, m_iResourcesRef{ iResourcesRef }
+	, m_iModelRendererRef{ iModelRenderer }
+	, m_iResources{ iResources }
 {
 }
 
@@ -65,7 +64,7 @@ void Renderings::Particle::SetModelSource(const std::string& modelSourceName, Re
 	{
 		m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, renderElementRef.Const());
 	}
-	renderElementRef->modelSource = m_iResourcesRef->GetModelSource(modelSourceName);
+	renderElementRef->modelSource = m_iResources->GetModelSource(modelSourceName);
 	// 描画者にパーティクルを追加
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
@@ -109,7 +108,7 @@ void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderEle
 	}
 
 	auto& renderElement = m_renderElements.emplace_back();
-	renderElement = std::make_unique<RenderElement>(m_iResourcesRef);
+	renderElement = std::make_unique<RenderElement>(m_iResources);
 	if (ppRenderElement)
 	{
 		*ppRenderElement = renderElement.get();
@@ -117,9 +116,9 @@ void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderEle
 }
 
 // コンストラクタ
-Renderings::Particle::RenderElement::RenderElement(Ref<Systems::IResources> iResourcesRef)
+Renderings::Particle::RenderElement::RenderElement(Ref<Systems::IResources> iResources)
 	: matrix{ Math::Matrix::Identity }
 	, color{ DirectX::Colors::White }
-	, modelSource{ iResourcesRef->GetNullModelSource() }
+	, modelSource{ iResources->GetNullModelSource() }
 {
 }

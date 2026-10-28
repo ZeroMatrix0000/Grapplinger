@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * ゲームプレイシーン
  */
@@ -28,8 +28,8 @@
 #include "Scripts/Commons/Systems/IInput.h"
 
  // コンストラクタ
-GamePlayScene::GamePlayScene(const ComponentDesc& desc)
-	: Scene{ desc }
+GamePlayScene::GamePlayScene(const ComponentDesc& desc, Ref<const GameContext> context)
+	: Scene{ desc, context }
 	, m_internals{ GetGameObjects(), GetContext(), GetOwner() }
 	, m_currentState{}
 	, m_Initializer{}
@@ -40,7 +40,7 @@ GamePlayScene::GamePlayScene(const ComponentDesc& desc)
 void GamePlayScene::Initialize(const SceneTransitionData& data)
 {
 	// 初期化
-	m_Initializer(&m_internals);
+	m_Initializer(Ref{ m_internals });
 
 	// 現在の状態を初期化
 	SetState(std::make_unique<GamePlaySceneStateField>());
@@ -70,11 +70,11 @@ void GamePlayScene::Update(float elapsedTime)
 	}
 
 	// 状態ごとの処理
-	m_currentState->Update(&m_internals, elapsedTime);
+	m_currentState->Update(Ref{ m_internals }, elapsedTime);
 
 	// シェーダにプレイヤーの座標を設定
-	Renderings::ConstantBuffer* pConstantBuffer = m_internals.groundModelRef->GetPModelSource()->GetPPixelShader()->GetConstantBuffer();
-	pConstantBuffer->SetVariable
+	Ref constantBufferRef = m_internals.groundModelRef->GetPModelSource()->GetPixelShader()->GetConstantBufferRef();
+	constantBufferRef->SetVariable
 	(
 		"ShadowPosition",
 		m_internals.playerRef->GetPosition() + Math::Vector3::Down * m_internals.playerRef->GetBox().size.y / 2.0f
@@ -83,7 +83,7 @@ void GamePlayScene::Update(float elapsedTime)
 	const auto nPCBoxes = m_internals.nPCManagerRef->GetPBoxes();
 	for (size_t i = 0; i < nPCBoxes.size(); i++)
 	{
-		pConstantBuffer->SetVariable("ShadowPosition", nPCBoxes.at(i)->position + Math::Vector3::Down * nPCBoxes.at(i)->size.y / 2.0f, 16 * (i + 1));
+		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i)->position + Math::Vector3::Down * nPCBoxes.at(i)->size.y / 2.0f, 16 * (i + 1));
 	}
 }
 
@@ -107,8 +107,8 @@ void GamePlayScene::AcceptMessage(const std::string& message)
 		m_internals.canvasRef->SetSize(outputSize);
 
 		// UIの設定
-		m_internals.nPCManagerRef->SetCursor(m_internals.iCameraScreenRef.Get());
-		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.Get());
+		m_internals.nPCManagerRef->SetCursor(m_internals.iCameraScreenRef.GetValue());
+		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.GetValue());
 		m_internals.blackBeltRef->SetWidth(m_internals.canvasRef->GetSize().x);
 	}
 }
@@ -118,8 +118,8 @@ void GamePlayScene::SetState(std::unique_ptr<Systems::State<GamePlaySceneInterna
 {
 	if (m_currentState != nullptr)
 	{
-		m_currentState->Exit(&m_internals);
+		m_currentState->Exit(Ref{ m_internals });
 	}
 	m_currentState = std::move(state);
-	m_currentState->Enter(&m_internals);
+	m_currentState->Enter(Ref{ m_internals });
 }

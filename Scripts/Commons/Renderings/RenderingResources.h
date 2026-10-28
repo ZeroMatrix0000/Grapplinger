@@ -1,7 +1,7 @@
 /*
  * FileName:     RenderingResources.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/07
+ * Last Updated: 2026/10/27
  *
  * 描画リソース
  */
@@ -26,15 +26,15 @@ namespace Renderings
 		RenderingResources();
 
 		// 初期化処理
-		void Initialize(ID3D11Device5* device);
+		void Initialize(Ref<ID3D11Device5> deviceRef);
 
 		// エフェクトファクトリーのディレクトリを設定
 		void SetEffectFactoryDirectory(const std::wstring& filePath);
 
-		// コモンステートの取得
-		const auto& GetCommonStates()  const { return *m_commonStates; }
-		// エフェクトファクトリーの取得
-		auto* GetEffectFactory() const { return m_effectFactory.get(); }
+		// コモンステートの参照の取得
+		Ref<const DirectX::CommonStates> GetCommonStatesRef() const { return Ref{ *m_commonStates.get() }.Const(); }
+		// エフェクトファクトリーの参照の取得
+		Ref<InstancingEffectFactory> GetEffectFactoryRef() const { return Ref{ *m_effectFactory.get() }; }
 
 
 	private:

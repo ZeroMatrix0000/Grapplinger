@@ -1,7 +1,7 @@
 /*
  * FileName:     BoxCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 長方形の当たり判定
  */
@@ -17,40 +17,40 @@
 #include "../Systems/IsDerivedRegister.h"
 
 // コンストラクタ
-Colliders::BoxCollider::BoxCollider(const ComponentDesc& desc, Ref<Renderings::IColliderRenderer> iColliderRendererRef)
+Colliders::BoxCollider::BoxCollider(const ComponentDesc& desc, Ref<Renderings::IColliderRenderer> iColliderRenderer)
 	: Component{ desc }
 	, m_box{}
 	, m_worldBox{}
 	, m_color{ DirectX::Colors::LightGreen }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_iCameraScreenRefs{}
-	, m_iColliderRendererRef{ iColliderRendererRef }
+	, m_iColliderRenderer{ iColliderRenderer }
 {
 	// 描画者に長方形を追加
-	m_iColliderRendererRef->AddPBoxCollider(Ref{ *this }.Const());
+	m_iColliderRenderer->AddPBoxCollider(Ref{ *this }.Const());
 }
 
 // デストラクタ
 Colliders::BoxCollider::~BoxCollider()
 {
 	// 描画者から長方形を削除
-	m_iColliderRendererRef->RemovePBoxCollider(Ref{ *this }.Const());
+	m_iColliderRenderer->RemovePBoxCollider(Ref{ *this }.Const());
 }
 
 // 初期化処理
-void Colliders::BoxCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Colliders::BoxCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_box.position, "Position");
-	serializer.AddParameter(&m_box.size, "Size");
-	serializer.AddParameter(&m_color, "Color");
-	serializer.AddParameter(&m_iCameraScreenRefs, "CameraScreens");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_box.position }, "Position");
+	serializer.AddParameter(Ref{ m_box.size }, "Size");
+	serializer.AddParameter(Ref{ m_color }, "Color");
+	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
 }
 
-// 映るカメラ画面を追加
+// 映るカメラ画面の参照を追加
 void Colliders::BoxCollider::AddICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
 	if (std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef) == m_iCameraScreenRefs.end())
@@ -59,7 +59,7 @@ void Colliders::BoxCollider::AddICameraScreenRef(Ref<const Renderings::ICameraSc
 	}
 }
 
-// 映るカメラ画面を削除
+// 映るカメラ画面の参照を削除
 void Colliders::BoxCollider::RemoveICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
 	auto it = std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef);

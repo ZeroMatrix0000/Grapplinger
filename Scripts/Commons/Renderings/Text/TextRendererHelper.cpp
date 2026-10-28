@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRendererHelper.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * テキスト描画のヘルパー関数群
  */
@@ -13,9 +13,9 @@
 #include "TextRenderer.h"
 
 // コンストラクタ
-Renderings::TextRenderHelper::TextRenderHelper(TextRenderer& renderer)
+Renderings::TextRenderHelper::TextRenderHelper(Ref<TextRenderer> renderer)
 	: OnlyOne{ typeid(TextRenderHelper) }
-	, m_refRenderer{ renderer }
+	, m_renderer{ renderer }
 {
 }
 
@@ -146,18 +146,28 @@ Math::Vector2 Renderings::TextRenderHelper::GetRotateOrigin(const Math::Rect& re
 }
 
 // テキストフォーマットを生成
-void Renderings::TextRenderHelper::CreateTextFormat(const std::wstring& fontName, float fontSize, float lineSpace, DWRITE_TEXT_ALIGNMENT textAlignment, DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment, IDWriteFactory8* pDWriteFactory, IDWriteFontCollection3* pFontCollection, IDWriteTextFormat** ppTextFormat)
+Microsoft::WRL::ComPtr<IDWriteTextFormat> Renderings::TextRenderHelper::CreateTextFormat
+(
+	const std::wstring&         fontName,
+	float                       fontSize,
+	float                       lineSpace,
+	DWRITE_TEXT_ALIGNMENT       textAlignment,
+	DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment,
+	Ref<IDWriteFactory8>        dWriteFactoryRef,
+	Ref<IDWriteFontCollection3> fontCollectionRef
+)
 {
-	pDWriteFactory->CreateTextFormat
+	Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat;
+	dWriteFactoryRef->CreateTextFormat
 	(
 		fontName.c_str(),
-		pFontCollection,
+		fontCollectionRef.Get(),
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
 		fontSize,
 		L"ja-jp",
-		ppTextFormat
+		textFormat.GetAddressOf()
 	);
 
 	// 行の上端とベースラインの距離
@@ -181,37 +191,39 @@ void Renderings::TextRenderHelper::CreateTextFormat(const std::wstring& fontName
 	}
 
 	// 行間を設定
-	(*ppTextFormat)->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, fontSize * lineSpace, baseline);
+	textFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, fontSize * lineSpace, baseline);
 
 	// 左右配置
-	(*ppTextFormat)->SetTextAlignment(textAlignment);
+	textFormat->SetTextAlignment(textAlignment);
 	// 上下配置
-	(*ppTextFormat)->SetParagraphAlignment(paragraphAlignment);
+	textFormat->SetParagraphAlignment(paragraphAlignment);
+
+	return textFormat;
 }
 
 // 文字を描画
 void Renderings::TextRenderHelper::DrawTextLayout
 (
-	float                   canvasRatio,
-	const Math::Vector2&    position,
-	const Text&             text,
-	ID2D1DeviceContext7*    pContext,
-	IDWriteFactory8*        pDWriteFactory,
-	IDWriteFontCollection3* pFontCollection,
-	IDWriteTextLayout*      pTextLayout,
-	ID2D1SolidColorBrush*   pBrush,
-	DecorationTextRenderer* pDecorationRenderer
+	float                       canvasRatio,
+	const Math::Vector2&        position,
+	Ref<const Text>             textRef,
+	Ref<ID2D1DeviceContext7>    contextRef,
+	Ref<IDWriteFactory8>        dWriteFactoryRef,
+	Ref<IDWriteFontCollection3> fontCollectionRef,
+	Ref<IDWriteTextLayout>      textLayoutRef,
+	Ref<ID2D1SolidColorBrush>   brushRef,
+	Ref<DecorationTextRenderer> DecorationRendererRef
 )
 {
 	// 色付け詳細リスト
-	const auto& colorDescList = text.GetDecorationString(m_refRenderer).GetColorDescList();
+	const auto& colorDescList = textRef->GetDecorationString(m_renderer.GetValue()).GetColorDescList();
 	// ルビ詳細リスト
-	const auto& rubyDescList = text.GetDecorationString(m_refRenderer).GetRubyDescList();
+	const auto& rubyDescList = textRef->GetDecorationString(m_renderer.GetValue()).GetRubyDescList();
 
 	// エフェクトを追加
 	for (const auto& colorDesc : colorDescList)
 	{
-		pTextLayout->SetDrawingEffect
+		textLayoutRef->SetDrawingEffect
 		(
 			colorDesc.effect.Get(),
 			DWRITE_TEXT_RANGE
@@ -223,11 +235,11 @@ void Renderings::TextRenderHelper::DrawTextLayout
 	}
 
 	// 文字を描画
-	pDecorationRenderer->Initialize(pContext, pBrush);
-	pTextLayout->Draw
+	DecorationRendererRef->Initialize(contextRef, brushRef);
+	textLayoutRef->Draw
 	(
 		nullptr,
-		pDecorationRenderer,
+		DecorationRendererRef.Get(),
 		position.x,
 		position.y
 	);
@@ -236,24 +248,22 @@ void Renderings::TextRenderHelper::DrawTextLayout
 	if (rubyDescList.size() != 0)
 	{
 		// フォントサイズ
-		float fontSize = text.GetFontSize() * canvasRatio;
+		float fontSize = textRef->GetFontSize() * canvasRatio;
 
 		// テキストフォーマット
-		Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat;
-		CreateTextFormat
+		Microsoft::WRL::ComPtr<IDWriteTextFormat> textFormat = CreateTextFormat
 		(
-			text.GetFontName(),
+			textRef->GetFontName(),
 			fontSize * 0.45f,
 			1.0f,
 			DWRITE_TEXT_ALIGNMENT_CENTER,
 			DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
-			pDWriteFactory,
-			pFontCollection,
-			textFormat.GetAddressOf()
+			dWriteFactoryRef,
+			fontCollectionRef
 		);
 
 		// 元の色
-		D2D1_COLOR_F oldColor = pBrush->GetColor();
+		D2D1_COLOR_F oldColor = brushRef->GetColor();
 
 		for (const auto& rubyDesc : rubyDescList)
 		{
@@ -262,7 +272,7 @@ void Renderings::TextRenderHelper::DrawTextLayout
 			{
 				if (rubyDesc.beginIndex == Math::Clamp(rubyDesc.beginIndex, colorDesc.beginIndex, colorDesc.beginIndex + colorDesc.length))
 				{
-					pBrush->SetColor(colorDesc.effect->GetColor());
+					brushRef->SetColor(colorDesc.effect->GetColor());
 				}
 			}
 
@@ -271,7 +281,7 @@ void Renderings::TextRenderHelper::DrawTextLayout
 			// 領域数
 			UINT32 hitTestMetricsCount = 0;
 
-			pTextLayout->HitTestTextRange
+			textLayoutRef->HitTestTextRange
 			(
 				static_cast<UINT32>(rubyDesc.beginIndex),
 				static_cast<UINT32>(rubyDesc.length),
@@ -290,16 +300,16 @@ void Renderings::TextRenderHelper::DrawTextLayout
 			};
 
 			// 文字の真上に描画位置が来るようにする
-			switch (text.GetParagraphAlignment())
+			switch (textRef->GetParagraphAlignment())
 			{
 			case DWRITE_PARAGRAPH_ALIGNMENT_NEAR:
 				rubyRect.position.y -= fontSize * 0.2f;
 				break;
 			case DWRITE_PARAGRAPH_ALIGNMENT_CENTER:
-				rubyRect.position.y -= fontSize * (text.GetLineSpace() / 2.0f - 0.8f);
+				rubyRect.position.y -= fontSize * (textRef->GetLineSpace() / 2.0f - 0.8f);
 				break;
 			case DWRITE_PARAGRAPH_ALIGNMENT_FAR:
-				rubyRect.position.y -= fontSize * (text.GetLineSpace() - 1.4f);
+				rubyRect.position.y -= fontSize * (textRef->GetLineSpace() - 1.4f);
 				break;
 			default:
 				break;
@@ -313,7 +323,7 @@ void Renderings::TextRenderHelper::DrawTextLayout
 
 			// テキストレイアウト
 			Microsoft::WRL::ComPtr<IDWriteTextLayout> textLayout;
-			pDWriteFactory->CreateTextLayout
+			dWriteFactoryRef->CreateTextLayout
 			(
 				rubyDesc.m_text.c_str(),
 				static_cast<UINT32>(rubyDesc.m_text.size()),
@@ -327,13 +337,13 @@ void Renderings::TextRenderHelper::DrawTextLayout
 			textLayout->Draw
 			(
 				nullptr,
-				pDecorationRenderer,
+				DecorationRendererRef.Get(),
 				rubyRect.position.x - rubyRect.size.x / 2.0f,
 				rubyRect.position.y - rubyRect.size.y / 2.0f
 			);
 
 			// 元の色に戻す
-			pBrush->SetColor(oldColor);
+			brushRef->SetColor(oldColor);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     TitleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * タイトルシーン
  */
@@ -29,8 +29,8 @@
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 
 // コンストラクタ
-TitleScene::TitleScene(const ComponentDesc& desc)
-	: Scene{ desc }
+TitleScene::TitleScene(const ComponentDesc& desc, Ref<const GameContext> context)
+	: Scene{ desc, context }
 	, m_pCameraScreen{}
 	, m_pCanvas{}
 	, m_pSelectMenu{}
@@ -57,28 +57,28 @@ void TitleScene::Initialize(const SceneTransitionData& data)
 	pIGameObjectManager->Load("Scene_Title");
 
 	// カメラ画面を取得
-	m_pCameraScreen = &pIGameObjectManager->Find("TitleCamera")->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
+	m_pCameraScreen = pIGameObjectManager->Find("TitleCamera")->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
 	m_pCameraScreen->SetProjectionMatrix(outputSize);
 
 	// キャンバスを取得
-	m_pCanvas = &pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>().Get();
+	m_pCanvas = pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>().Get();
 	m_pCanvas->SetSize(outputSize);
 
 	// 地面を取得
 	Ref<GameObject> ground = pIGameObjectManager->Find("Ground");
 	ground->GetComponent<Colliders::MeshCollider>()->ApplyTransform();
-	ground->GetComponent<Renderings::Model3D>()->GetPModelSource()->GetPPixelShader()->GetConstantBuffer()->SetVariable("ShadowCount", 0);
+	ground->GetComponent<Renderings::Model3D>()->GetPModelSource()->GetPixelShader()->GetConstantBufferRef()->SetVariable("ShadowCount", 0);
 
 	// 選択メニューを取得
-	m_pSelectMenu = &pIGameObjectManager->Find("TitleMenu")->GetComponent<SelectMenu>().Get();
+	m_pSelectMenu = pIGameObjectManager->Find("TitleMenu")->GetComponent<SelectMenu>().Get();
 	m_pSelectMenu->AddOption(L"スタート", [gameContext] { gameContext->GetPISceneManager()->SetNextScene<GamePlayScene>(); });
 	m_pSelectMenu->AddOption(L"ゲームを<ruby=しゅうりょう>終了</ruby>", [gameContext] { gameContext->GetPIWindowController()->Destroy(); });
 
 	// タイトルを取得
 	Ref<GameObject> title = pIGameObjectManager->Find("Title");
-	m_pTitle = &title->GetComponent<RectTransform>().Get();
-	m_pTitleImage = &title->GetComponent<Renderings::Image>().Get();
-	m_pTitleImage->GetPixelShader()->GetConstantBuffer()->SetVariable("TextureSize", m_pTitleImage->GetSize());
+	m_pTitle = title->GetComponent<RectTransform>().Get();
+	m_pTitleImage = title->GetComponent<Renderings::Image>().Get();
+	m_pTitleImage->GetPixelShader()->GetConstantBufferRef()->SetVariable("TextureSize", m_pTitleImage->GetSize());
 	m_titlePosition = m_pTitle->GetRect().position;
 	m_titleSway.Initialize(0.0f, 0.0f, 360.0f);
 }
@@ -115,8 +115,8 @@ void TitleScene::Update(float elapsedTime)
 	// タイトルの更新
 	m_titleSway += 90.0f * elapsedTime;
 	m_pTitle->SetPosition(m_titlePosition + Math::Vector2::UnitY * Math::Sin(Math::Deg2Rad(m_titleSway)) * 50.0f);
-	auto* buffer = m_pTitleImage->GetPixelShader()->GetConstantBuffer();
-	buffer->SetVariable("Time", buffer->GetVariable<float>("Time") + elapsedTime);
+	Ref bufferRef = m_pTitleImage->GetPixelShader()->GetConstantBufferRef();
+	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
 	//buffer->SetVariable("timer", buffer->GetVariable<float>("time") + elapsedTime);
 
 	// カメラ画面の更新

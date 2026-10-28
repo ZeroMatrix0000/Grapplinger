@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 画像描画
  */
@@ -52,8 +52,8 @@ namespace Renderings
 		// 画像の大きさを取得
 		Math::Vector2 GetImageSize(Ref<const Image> imageRef) const override;
 
-		// 画像のポインタリストのソート
-		void SortPImages();
+		// 画像の参照リストのソート
+		void SortImageRefs();
 
 		// 画像の参照リストを取得
 		const std::vector<Ref<const Image>> GetImageRefs() const { return m_imageRefs; }

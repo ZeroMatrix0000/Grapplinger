@@ -1,7 +1,7 @@
 /*
  * FileName:     Resources.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * リソース管理
  */
@@ -34,9 +34,9 @@ namespace Systems
 		Resources();
 
 		// モデルを読み込む
-		void LoadModelSources(ID3D11Device5* device, Renderings::InstancingEffectFactory* fx, const std::wstring& directoryPath);
+		void LoadModelSources(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef, Ref<Renderings::InstancingEffectFactory> fxRef);
 		// 画像を読み込む
-		void LoadImageSources(ID3D11Device5* device, const std::wstring& directoryPath);
+		void LoadImageSources(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef);
 		// Jsonを読み込む
 		void LoadJsons(const std::wstring& directoryPath);
 		// Jsonを文字列から追加
@@ -44,9 +44,9 @@ namespace Systems
 		// メッシュを読み込む
 		void LoadMeshes(const std::wstring& directoryPath);
 		// 頂点シェーダを読み込む
-		void LoadVertexShaders(ID3D11Device5* device, const std::wstring& directoryPath);
+		void LoadVertexShaders(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef);
 		// ピクセルシェーダを読み込む
-		void LoadPixelShaders(ID3D11Device5* device, const std::wstring& directoryPath);
+		void LoadPixelShaders(const std::wstring& directoryPath, Ref<ID3D11Device5> deviceRef);
 
 		// モデルの取得
 		Ref<const Renderings::Model3DSource> GetModelSource(const std::string& modelName)   override;

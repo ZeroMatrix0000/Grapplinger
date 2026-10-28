@@ -1,7 +1,7 @@
 /*
  * FileName:     Transform.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/07
+ * Last Updated: 2026/10/27
  *
  * トランスフォーム
  */
@@ -22,12 +22,12 @@ Components::Transform::Transform(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void Components::Transform::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Components::Transform::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_position, "Position");
-	serializer.AddParameter(&m_rotation, "Rotation");
-	serializer.AddParameter(&m_scale, "Scale");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_position }, "Position");
+	serializer.AddParameter(Ref{ m_rotation }, "Rotation");
+	serializer.AddParameter(Ref{ m_scale }, "Scale");
 	serializer.Load(json);
 
 	UpdateWorldMatrix();

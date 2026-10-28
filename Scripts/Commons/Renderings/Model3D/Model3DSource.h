@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DSource.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/13
+ * Last Updated: 2026/10/27
  *
  * 3Dモデルのソース
  */
@@ -39,10 +39,10 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Model3DSource();
+		Model3DSource(Ref<const PixelShader> pixelShader);
 
 		// 初期化処理
-		void Initialize(ID3D11Device* device, InstancingEffectFactory* fx, const std::wstring& filePath);
+		void Initialize(const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef);
 
 		// パーツごとの情報を追加
 		void AddPartInfo
@@ -54,12 +54,12 @@ namespace Renderings
 		);
 
 		// 深度ステンシルステートを設定
-		void SetDepthStencilState(const D3D11_DEPTH_STENCIL_DESC& desc, ID3D11Device5* pDevice);
+		void SetDepthStencilState(const D3D11_DEPTH_STENCIL_DESC& desc, Ref<ID3D11Device5> deviceRef);
 		// 描画順を設定
 		void SetDrawingOrder(int drawingOrder) { m_drawingOrder = drawingOrder; }
 
 		// ピクセルシェーダを設定
-		void SetPixelShader(const PixelShader* pPixelShader) { m_pPixelShader = pPixelShader; }
+		void SetPixelShader(Ref<const PixelShader> pixelShader) { m_pixelShader = pixelShader; }
 
 		// モデルを取得
 		const auto& GetModel() const
@@ -75,8 +75,8 @@ namespace Renderings
 		// 描画順を取得
 		int GetDrawingOrder() const { return m_drawingOrder; }
 
-		// ピクセルシェーダを取得
-		const PixelShader* GetPPixelShader() const { return m_pPixelShader; }
+		// ピクセルシェーダのポインタを取得
+		Ref<const PixelShader> GetPixelShader() const { return m_pixelShader; }
 
 		// 初期化済みかどうかを取得
 		bool IsInitialized() const { return m_model.get(); }
@@ -84,7 +84,7 @@ namespace Renderings
 		/* 静的関数 */
 
 		// 生成
-		static Model3DSource Create(ID3D11Device* device, InstancingEffectFactory* fx, const PixelShader* pPixelShader, const std::wstring& filePath);
+		static Model3DSource Create(Ref<const PixelShader> pixelShader, const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef);
 
 
 	private:
@@ -104,7 +104,7 @@ namespace Renderings
 		int m_drawingOrder;
 
 		// ピクセルシェーダ
-		const PixelShader* m_pPixelShader;
+		Ref<const PixelShader> m_pixelShader;
 
 	};
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  * 
  *
  * プレイヤー
@@ -29,23 +29,23 @@ Player::Player(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_internals{}
 {
-	m_internals.P_CAMERA_SCREEN = &GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
-	m_internals.pTransform = &GetOwner()->GetNullComponent<Transform>().Get();
-	m_internals.pBoxCollider = &GetOwner()->GetNullComponent<Colliders::BoxCollider>().Get();
-	m_internals.pParticleManager = &GetOwner()->GetNullComponent<Renderings::ParticleManager>().Get();
-	m_internals.pModel = &GetOwner()->GetNullComponent<PlayerModel>().Get();
-	m_internals.pWire = &GetOwner()->GetNullComponent<PlayerWire>().Get();
+	m_internals.P_CAMERA_SCREEN = GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
+	m_internals.pTransform = GetOwner()->GetNullComponent<Transform>().Get();
+	m_internals.pBoxCollider = GetOwner()->GetNullComponent<Colliders::BoxCollider>().Get();
+	m_internals.pParticleManager = GetOwner()->GetNullComponent<Renderings::ParticleManager>().Get();
+	m_internals.pModel = GetOwner()->GetNullComponent<PlayerModel>().Get();
+	m_internals.pWire = GetOwner()->GetNullComponent<PlayerWire>().Get();
 
 	// 現在の状態を初期化
 	SetState(std::make_unique<PlayerStateOnGround>());
 }
 
 // 初期化処理
-void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_internals.pTransform = &GetOwner()->GetComponent<Transform>().Get();
-	m_internals.pBoxCollider = &GetOwner()->GetComponent<Colliders::BoxCollider>().Get();
-	m_internals.pParticleManager = &GetOwner()->GetComponent<Renderings::ParticleManager>().Get();
+	m_internals.pTransform = GetOwner()->GetComponent<Transform>().Get();
+	m_internals.pBoxCollider = GetOwner()->GetComponent<Colliders::BoxCollider>().Get();
+	m_internals.pParticleManager = GetOwner()->GetComponent<Renderings::ParticleManager>().Get();
 
 	m_internals.rotation.SetValue(m_internals.pTransform->GetRotation());
 
@@ -53,16 +53,16 @@ void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 	float fallMaxSpeed = m_internals.fallSpeed.GetMax();
 	float coyoteTime = m_internals.fallCoyoteTime.GetMax();
 
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&moveMaxSpeed, "MoveMaxSpeed");
-	serializer.AddParameter(&m_internals.MOVE_ACCELERATION, "MoveAcceleration");
-	serializer.AddParameter(&m_internals.DASH_RATIO, "DashRatio");
-	serializer.AddParameter(&fallMaxSpeed, "FallMaxSpeed");
-	serializer.AddParameter(&m_internals.FALL_ACCELERATION, "FallAcceleration");
-	serializer.AddParameter(&m_internals.JUMP_POWER, "JumpPower");
-	serializer.AddParameter(&m_internals.CAMERA_VELOCITY_COEFFICIENT, "CameraVelocityCoefficient");
-	serializer.AddParameter(&coyoteTime, "CoyoteTime");
-	serializer.AddParameter(&m_internals.P_CAMERA_SCREEN, "CameraScreen");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ moveMaxSpeed }, "MoveMaxSpeed");
+	serializer.AddParameter(Ref{ m_internals.MOVE_ACCELERATION }, "MoveAcceleration");
+	serializer.AddParameter(Ref{ m_internals.DASH_RATIO }, "DashRatio");
+	serializer.AddParameter(Ref{ fallMaxSpeed }, "FallMaxSpeed");
+	serializer.AddParameter(Ref{ m_internals.FALL_ACCELERATION }, "FallAcceleration");
+	serializer.AddParameter(Ref{ m_internals.JUMP_POWER }, "JumpPower");
+	serializer.AddParameter(Ref{ m_internals.CAMERA_VELOCITY_COEFFICIENT }, "CameraVelocityCoefficient");
+	serializer.AddParameter(Ref{ coyoteTime }, "CoyoteTime");
+	serializer.AddParameter(Ref{ m_internals.P_CAMERA_SCREEN }, "CameraScreen");
 	serializer.Load(json);
 
 	m_internals.moveMaxSpeed.Initialize(0.0f, moveMaxSpeed, moveMaxSpeed * m_internals.DASH_RATIO);
@@ -76,22 +76,22 @@ void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 	m_internals.pBoxCollider->ApplyTransform();
 
 	// モデルの生成
-	if (m_internals.pModel == &GetOwner()->GetNullComponent<PlayerModel>().Get())
+	if (m_internals.pModel == GetOwner()->GetNullComponent<PlayerModel>().Get())
 	{
 		Ref obj = Instantiate("Prefab_PlayerModel");
-		m_internals.pModel = &obj->GetComponent<PlayerModel>().Get();
+		m_internals.pModel = obj->GetComponent<PlayerModel>().Get();
 		m_internals.pModel->SetParticleManager(m_internals.pParticleManager);
 	}
 
 	// 糸の生成
-	if (m_internals.pWire == &GetOwner()->GetNullComponent<PlayerWire>().Get())
+	if (m_internals.pWire == GetOwner()->GetNullComponent<PlayerWire>().Get())
 	{
 		Ref obj = Instantiate("Prefab_PlayerWire");
-		m_internals.pWire = &obj->GetComponent<PlayerWire>().Get();
+		m_internals.pWire = obj->GetComponent<PlayerWire>().Get();
 	}
 
 	// カメラを設定
-	if (m_internals.P_CAMERA_SCREEN != &GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get())
+	if (m_internals.P_CAMERA_SCREEN != GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get())
 	{
 		m_internals.pBoxCollider->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
 		m_internals.pParticleManager->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
@@ -109,7 +109,7 @@ void Player::Update(float elapsedTime, const Math::Vector3& move, bool isDash, b
 	m_internals.IS_JUMP = isJump;
 
 	// 状態ごとの処理
-	m_currentState->Update(&m_internals, elapsedTime);
+	m_currentState->Update(Ref{ m_internals }, elapsedTime);
 	// 次の状態に遷移
 	std::unique_ptr<Systems::State<PlayerInternals>> nextState{ m_currentState->MoveNextState() };
 	if (nextState)
@@ -122,7 +122,7 @@ void Player::Update(float elapsedTime, const Math::Vector3& move, bool isDash, b
 // 座標補正
 void Player::PositionCorrect(float distance, const Math::Vector3& direction)
 {
-	m_currentState->PositionCorrect(&m_internals, distance, direction);
+	m_currentState->PositionCorrect(Ref{ m_internals }, distance, direction);
 }
 
 // メッシュによる座標補正
@@ -266,8 +266,8 @@ void Player::SetState(std::unique_ptr<PlayerState> state)
 {
 	if (m_currentState != nullptr)
 	{
-		m_currentState->Exit(&m_internals);
+		m_currentState->Exit(Ref{ m_internals });
 	}
 	m_currentState = std::move(state);
-	m_currentState->Enter(&m_internals);
+	m_currentState->Enter(Ref{ m_internals });
 }

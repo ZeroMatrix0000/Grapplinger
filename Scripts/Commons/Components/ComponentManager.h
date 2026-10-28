@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * コンポーネント管理
  */
@@ -30,7 +30,7 @@ namespace Components
 		/* メンバ関数 */
 
 		// コンストラクタ
-		ComponentManager(Ref<IGameObjectInstantiator> iGameObjectInstantiatorRef);
+		ComponentManager(Ref<IGameObjectInstantiator> iGameObjectInstantiator);
 
 		// コンポーネント作成関数を追加
 		template<typename TComponent> requires IsDerived<TComponent, Component>
@@ -63,8 +63,8 @@ namespace Components
 		// 未参照コンポーネントリスト
 		std::unordered_map<std::type_index, std::unique_ptr<Component>> m_nullReferences;
 
-		// ゲームオブジェクト生成インタフェースの参照
-		Ref<IGameObjectInstantiator> m_iGameObjectInstantiatorRef;
+		// ゲームオブジェクト生成インタフェース
+		const Ref<IGameObjectInstantiator> m_iGameObjectInstantiator;
 
 	};
 }

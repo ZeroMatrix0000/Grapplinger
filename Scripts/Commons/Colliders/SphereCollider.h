@@ -1,7 +1,7 @@
 /*
  * FileName:     SphereCollider.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * 球の当たり判定
  */
@@ -32,12 +32,12 @@ namespace Colliders
 		/* メンバ関数 */
 
 		// コンストラクタ
-		SphereCollider(const ComponentDesc& desc, Ref<Renderings::IColliderRenderer> iColliderRendererRef);
+		SphereCollider(const ComponentDesc& desc, Ref<Renderings::IColliderRenderer> iColliderRenderer);
 		// デストラクタ
 		~SphereCollider();
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 座標を設定
 		void SetPosition(const Math::Vector3& position) { m_sphere.centerPosition = position; }
@@ -80,13 +80,13 @@ namespace Colliders
 		Math::Color m_color;
 
 		// トランスフォームの参照
-		Ref<Transform> m_refTransform;
+		Ref<Transform> m_transformRef;
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const Renderings::ICameraScreen>> m_iCameraScreenRefs;
 
-		// 当たり判定描画インタフェースの参照
-		Ref<Renderings::IColliderRenderer> m_iColliderRendererRef;
+		// 当たり判定描画インタフェース
+		const Ref<Renderings::IColliderRenderer> m_iColliderRenderer;
 
 	};
 }

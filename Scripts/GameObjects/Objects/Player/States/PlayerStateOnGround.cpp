@@ -24,14 +24,14 @@ PlayerStateOnGround::PlayerStateOnGround()
 }
 
 // 開始処理
-void PlayerStateOnGround::Enter(PlayerInternals* pInternals)
+void PlayerStateOnGround::Enter(Ref<PlayerInternals> internalsRef)
 {
-	pInternals->fallSpeed = 0.0f;
-	pInternals->canExpandWire = true;
+	internalsRef->fallSpeed = 0.0f;
+	internalsRef->canExpandWire = true;
 }
 
 // 更新処理
-void PlayerStateOnGround::Update(PlayerInternals* pInternals, float elapsedTime)
+void PlayerStateOnGround::Update(Ref<PlayerInternals> internalsRef, float elapsedTime)
 {
 	m_isGround = false;
 
@@ -39,96 +39,96 @@ void PlayerStateOnGround::Update(PlayerInternals* pInternals, float elapsedTime)
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(pInternals->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
 	);
 
 	// 最大の早さを調整
-	pInternals->moveMaxSpeed += pInternals->MOVE_ACCELERATION * elapsedTime * pInternals->DASH_RATIO * (pInternals->IS_DASH ? 1.0f : -1.0f);
+	internalsRef->moveMaxSpeed += internalsRef->MOVE_ACCELERATION * elapsedTime * internalsRef->DASH_RATIO * (internalsRef->IS_DASH ? 1.0f : -1.0f);
 
 	// 加速度がない
-	if (pInternals->MOVE == Math::Vector3::Zero)
+	if (internalsRef->MOVE == Math::Vector3::Zero)
 	{
 		// 速さ
 		float speed = Math::Clamp
 		(
-			pInternals->moveVelocity.Length() - pInternals->MOVE_ACCELERATION * elapsedTime,
+			internalsRef->moveVelocity.Length() - internalsRef->MOVE_ACCELERATION * elapsedTime,
 			0.0f,
-			static_cast<float>(pInternals->moveMaxSpeed)
+			static_cast<float>(internalsRef->moveMaxSpeed)
 		);
-		pInternals->moveVelocity.Normalize();
-		pInternals->moveVelocity *= speed;
+		internalsRef->moveVelocity.Normalize();
+		internalsRef->moveVelocity *= speed;
 	}
 	// 加速度がある
 	else
 	{
 		// 速度に加速度を足す
-		pInternals->moveVelocity += Math::Vector3::Transform(pInternals->MOVE, cameraRotation) *
-			pInternals->MOVE_ACCELERATION * elapsedTime * (pInternals->IS_DASH ? pInternals->DASH_RATIO : 1.0f);
+		internalsRef->moveVelocity += Math::Vector3::Transform(internalsRef->MOVE, cameraRotation) *
+			internalsRef->MOVE_ACCELERATION * elapsedTime * (internalsRef->IS_DASH ? internalsRef->DASH_RATIO : 1.0f);
 		// 速さを最大に収める
-		if (pInternals->moveVelocity.Length() > pInternals->moveMaxSpeed)
+		if (internalsRef->moveVelocity.Length() > internalsRef->moveMaxSpeed)
 		{
-			pInternals->moveVelocity.Normalize();
-			pInternals->moveVelocity *= pInternals->moveMaxSpeed;
+			internalsRef->moveVelocity.Normalize();
+			internalsRef->moveVelocity *= internalsRef->moveMaxSpeed;
 		}
 
-		pInternals->rotation.SetTarget
+		internalsRef->rotation.SetTarget
 		(
-			Math::Quaternion::CreateFromAxisAngle(Math::Vector3::UnitY, Math::Arctan2(pInternals->moveVelocity.x, pInternals->moveVelocity.z)),
+			Math::Quaternion::CreateFromAxisAngle(Math::Vector3::UnitY, Math::Arctan2(internalsRef->moveVelocity.x, internalsRef->moveVelocity.z)),
 			200.0f,
 			25.0f
 		);
 	}
 
 	// 落下速度を計算
-	pInternals->fallSpeed += pInternals->FALL_ACCELERATION * elapsedTime;
+	internalsRef->fallSpeed += internalsRef->FALL_ACCELERATION * elapsedTime;
 
 	// ジャンプ入力
-	if (pInternals->IS_JUMP)
+	if (internalsRef->IS_JUMP)
 	{
-		pInternals->jumpBufferTime = pInternals->jumpBufferTime.GetMax();
+		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMax();
 	}
-	pInternals->jumpBufferTime -= elapsedTime;
+	internalsRef->jumpBufferTime -= elapsedTime;
 
 	// ジャンプ
-	if (pInternals->jumpBufferTime != 0.0f)
+	if (internalsRef->jumpBufferTime != 0.0f)
 	{
 		SetNextState(std::make_unique<PlayerStateFalling>());
-		pInternals->fallSpeed = -pInternals->JUMP_POWER;
-		pInternals->jumpBufferTime = pInternals->jumpBufferTime.GetMin();
+		internalsRef->fallSpeed = -internalsRef->JUMP_POWER;
+		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
-		pInternals->pParticleManager->Play<JumpingParticle>();
+		internalsRef->pParticleManager->Play<JumpingParticle>();
 	}
 
 	// 糸の更新
-	pInternals->pWire->Update(elapsedTime);
+	internalsRef->pWire->Update(elapsedTime);
 
 	// 回転の更新
-	pInternals->rotation.Tick(elapsedTime);
+	internalsRef->rotation.Tick(elapsedTime);
 
 	// 位置に速度を足す
-	pInternals->pTransform->Translate((pInternals->moveVelocity - Math::Vector3::UnitY * pInternals->fallSpeed) * elapsedTime);
+	internalsRef->pTransform->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
 	// 回転させる
-	pInternals->pTransform->SetRotation(pInternals->rotation.GetCurrent());
+	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	pInternals->pBoxCollider->ApplyTransform();
+	internalsRef->pBoxCollider->ApplyTransform();
 
 	// パーティクルの更新
-	pInternals->pParticleManager->Update(elapsedTime);
+	internalsRef->pParticleManager->Update(elapsedTime);
 }
 
 // 終了処理
-void PlayerStateOnGround::Exit(PlayerInternals* pInternals)
+void PlayerStateOnGround::Exit(Ref<PlayerInternals> internalsRef)
 {
 }
 
 // 座標補正
-void PlayerStateOnGround::PositionCorrect(PlayerInternals* pInternals, float distance, const Math::Vector3& direction)
+void PlayerStateOnGround::PositionCorrect(Ref<PlayerInternals> internalsRef, float distance, const Math::Vector3& direction)
 {
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// めり込んでいる、または、距離が近いかつ移動方向が下
-	if (distance < 0.0f || (distance < pInternals->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
@@ -138,13 +138,13 @@ void PlayerStateOnGround::PositionCorrect(PlayerInternals* pInternals, float dis
 		{
 			displacement = Math::Vector3::Up / cos * distance;
 			// 落下速度を 0 にする
-			pInternals->fallSpeed = 0.0f;
+			internalsRef->fallSpeed = 0.0f;
 		}
 
 		// 移動
-		pInternals->pTransform->Translate(displacement);
+		internalsRef->pTransform->Translate(displacement);
 		// トランスフォームを適用
-		pInternals->pBoxCollider->ApplyTransform();
+		internalsRef->pBoxCollider->ApplyTransform();
 
 		// 地面についていることを確定させる
 		m_isGround = true;

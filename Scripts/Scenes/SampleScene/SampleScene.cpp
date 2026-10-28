@@ -1,7 +1,7 @@
 /*
  * FileName:     SampleScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * サンプルシーン
  */
@@ -26,8 +26,8 @@
 #include "Scripts/GameObjects/Objects/DebugCamera/DebugCamera.h"
 
 // コンストラクタ
-SampleScene::SampleScene(const ComponentDesc& desc)
-	: Scene{ desc }
+SampleScene::SampleScene(const ComponentDesc& desc, Ref<const GameContext> context)
+	: Scene{ desc, context }
 	, m_test3D{}
 	, m_ground{}
 	, m_pCameraScreen{}
@@ -54,16 +54,16 @@ void SampleScene::Initialize(const SceneTransitionData& data)
 
 	// デバッグカメラを取得
 	Ref<GameObject> camera = pIGameObjectManager->Find("DebugCamera");
-	m_pCameraScreen = &camera->GetComponent<Renderings::ICameraScreen>().Get();
+	m_pCameraScreen = camera->GetComponent<Renderings::ICameraScreen>().Get();
 	m_pCameraScreen->SetProjectionMatrix(outputSize);
-	m_pDebugCamera = &camera->GetComponent<DebugCamera>().Get();
+	m_pDebugCamera = camera->GetComponent<DebugCamera>().Get();
 
 	// キャンバスを取得
-	m_pCanvas = &pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>().Get();
+	m_pCanvas = pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>().Get();
 	m_pCanvas->SetSize(outputSize);
 
 	// パーティクル管理を取得
-	m_pParticleManager = &pIGameObjectManager->Find("ParticleManager")->GetComponent<Renderings::ParticleManager>().Get();
+	m_pParticleManager = pIGameObjectManager->Find("ParticleManager")->GetComponent<Renderings::ParticleManager>().Get();
 
 	// プレイヤーを取得
 	Ref<GameObject> player = pIGameObjectManager->Find("Player");

@@ -1,7 +1,7 @@
 /*
  * FileName:     RenderingResources.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/07
+ * Last Updated: 2026/10/27
  *
  * 描画リソース
  */
@@ -18,10 +18,10 @@ Renderings::RenderingResources::RenderingResources()
 }
 
 // 初期化処理
-void Renderings::RenderingResources::Initialize(ID3D11Device5* device)
+void Renderings::RenderingResources::Initialize(Ref<ID3D11Device5> deviceRef)
 {
-	m_commonStates = std::make_unique<DirectX::CommonStates>(device);
-	m_effectFactory = std::make_unique<InstancingEffectFactory>(device);
+	m_commonStates = std::make_unique<DirectX::CommonStates>(deviceRef.Get());
+	m_effectFactory = std::make_unique<InstancingEffectFactory>(deviceRef);
 }
 
 // エフェクトファクトリーのディレクトリを設定

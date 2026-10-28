@@ -1,7 +1,7 @@
 /*
  * FileName:     DeviceResources2D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * Direct2D に必要なリソース
  */
@@ -80,7 +80,7 @@ void Renderings::DeviceResources2D::CreateBackBuffer()
 {
 	// サーフェス
 	Microsoft::WRL::ComPtr<IDXGISurface> surface;
-	Utility::ThrowIfFailed(m_deviceResourcesRef->GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(surface.GetAddressOf())));
+	Utility::ThrowIfFailed(m_deviceResourcesRef->GetSwapChainRef()->GetBuffer(0, IID_PPV_ARGS(surface.GetAddressOf())));
 
 	Utility::ThrowIfFailed(m_d2dContext->CreateBitmapFromDxgiSurface
 	(

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionCloseMessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/27
  *
  * メッセージウィンドウ閉アクション
  */
@@ -22,18 +22,18 @@ ActionCloseMessageWindow::ActionCloseMessageWindow(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void ActionCloseMessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void ActionCloseMessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_refMessageWindow, "MessageWindow");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(m_refMessageWindow.Nest(), "MessageWindow");
 	serializer.Load(json);
 }
 
 // パラメータを設定
-void ActionCloseMessageWindow::SetParams(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void ActionCloseMessageWindow::SetParams(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Systems::JsonSerializer serializer{ iGameObjectFinderRef };
-	serializer.AddParameter(&m_isWait, "IsWait");
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_isWait }, "IsWait");
 	serializer.Load(json);
 }
 

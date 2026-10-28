@@ -1,7 +1,7 @@
 /*
  * FileName:     DecorationString.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * デコレーション付き文字列
  */
@@ -99,7 +99,7 @@ void Renderings::DecorationString::DeleteTag(Ref<std::wstring> strRef)
 		// 見つからなければ終了
 		if (gtIndex == std::wstring::npos)
 		{
-			strRef.Get() = strRef->substr(0, ltIndex);
+			strRef.GetValue() = strRef->substr(0, ltIndex);
 			return;
 		}
 

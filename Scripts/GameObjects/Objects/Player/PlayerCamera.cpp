@@ -26,7 +26,7 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void PlayerCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef)
+void PlayerCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	// カメラ画面を取得
 	m_refCameraScreen = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();

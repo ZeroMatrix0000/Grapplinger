@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * 当たり判定描画
  */
@@ -19,27 +19,32 @@ Renderings::ColliderRenderer::ColliderRenderer()
 	: IColliderRenderer{}
 	, m_primitiveBatch{}
 	, m_basicEffect{}
+	, m_inputLayout{}
 	, m_boxColliderRefs{}
 	, m_sphereColliderRefs{}
 	, m_meshColliderRefs{}
 	, m_pContext{}
 	, m_pCommonStates{}
-	, m_inputLayout{}
 {
 }
 
 // 初期化処理
-void Renderings::ColliderRenderer::Initialize(ID3D11Device5* pDevice, ID3D11DeviceContext4* pContext, const DirectX::CommonStates& commonStates)
+void Renderings::ColliderRenderer::Initialize
+(
+	Ref<ID3D11Device5> deviceRef,
+	Ref<ID3D11DeviceContext4> contextRef,
+	Ref<const DirectX::CommonStates> commonStatesRef
+)
 {
-	m_pContext = pContext;
-	m_pCommonStates = &commonStates;
+	m_pContext = contextRef.Get();
+	m_pCommonStates = commonStatesRef.Get();
 
-	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>(pContext);
-	m_basicEffect = std::make_unique<DirectX::BasicEffect>(pDevice);
+	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>(m_pContext);
+	m_basicEffect = std::make_unique<DirectX::BasicEffect>(deviceRef.Get());
 	m_basicEffect->SetVertexColorEnabled(true);
 	Utility::ThrowIfFailed
 	(
-		DirectX::CreateInputLayoutFromEffect<DirectX::VertexPositionColor>(pDevice, m_basicEffect.get(), m_inputLayout.ReleaseAndGetAddressOf())
+		DirectX::CreateInputLayoutFromEffect<DirectX::VertexPositionColor>(deviceRef.Get(), m_basicEffect.get(), m_inputLayout.ReleaseAndGetAddressOf())
 	);
 }
 

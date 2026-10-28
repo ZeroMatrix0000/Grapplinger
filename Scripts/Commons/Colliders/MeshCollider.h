@@ -1,7 +1,7 @@
 /*
  * FileName:     MeshCollider.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/10/27
  *
  * メッシュの当たり判定
  */
@@ -39,14 +39,14 @@ namespace Colliders
 		MeshCollider
 		(
 			const ComponentDesc& desc,
-			Ref<Renderings::IColliderRenderer> iColliderRendererRef,
-			Ref<Systems::IResources> iResourcesRef
+			Ref<Renderings::IColliderRenderer> iColliderRenderer,
+			Ref<Systems::IResources> iResources
 		);
 		// デストラクタ
 		~MeshCollider();
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinderRef) override;
+		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 色を設定
 		void SetColor(const Math::Color& color) { m_color = color; }
@@ -85,7 +85,7 @@ namespace Colliders
 		Mesh m_worldMesh;
 
 		// メッシュの参照
-		Ref<const Mesh> m_meshRef;
+		Ref<const Mesh> m_mesh;
 
 		// トランスフォームの参照
 		Ref<Transform> m_transformRef;
@@ -93,11 +93,11 @@ namespace Colliders
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const Renderings::ICameraScreen>> m_iCameraScreenRefs;
 
-		// 当たり判定描画インタフェースの参照
-		Ref<Renderings::IColliderRenderer> m_iColliderRendererRef;
+		// 当たり判定描画インタフェース
+		const Ref<Renderings::IColliderRenderer> m_iColliderRenderer;
 
-		// リソース管理の参照
-		Ref<Systems::IResources> m_iResourcesRef;
+		// リソース管理
+		const Ref<Systems::IResources> m_iResources;
 
 	};
 }

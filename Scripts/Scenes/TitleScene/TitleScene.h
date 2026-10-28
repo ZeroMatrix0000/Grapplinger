@@ -1,7 +1,7 @@
 /*
  * FileName:     TitleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/24
+ * Last Updated: 2026/10/27
  *
  * タイトルシーン
  */
@@ -45,7 +45,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	TitleScene(const ComponentDesc& desc);
+	TitleScene(const ComponentDesc& desc, Ref<const GameContext> context);
 
 	// 初期化処理
 	void Initialize(const SceneTransitionData& data) override;

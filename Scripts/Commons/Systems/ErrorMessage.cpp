@@ -1,7 +1,7 @@
 /*
  * FileName:     ErrorMessage.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/26
+ * Last Updated: 2026/10/27
  *
  * エラーメッセージ
  */
@@ -10,7 +10,6 @@
 #include "ErrorMessage.h"
 
 #include "../GameObjects/GameObject.h"
-#include "../Components/RectTransform.h"
 #include "../Renderings/Text/Text.h"
 #include "../Renderings/Canvas.h"
 #include "../GameObjects/IGameObjectInstantiator.h"
@@ -63,12 +62,12 @@ void Systems::ErrorMessage::Update(float elapsedTime)
 }
 
 // オブジェクト生成
-void Systems::ErrorMessage::CreateObjects(IGameObjectInstantiator* pIGameObjectInstantiator)
+void Systems::ErrorMessage::CreateObjects(Ref<IGameObjectInstantiator> iGameObjectInstantiator)
 {
 	// テキストの設定
-	m_pText = &pIGameObjectInstantiator->Instantiate("Prefab_ErrorMessage", true)->GetComponent<Renderings::Text>().Get();
+	m_pText = iGameObjectInstantiator->Instantiate("Prefab_ErrorMessage", true)->GetComponent<Renderings::Text>().Get();
 	// キャンバスの設定
-	Ref canvas = pIGameObjectInstantiator->Instantiate("Prefab_Canvas", true)->GetComponent<Renderings::Canvas>();
+	Ref canvas = iGameObjectInstantiator->Instantiate("Prefab_Canvas", true)->GetComponent<Renderings::Canvas>();
 	canvas->Initialize(Renderings::Canvas::FixedSize::None, Math::Vector2{ 1600.0f, 900.0f });
 
 	// キャンバスに画像を映す

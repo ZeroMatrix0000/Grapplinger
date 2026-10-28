@@ -17,18 +17,18 @@ DebugCameraStateMove::DebugCameraStateMove()
 }
 
 // 開始処理
-void DebugCameraStateMove::Enter(DebugCameraInternals* pInternals)
+void DebugCameraStateMove::Enter(Ref<DebugCameraInternals> internalsRef)
 {
 }
 
 // 更新処理
-void DebugCameraStateMove::Update(DebugCameraInternals* pInternals, float elapsedTime)
+void DebugCameraStateMove::Update(Ref<DebugCameraInternals> internalsRef, float elapsedTime)
 {
 	// カメラ
-	Camera::EulerTargetCamera camera = pInternals->pCameraScreen->GetCamera();
+	Camera::EulerTargetCamera camera = internalsRef->cameraScreenRef->GetCamera();
 
 	// マウスの移動量の移動量
-	Math::Vector2 mouseDelta = pInternals->mouseMovement * MOUSE_COEFFICIENT * camera.distance;
+	Math::Vector2 mouseDelta = internalsRef->mouseMovement * MOUSE_COEFFICIENT * camera.distance;
 	// カメラの移動
 	Math::Vector3 movement = Math::Vector3::Transform
 	(
@@ -37,16 +37,16 @@ void DebugCameraStateMove::Update(DebugCameraInternals* pInternals, float elapse
 	);
 	camera.position += movement;
 
-	pInternals->pCameraScreen->SetCamera(camera);
+	internalsRef->cameraScreenRef->SetCamera(camera);
 
 	// 中クリックを離したら待機状態に戻る
-	if (!pInternals->mouseButtonMiddle)
+	if (!internalsRef->mouseButtonMiddle)
 	{
 		SetNextState(std::make_unique<DebugCameraStateIdle>());
 	}
 }
 
 // 終了処理
-void DebugCameraStateMove::Exit(DebugCameraInternals* pInternals)
+void DebugCameraStateMove::Exit(Ref<DebugCameraInternals> internalsRef)
 {
 }
