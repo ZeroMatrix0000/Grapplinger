@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateFalling.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * プレイヤーの地面にいる状態
  */
@@ -34,7 +34,7 @@ void PlayerStateFalling::Update(Ref<PlayerInternals> internalsRef, float elapsed
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->CAMERA_SCREEN_REF->GetCamera().rotation.y)
 	);
 
 	// 最大の早さを調整
@@ -85,21 +85,21 @@ void PlayerStateFalling::Update(Ref<PlayerInternals> internalsRef, float elapsed
 	internalsRef->jumpBufferTime -= elapsedTime;
 
 	// 糸の更新
-	internalsRef->pWire->Update(elapsedTime);
+	internalsRef->wireRef->Update(elapsedTime);
 
 	// 回転の更新
 	internalsRef->rotation.Tick(elapsedTime);
 
 	// 位置に速度を足す
-	internalsRef->pTransform->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
+	internalsRef->transformRef->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
 	// 回転させる
-	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
+	internalsRef->transformRef->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	internalsRef->pBoxCollider->ApplyTransform();
+	internalsRef->boxColliderRef->ApplyTransform();
 
 	// パーティクルの更新
-	internalsRef->pParticleManager->Update(elapsedTime);
+	internalsRef->particleManagerRef->Update(elapsedTime);
 }
 
 // 終了処理
@@ -127,12 +127,12 @@ void PlayerStateFalling::PositionCorrect(Ref<PlayerInternals> internalsRef, floa
 				// 地面にいる状態にする
 				SetNextState(std::make_unique<PlayerStateOnGround>());
 				// 砂煙の再生
-				internalsRef->pParticleManager->Play<LandingParticle>();
+				internalsRef->particleManagerRef->Play<LandingParticle>();
 			}
 		}
 		// 移動
-		internalsRef->pTransform->Translate(displacement);
+		internalsRef->transformRef->Translate(displacement);
 		// トランスフォームを適用
-		internalsRef->pBoxCollider->ApplyTransform();
+		internalsRef->boxColliderRef->ApplyTransform();
 	}
 }

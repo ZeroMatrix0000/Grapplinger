@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * NPC管理
  */
@@ -44,16 +44,16 @@ public:
 	void SetRotation(const Math::Vector3& playerPosition);
 
 	// カーソルを設定
-	void SetCursor(const Renderings::ICameraScreen& iCameraScreen);
+	void SetCursor(Ref<const Renderings::ICameraScreen> iCameraScreenRef);
 
 	// カーソルを隠す
 	void HideCursor(bool isHideCursor) { m_isHideCursor = isHideCursor; }
 
 	// プレイヤーとの当たり判定
-	void PlayerCollide(Player* pPlayer);
+	void PlayerCollide(Ref<Player> playerRef);
 
 	// 当たり判定を取得
-	std::vector<const Math::Box*> GetPBoxes() const;
+	std::vector<Ref<const Math::Box>> GetBoxRefs() const;
 
 	// カーソルが合っているNPCを取得
 	const NPC* GetPFocusedNPC() const { return m_pFocusedNPC; }
@@ -67,12 +67,12 @@ private:
 	// カーソルを隠しているか
 	bool m_isHideCursor;
 
-	// NPCリスト
-	std::vector<NPC*> m_pNPCList;
-	// カーソルリスト
-	std::vector<Ref<InteractCursor>> m_pInteractCursorList;
+	// NPCの参照リスト
+	std::vector<Ref<NPC>> m_nPCRefList;
+	// カーソルの参照リスト
+	std::vector<Ref<InteractCursor>> m_interactCursorRefList;
 
-	// カーソルが合っているMPC
+	// カーソルが合っているMPCのポインタ
 	NPC* m_pFocusedNPC;
 
 };

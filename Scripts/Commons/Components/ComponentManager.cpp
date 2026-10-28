@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * コンポーネント管理
  */
@@ -18,7 +18,7 @@ Components::ComponentManager::ComponentManager(Ref<IGameObjectInstantiator> iGam
 	: IComponentManager{}
 	, m_permit{}
 	, m_CreateComponentList{}
-	, m_nullReferences{}
+	, m_nullComponents{}
 	, m_iGameObjectInstantiator{ iGameObjectInstantiator }
 {
 }
@@ -42,17 +42,17 @@ Ref<Component> Components::ComponentManager::GetNullComponent(const std::type_in
 		));
 	}
 
-	auto it = m_nullReferences.find(index);
-	if (it == m_nullReferences.end())
+	auto it = m_nullComponents.find(index);
+	if (it == m_nullComponents.end())
 	{
 		// コンポーネントを追加
-		m_nullReferences.emplace(index, m_CreateComponentList.at(index)(ComponentDesc
+		m_nullComponents.emplace(index, m_CreateComponentList.at(index)(ComponentDesc
 			{
 				m_iGameObjectInstantiator->GetNullGameObject(),
 				Ref{ m_iGameObjectInstantiator },
 				m_permit
 			}));
-		return Ref{ *m_nullReferences.at(index) };
+		return Ref{ *m_nullComponents.at(index) };
 	}
 	else
 	{

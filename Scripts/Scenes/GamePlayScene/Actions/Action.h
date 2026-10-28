@@ -1,7 +1,7 @@
 /*
  * FileName:     Action.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/10
+ * Last Updated: 2026/10/28
  *
  * アクション
  */
@@ -35,7 +35,7 @@ public:
 	// 開始処理
 	virtual void Enter();
 	// 更新処理
-	virtual void Update(float elapsedTime, const IGameInput& iGameInput);
+	virtual void Update(float elapsedTime, Ref<const IGameInput> iGameInput);
 	// 終了処理
 	virtual void Exit();
 

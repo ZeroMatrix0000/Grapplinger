@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * NPC
  */
@@ -91,8 +91,8 @@ private:
 	// トランスフォームの参照
 	Ref<Transform> m_transformRef;
 	// 長方形の当たり判定の参照
-	Ref<Colliders::BoxCollider> m_refBoxCollider;
+	Ref<Colliders::BoxCollider> m_boxColliderRef;
 	// 球の当たり判定の参照
-	Ref<Colliders::SphereCollider> m_refSphereCollider;
+	Ref<Colliders::SphereCollider> m_sphereColliderRef;
 
 };

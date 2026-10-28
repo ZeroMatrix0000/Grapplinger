@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionSetMessageWindowText.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * メッセージウィンドウ開アクション
  */
@@ -49,10 +49,10 @@ void ActionSetMessageWindowText::Enter()
 }
 
 // 更新処理
-void ActionSetMessageWindowText::Update(float elapsedTime, const IGameInput& iGameInput)
+void ActionSetMessageWindowText::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
 	// テキスト送り入力がされたら
-	if (iGameInput.GetTextScroll())
+	if (iGameInput->GetTextScroll())
 	{
 		// 全て表示されていたら次のアクションへ移動、でなければ全て表示
 		if (m_refMessageWindow->IsDisplayAllText())

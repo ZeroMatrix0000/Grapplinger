@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateOnAir.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * プレイヤーの空中にいる状態
  */
@@ -35,7 +35,7 @@ void PlayerStateOnAir::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->CAMERA_SCREEN_REF->GetCamera().rotation.y)
 	);
 
 	// 最大の早さを調整
@@ -92,19 +92,19 @@ void PlayerStateOnAir::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 		internalsRef->fallSpeed = -internalsRef->JUMP_POWER;
 		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
-		internalsRef->pParticleManager->Play<JumpingParticle>();
+		internalsRef->particleManagerRef->Play<JumpingParticle>();
 	}
 
 	// 糸の更新
-	internalsRef->pWire->Update(elapsedTime);
+	internalsRef->wireRef->Update(elapsedTime);
 
 	// 回転の更新
 	internalsRef->rotation.Tick(elapsedTime);
 
 	// 位置に速度を足す
-	internalsRef->pTransform->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
+	internalsRef->transformRef->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
 	// 回転させる
-	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
+	internalsRef->transformRef->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 落下猶予
 	internalsRef->fallCoyoteTime -= elapsedTime;
@@ -114,10 +114,10 @@ void PlayerStateOnAir::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 	}
 
 	// 当たり判定の更新
-	internalsRef->pBoxCollider->ApplyTransform();
+	internalsRef->boxColliderRef->ApplyTransform();
 
 	// パーティクルの更新
-	internalsRef->pParticleManager->Update(elapsedTime);
+	internalsRef->particleManagerRef->Update(elapsedTime);
 }
 
 // 終了処理
@@ -142,8 +142,8 @@ void PlayerStateOnAir::PositionCorrect(Ref<PlayerInternals> internalsRef, float 
 			SetNextState(std::make_unique<PlayerStateOnGround>());
 		}
 		// 移動
-		internalsRef->pTransform->Translate(displacement);
+		internalsRef->transformRef->Translate(displacement);
 		// トランスフォームを適用
-		internalsRef->pBoxCollider->ApplyTransform();
+		internalsRef->boxColliderRef->ApplyTransform();
 	}
 }

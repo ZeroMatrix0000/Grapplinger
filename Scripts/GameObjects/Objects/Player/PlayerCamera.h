@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * プレイヤーカメラ
  */
@@ -63,6 +63,6 @@ private:
 	Spring<Camera::EulerTargetCamera> m_camera;
 
 	// カメラ画面の参照
-	Ref<Renderings::CameraScreen<Camera::EulerTargetCamera>> m_refCameraScreen;
+	Ref<Renderings::CameraScreen<Camera::EulerTargetCamera>> m_cameraScreenRef;
 
 };

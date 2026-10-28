@@ -1,7 +1,7 @@
 /*
  * FileName:     InteractCursor.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * 話しかける・調べる際のカーソル
  */
@@ -43,8 +43,8 @@ public:
 	// 名前を設定
 	void SetName(const std::wstring& name);
 
-	// キャンバスを設定
-	void SetCanvas(const Renderings::Canvas& canvas);
+	// キャンバスの参照を設定
+	void SetCanvasRef(Ref<const Renderings::Canvas> canvasRef);
 
 	// 座標を設定
 	void SetPosition(const Math::Vector2& position);
@@ -65,13 +65,13 @@ private:
 	Limited m_alpha;
 
 	// テキストのトランスフォームの参照
-	Ref<RectTransform> m_refTextTransform;
+	Ref<RectTransform> m_textTransformRef;
 	// テキストの参照
-	Ref<Renderings::Text> m_refText;
+	Ref<Renderings::Text> m_textRef;
 
 	// 画像のトランスフォームの参照
-	Ref<RectTransform> m_refImageTransform;
+	Ref<RectTransform> m_imageTransformRef;
 	// 画像の参照
-	Ref<Renderings::Image> m_refImage;
+	Ref<Renderings::Image> m_imageRef;
 
 };

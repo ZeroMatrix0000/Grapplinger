@@ -1,7 +1,7 @@
 /*
  * FileName:     Game.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * ゲーム
  */
@@ -30,7 +30,7 @@ Game::Game()
 	, m_componentManager{ Ref<IGameObjectInstantiator>{ m_gameObjectManager } }
 	, m_gameObjectManager{ Ref<IComponentManager>{ m_componentManager }, Ref<Systems::IResources>{ m_resources } }
 	, m_sceneManager{ Ref{ m_context }.Const() }
-	, m_gameInput{ m_input }
+	, m_gameInput{ Ref<const Systems::IInput>{ m_input } }
 	, m_context{}
 {
 }
@@ -114,12 +114,12 @@ void Game::Initialize(const HWND& hWindow)
 	// コンテキストの初期化
 	m_context.Initialize
 	(
-		&m_windowController,
-		&m_input,
-		&m_componentManager,
-		&m_gameObjectManager,
-		&m_sceneManager,
-		&m_gameInput
+		Ref<Systems::IWindowController>{ m_windowController },
+		Ref<Systems::IInput>{ m_input },
+		Ref<IComponentManager>{ m_componentManager },
+		Ref<IGameObjectManager>{ m_gameObjectManager },
+		Ref<Scenes::ISceneManager<SceneTransitionData, GameContext>>{ m_sceneManager },
+		Ref<IGameInput>{ m_gameInput }
 	);
 
 	// 最初のシーンを設定
@@ -204,7 +204,7 @@ void Game::OnWindowSizeChanged(const Math::Vector2Int& outputSize)
 	m_deviceResources2D.OnWindowSizeChanged();
 
 	m_renderer.GetModelRenderer()->SetDepthStencilView(m_deviceResources.GetDepthStencilViewRef());
-	m_renderer.GetTextRenderer()->OnWindowSizeChanged(m_deviceResources2D.GetContextRef(), m_deviceResources2D.GetBackBufferRef());
+	m_renderer.GetTextRenderer()->OnWindowSizeChanged(m_deviceResources2D.GetBackBufferRef());
 
 	m_sceneManager.OnWindowSizeChanged(outputSize);
 }

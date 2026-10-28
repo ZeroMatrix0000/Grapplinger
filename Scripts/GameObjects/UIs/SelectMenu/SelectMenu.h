@@ -74,8 +74,8 @@ private:
 	std::vector<Easing::Value<float>> m_fontSizes;
 
 	// カーソル画像の参照
-	Ref<Renderings::Image> m_refCursorImage;
+	Ref<Renderings::Image> m_cursorImageRef;
 	// カーソルの2D用トランスフォームの参照
-	Ref<RectTransform> m_refCursorRectTransform;
+	Ref<RectTransform> m_cursorRectTransformRef;
 
 };

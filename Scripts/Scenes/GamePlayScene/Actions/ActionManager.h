@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/21
+ * Last Updated: 2026/10/28
  *
  * アクション管理
  */
@@ -27,13 +27,13 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	ActionManager(const ComponentDesc& desc, Systems::IResources* pIResources);
+	ActionManager(const ComponentDesc& desc, Ref<Systems::IResources> iResources);
 
 	// 初期化処理
 	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
-	void Update(float elapsedTime, const IGameInput& iGameInput);
+	void Update(float elapsedTime, Ref<const IGameInput> iGameInput);
 
 	// イベントを設定
 	void LoadEvent(const std::string& eventName);
@@ -61,16 +61,16 @@ private:
 	// 現在のアクション番号
 	size_t m_eventIndex;
 
-	// イベント
-	const nlohmann::ordered_json* m_pEvent;
+	// イベントの参照
+	Ref<const nlohmann::ordered_json> m_event;
 
-	// アクション
-	Action* m_pCurrentAction;
+	// 現在のアクションの参照
+	Ref<Action> m_currentActionRef;
 
-	// ゲームオブジェクト検索
+	// ゲームオブジェクト検索インタフェースのポインタ
 	IGameObjectFinder* m_pIGameObjectFinder;
 
-	// リソース管理
-	Systems::IResources* m_pIResources;
+	// リソース管理インタフェースの参照
+	Ref<Systems::IResources> m_iResources;
 
 };

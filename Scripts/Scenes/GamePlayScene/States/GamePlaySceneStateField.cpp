@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -23,6 +23,7 @@
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
+#include "Scripts/Commons/Renderings/Image/Image.h"
 
 // コンストラクタ
 GamePlaySceneStateField::GamePlaySceneStateField()
@@ -42,10 +43,10 @@ void GamePlaySceneStateField::Enter(Ref<GamePlaySceneInternals> internalsRef)
 void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime)
 {
 	// ゲーム入力
-	auto* pIGameInput = internalsRef->gameContextRef->GetPIGameInput();
+	Ref iGameInput = internalsRef->gameContextRef->GetIGameInput();
 
 	// 糸伸ばし入力で糸を伸ばす
-	if (pIGameInput->GetPlayerExpandWire() && internalsRef->playerRef->CanExpandWire())
+	if (iGameInput->GetPlayerExpandWire() && internalsRef->playerRef->CanExpandWire())
 	{
 		TargetPoint::Info info = internalsRef->targetPointRef->GetTargetInfo();
 		internalsRef->playerRef->ExpandWire(info.position, static_cast<PlayerInternals::TargetType>(info.type));
@@ -54,17 +55,17 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// NPCの更新
 	internalsRef->nPCManagerRef->SetRotation(internalsRef->playerRef->GetPosition());
 	internalsRef->nPCManagerRef->Update(elapsedTime);
-	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.GetValue());
+	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.Const());
 
 	// プレイヤーの更新
-	internalsRef->playerRef->Update(elapsedTime, pIGameInput->GetPlayerMove(), pIGameInput->GetPlayerDash(), pIGameInput->GetPlayerJump());
-	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef.Get());
+	internalsRef->playerRef->Update(elapsedTime, iGameInput->GetPlayerMove(), iGameInput->GetPlayerDash(), iGameInput->GetPlayerJump());
+	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef);
 	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
 	internalsRef->playerRef->UpdateModel(elapsedTime);
 
 	// カメラの更新
 	internalsRef->playerCameraRef->SetTarget(internalsRef->playerRef->GetCameraTarget());
-	internalsRef->playerCameraRef->Rotate(pIGameInput->GetPlayerCameraRotate());
+	internalsRef->playerCameraRef->Rotate(iGameInput->GetPlayerCameraRotate());
 	internalsRef->playerCameraRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh(), internalsRef->playerRef->GetPosition());
 	internalsRef->playerCameraRef->Update(elapsedTime);
 	internalsRef->iCameraScreenRef->UpdateViewMatrix();
@@ -76,7 +77,7 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	internalsRef->nPCManagerRef->HideCursor(!canSpeak);
 
 	// はなすの更新
-	internalsRef->z2TalkRef->SetPosition(internalsRef->playerRef->GetBox(), internalsRef->iCameraScreenRef.GetValue());
+	internalsRef->z2TalkRef->SetPosition(internalsRef->playerRef->GetBox(), internalsRef->iCameraScreenRef.Const());
 	internalsRef->z2TalkRef->Update(elapsedTime, internalsRef->nPCManagerRef->GetPFocusedNPC() != nullptr && canSpeak);
 
 	// 上下の黒帯の更新
@@ -88,12 +89,7 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// NPCに話しかけられる状態かつ
 	// プレイヤーが話せる状態かつ
 	// インタラクト入力がされたならイベント状態へ
-	if
-		(
-			pFocusedNPC &&
-			canSpeak &&
-			pIGameInput->GetFieldInteract()
-			)
+	if (pFocusedNPC && canSpeak && iGameInput->GetFieldInteract())
 	{
 		SetNextState(std::make_unique<GamePlaySceneStateEvent>());
 	}

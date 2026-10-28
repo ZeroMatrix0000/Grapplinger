@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionCloseMessageWindow.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * メッセージウィンドウ閉アクション
  */
@@ -33,7 +33,7 @@ public:
 	// 開始処理
 	void Enter() override;
 	// 更新処理
-	void Update(float elapsedTime, const IGameInput& iGameInput) override;
+	void Update(float elapsedTime, Ref<const IGameInput> iGameInput) override;
 
 
 private:

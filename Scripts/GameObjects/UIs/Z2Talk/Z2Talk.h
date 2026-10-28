@@ -1,7 +1,7 @@
 /*
  * FileName:     Z2Talk.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * Z: はなす
  */
@@ -39,7 +39,7 @@ public:
 	void Update(float elapsedTime, bool isFocused);
 
 	// 座標を設定
-	void SetPosition(const Math::Box& playerBox, const Renderings::ICameraScreen& iCameraScreen);
+	void SetPosition(const Math::Box& playerBox, Ref<const Renderings::ICameraScreen> iCameraScreenRef);
 
 
 private:
@@ -53,8 +53,8 @@ private:
 	float m_alphaVelocity;
 
 	// トランスフォームの参照
-	Ref<RectTransform> m_refRectTransform;
+	Ref<RectTransform> m_rectTransformRef;
 	// テキストの参照
-	Ref<Renderings::Text> m_refText;
+	Ref<Renderings::Text> m_textRef;
 
 };

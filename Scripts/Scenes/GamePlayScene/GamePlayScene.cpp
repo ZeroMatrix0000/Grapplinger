@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * ゲームプレイシーン
  */
@@ -50,15 +50,15 @@ void GamePlayScene::Initialize(const SceneTransitionData& data)
 void GamePlayScene::Update(float elapsedTime)
 {
 	// シーン切り替え中なら何もしない
-	if (GetContext()->GetPISceneManager()->IsChanging())
+	if (GetContext()->GetISceneManager()->IsChanging())
 	{
 		return;
 	}
 
 	// F5でシーン移動
-	if (GetContext()->GetPIInput()->GetKeyDown(KeyName::F5))
+	if (GetContext()->GetIInput()->GetKeyDown(KeyName::F5))
 	{
-		GetContext()->GetPISceneManager()->SetNextScene<GamePlayScene>();
+		GetContext()->GetISceneManager()->SetNextScene<GamePlayScene>();
 		return;
 	}
 
@@ -80,10 +80,10 @@ void GamePlayScene::Update(float elapsedTime)
 		m_internals.playerRef->GetPosition() + Math::Vector3::Down * m_internals.playerRef->GetBox().size.y / 2.0f
 	);
 	// NPC の当たり判定
-	const auto nPCBoxes = m_internals.nPCManagerRef->GetPBoxes();
-	for (size_t i = 0; i < nPCBoxes.size(); i++)
+	const auto nPCBoxRefs = m_internals.nPCManagerRef->GetBoxRefs();
+	for (size_t i = 0; i < nPCBoxRefs.size(); i++)
 	{
-		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i)->position + Math::Vector3::Down * nPCBoxes.at(i)->size.y / 2.0f, 16 * (i + 1));
+		constantBufferRef->SetVariable("ShadowPosition", nPCBoxRefs.at(i)->position + Math::Vector3::Down * nPCBoxRefs.at(i)->size.y / 2.0f, 16 * (i + 1));
 	}
 }
 
@@ -91,7 +91,7 @@ void GamePlayScene::Update(float elapsedTime)
 void GamePlayScene::Finalize()
 {
 	// マウスをループ解除
-	GetContext()->GetPIInput()->SetMousePositionLoop(true);
+	GetContext()->GetIInput()->SetMousePositionLoop(true);
 }
 
 // メッセージを受け取る
@@ -100,15 +100,15 @@ void GamePlayScene::AcceptMessage(const std::string& message)
 	if (message == "WindowSizeChanged")
 	{
 		// 出力サイズ
-		const Math::Vector2& outputSize = GetContext()->GetPIWindowController()->GetOutputSize();
+		const Math::Vector2& outputSize = GetContext()->GetIWindowController()->GetOutputSize();
 		// プロジェクション行列を設定
 		m_internals.iCameraScreenRef->SetProjectionMatrix(outputSize);
 		// キャンバスのサイズを設定
 		m_internals.canvasRef->SetSize(outputSize);
 
 		// UIの設定
-		m_internals.nPCManagerRef->SetCursor(m_internals.iCameraScreenRef.GetValue());
-		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.GetValue());
+		m_internals.nPCManagerRef->SetCursor(m_internals.iCameraScreenRef.Const());
+		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.Const());
 		m_internals.blackBeltRef->SetWidth(m_internals.canvasRef->GetSize().x);
 	}
 }

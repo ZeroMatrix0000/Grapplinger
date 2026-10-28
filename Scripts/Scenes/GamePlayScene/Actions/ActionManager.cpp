@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * アクション管理
  */
@@ -15,14 +15,14 @@
 #include "Scripts/Commons/Systems/IResources.h"
 
 // コンストラクタ
-ActionManager::ActionManager(const ComponentDesc& desc, Systems::IResources* pIResources)
+ActionManager::ActionManager(const ComponentDesc& desc, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_eventCount{}
 	, m_eventIndex{}
-	, m_pEvent{}
-	, m_pCurrentAction{}
+	, m_event{ iResources->GetNullJson() }
+	, m_currentActionRef{ GetOwner()->GetNullComponent<Action>() }
 	, m_pIGameObjectFinder{}
-	, m_pIResources{ pIResources }
+	, m_iResources{ iResources }
 {
 }
 
@@ -33,7 +33,7 @@ void ActionManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjec
 }
 
 // 更新処理
-void ActionManager::Update(float elapsedTime, const IGameInput& iGameInput)
+void ActionManager::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
 	// アクションがなければ何もしない
 	if (IsCompleted())
@@ -42,10 +42,10 @@ void ActionManager::Update(float elapsedTime, const IGameInput& iGameInput)
 	}
 
 	// アクションを更新
-	m_pCurrentAction->Update(elapsedTime, iGameInput);
+	m_currentActionRef->Update(elapsedTime, iGameInput);
 
 	// 次のアクションに移動
-	if (m_pCurrentAction->IsNext())
+	if (m_currentActionRef->IsNext())
 	{
 		NextAction();
 	}
@@ -54,9 +54,9 @@ void ActionManager::Update(float elapsedTime, const IGameInput& iGameInput)
 // イベントを設定
 void ActionManager::LoadEvent(const std::string& eventName)
 {
-	m_pEvent = m_pIResources->GetJson(eventName).Get();
+	m_event = m_iResources->GetJson(eventName);
 
-	m_eventCount = m_pEvent->size();
+	m_eventCount = m_event->size();
 	m_eventIndex = 0;
 
 	if (!IsCompleted())
@@ -68,7 +68,7 @@ void ActionManager::LoadEvent(const std::string& eventName)
 // アクション切り替え
 void ActionManager::NextAction()
 {
-	m_pCurrentAction->Exit();
+	m_currentActionRef->Exit();
 	m_eventIndex++;
 	if (!IsCompleted())
 	{
@@ -79,38 +79,38 @@ void ActionManager::NextAction()
 // 現在のアクションを初期化
 void ActionManager::InitializeCurrentAction()
 {
-	const auto& eventList = m_pEvent->at(m_eventIndex);
+	const auto& eventList = m_event->at(m_eventIndex);
 
 	auto it = eventList.find("ActionType");
 	if (it == eventList.end())
 	{
-		m_pCurrentAction = GetOwner()->GetComponent<Action>().Get();
+		m_currentActionRef = GetOwner()->GetNullComponent<Action>();
 	}
 	else
 	{
 		if (it.value() == "OpenMessageWindow")
 		{
-			m_pCurrentAction = GetOwner()->GetComponent<ActionOpenMessageWindow>().Get();
+			m_currentActionRef = GetOwner()->GetComponent<ActionOpenMessageWindow>().GetValue();
 		}
 		else if (it.value() == "CloseMessageWindow")
 		{
-			m_pCurrentAction = GetOwner()->GetComponent<ActionCloseMessageWindow>().Get();
+			m_currentActionRef = GetOwner()->GetComponent<ActionCloseMessageWindow>().GetValue();
 		}
 		else if (it.value() == "SetMessageWindowText")
 		{
-			m_pCurrentAction = GetOwner()->GetComponent<ActionSetMessageWindowText>().Get();
+			m_currentActionRef = GetOwner()->GetComponent<ActionSetMessageWindowText>().GetValue();
 		}
 		else
 		{
-			m_pCurrentAction = GetOwner()->GetComponent<Action>().Get();
+			m_currentActionRef = GetOwner()->GetNullComponent<Action>();
 		}
 	}
 
 	it = eventList.find("Params");
 	if (it != eventList.end())
 	{
-		m_pCurrentAction->SetParams(*it, Ref{ *m_pIGameObjectFinder });
+		m_currentActionRef->SetParams(*it, Ref{ *m_pIGameObjectFinder });
 	}
 
-	m_pCurrentAction->Enter();
+	m_currentActionRef->Enter();
 }

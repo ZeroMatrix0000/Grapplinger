@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * プレイヤーカメラ
  */
@@ -21,7 +21,7 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 	, m_distance{}
 	, m_maxDistance{}
 	, m_camera{}
-	, m_refCameraScreen{ GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>() }
+	, m_cameraScreenRef{ GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>() }
 {
 }
 
@@ -29,9 +29,9 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 void PlayerCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	// カメラ画面を取得
-	m_refCameraScreen = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
+	m_cameraScreenRef = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
 	// カメラ
-	const auto& camera = m_refCameraScreen->GetCamera();
+	const auto& camera = m_cameraScreenRef->GetCamera();
 
 	m_target = camera.position;
 	m_rotationYDeg.Initialize(camera.rotation.y, 0.0f, 360.0f);
@@ -49,7 +49,7 @@ void PlayerCamera::Update(float elapsedTime)
 	//m_camera.SetValue(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance });
 	m_camera.SetTarget(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance }, 250.0f, 30.0f);
 	m_camera.Tick(elapsedTime);
-	m_refCameraScreen->SetCamera(m_camera.GetCurrent());
+	m_cameraScreenRef->SetCamera(m_camera.GetCurrent());
 }
 
 // 回転
@@ -65,7 +65,7 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 {
 	// レイの方向
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::UnitZ, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }.CreateQuaternion());
-	
+
 	// 方向指定最短距離
 	float angledDistance = Math::INFTY;
 
@@ -73,7 +73,7 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 	{
 		// メッシュの三角形を取得
 		Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)), mesh.v.at(face.at(2)) };
-		
+
 		float newDistance = Math::Geometry::AngledDistance(m_target, triangle, direction);
 
 		if (newDistance > 0.0f && direction.Dot(triangle.GetNormal()) < 0.0f)
@@ -108,5 +108,5 @@ void PlayerCamera::SetPosition(const Math::Vector3& position)
 	camera.position = position;
 	m_camera.SetValue(camera);
 
-	m_refCameraScreen->SetCamera(m_camera.GetCurrent());
+	m_cameraScreenRef->SetCamera(m_camera.GetCurrent());
 }

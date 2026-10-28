@@ -45,7 +45,7 @@ void ActionCloseMessageWindow::Enter()
 }
 
 // 更新処理
-void ActionCloseMessageWindow::Update(float elapsedTime, const IGameInput& iGameInput)
+void ActionCloseMessageWindow::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
 	// 開き終わるまで待たないか、開き終わったなら次のアクションへ移動
 	if (!m_isWait || !m_refMessageWindow->IsMoving())

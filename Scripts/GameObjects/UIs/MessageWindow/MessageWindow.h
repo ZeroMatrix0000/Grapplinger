@@ -1,7 +1,7 @@
 /*
  * FileName:     MessageWindow.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * メッセージウィンドウ
  */
@@ -9,12 +9,6 @@
 #pragma once
 
 #include "Scripts/Commons/Components/Component.h"
-
-#include "Scripts/Commons/Components/RectTransform.h"
-#include "Scripts/Commons/Renderings/Canvas.h"
-#include "Scripts/Commons/Renderings/Image/Image.h"
-#include "Scripts/Commons/Renderings/Text/Text.h"
-#include "Scripts/Commons/Systems/JsonSerializer.h"
 
 namespace Components
 {
@@ -93,19 +87,18 @@ private:
 	Limited m_textCount;
 
 	// 背景のトランスフォームの参照
-	Ref<RectTransform> m_refBackgroundTransform;
+	Ref<RectTransform> m_backgroundTransformRef;
 	// 背景の参照
-	Ref<Renderings::Image> m_refBackground;
-
-	// キャラクター名のトランスフォームの参照
-	Ref<RectTransform> m_refCharacterTransform;
-	// キャラクター名の参照
-	Ref<Renderings::Text> m_refCharacter;
+	Ref<Renderings::Image> m_backgroundRef;
 
 	// テキストのトランスフォームの参照
-	Ref<RectTransform> m_refTextTransform;
+	Ref<RectTransform> m_textTransformRef;
 	// テキストの参照
-	Ref<Renderings::Text> m_refText;
+	Ref<Renderings::Text> m_textRef;
 
+	// キャラクター名のトランスフォームの参照
+	Ref<RectTransform> m_characterTransformRef;
+	// キャラクター名の参照
+	Ref<Renderings::Text> m_characterRef;
 
 };

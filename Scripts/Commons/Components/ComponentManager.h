@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * コンポーネント管理
  */
@@ -61,7 +61,7 @@ namespace Components
 		std::unordered_map<std::type_index, std::function<std::unique_ptr<Component>(const ComponentDesc&)>> m_CreateComponentList;
 
 		// 未参照コンポーネントリスト
-		std::unordered_map<std::type_index, std::unique_ptr<Component>> m_nullReferences;
+		std::unordered_map<std::type_index, std::unique_ptr<Component>> m_nullComponents;
 
 		// ゲームオブジェクト生成インタフェース
 		const Ref<IGameObjectInstantiator> m_iGameObjectInstantiator;

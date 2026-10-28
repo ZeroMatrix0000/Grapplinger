@@ -1,7 +1,7 @@
 /*
  * FileName:     Z2Talk.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * Z: はなす
  */
@@ -23,8 +23,8 @@ Z2Talk::Z2Talk(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_alpha{}
 	, m_alphaVelocity{}
-	, m_refRectTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refText{ GetOwner()->GetNullComponent<Renderings::Text>() }
+	, m_rectTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_textRef{ GetOwner()->GetNullComponent<Renderings::Text>() }
 {
 }
 
@@ -36,8 +36,8 @@ void Z2Talk::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 	serializer.Load(json);
 
 	m_alpha.Initialize(0.0f, 0.0f, 1.0f);
-	m_refRectTransform = GetOwner()->GetComponent<RectTransform>();
-	m_refText = GetOwner()->GetComponent<Renderings::Text>();
+	m_rectTransformRef = GetOwner()->GetComponent<RectTransform>();
+	m_textRef = GetOwner()->GetComponent<Renderings::Text>();
 }
 
 // 更新処理
@@ -46,13 +46,13 @@ void Z2Talk::Update(float elapsedTime, bool isFocused)
 	// 不透明度を設定
 	m_alpha += m_alphaVelocity * elapsedTime * (isFocused ? 1.0f : -1.0f);
 
-	Math::Color color = m_refText->GetFontColor();
+	Math::Color color = m_textRef->GetFontColor();
 	color.w = m_alpha;
-	m_refText->SetFontColor(color);
+	m_textRef->SetFontColor(color);
 }
 
 // 座標を設定
-void Z2Talk::SetPosition(const Math::Box& playerBox, const Renderings::ICameraScreen& iCameraScreen)
+void Z2Talk::SetPosition(const Math::Box& playerBox, Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
 	// 透明なら何もしない
 	if (m_alpha == 0.0f)
@@ -63,10 +63,10 @@ void Z2Talk::SetPosition(const Math::Box& playerBox, const Renderings::ICameraSc
 	Math::Vector2 screenPosition = Math::Geometry::Projection
 	(
 		playerBox.position - playerBox.size * Math::Vector3::Up / 2.0f,
-		iCameraScreen.GetViewMatrix(),
-		iCameraScreen.GetProjectionMatrix(),
-		m_refText->GetCanvasRef()->GetSize()
+		iCameraScreenRef->GetViewMatrix(),
+		iCameraScreenRef->GetProjectionMatrix(),
+		m_textRef->GetCanvasRef()->GetSize()
 	);
 
-	m_refRectTransform->SetPosition(screenPosition);
+	m_rectTransformRef->SetPosition(screenPosition);
 }

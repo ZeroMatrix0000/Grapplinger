@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/10/28
  *
  * ターゲット照準
  */
@@ -95,18 +95,18 @@ private:
 	// 画像のトランスフォームの参照
 	Ref<RectTransform> m_transformRef;
 	// 画像の参照
-	Ref<Renderings::Image> m_refImage;
+	Ref<Renderings::Image> m_imageRef;
 
 	// プレイヤーの参照
-	Ref<Colliders::BoxCollider> m_refPlayer;
+	Ref<Colliders::BoxCollider> m_playerRef;
 
 	// カメラ画面の参照
-	Ref<Renderings::ICameraScreen> m_refICameraScreen;
+	Ref<Renderings::ICameraScreen> m_iCameraScreenRef;
 
-	// ターゲットリスト
-	std::vector<Colliders::SphereCollider*> m_pTargetObjects;
+	// ターゲットの参照リスト
+	std::vector<Ref<Colliders::SphereCollider>> m_targetObjectsRef;
 
-	// 地面リスト
-	std::vector<Colliders::MeshCollider*> m_pGrounds;
+	// 地面の参照リスト
+	std::vector<Ref<Colliders::MeshCollider>> m_groundsRef;
 
 };

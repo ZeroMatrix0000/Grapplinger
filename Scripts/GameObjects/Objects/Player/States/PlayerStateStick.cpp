@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateStick.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * プレイヤーの張り付き状態
  */
@@ -36,7 +36,7 @@ void PlayerStateStick::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->CAMERA_SCREEN_REF->GetCamera().rotation.y)
 	);
 
 	// 加速度がある
@@ -65,29 +65,29 @@ void PlayerStateStick::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 		internalsRef->fallSpeed = internalsRef->fallSpeed.GetMin();
 		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
-		internalsRef->pParticleManager->Play<JumpingParticle>();
+		internalsRef->particleManagerRef->Play<JumpingParticle>();
 	}
 
 	// 糸の更新
-	internalsRef->pWire->Update(elapsedTime);
+	internalsRef->wireRef->Update(elapsedTime);
 
 	// 回転の更新
 	internalsRef->rotation.Tick(elapsedTime);
 
 	// 回転させる
-	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
+	internalsRef->transformRef->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	internalsRef->pBoxCollider->ApplyTransform();
+	internalsRef->boxColliderRef->ApplyTransform();
 
 	// パーティクルの更新
-	internalsRef->pParticleManager->Update(elapsedTime);
+	internalsRef->particleManagerRef->Update(elapsedTime);
 }
 
 // 終了処理
 void PlayerStateStick::Exit(Ref<PlayerInternals> internalsRef)
 {
-	internalsRef->pWire->UnDisplay();
+	internalsRef->wireRef->UnDisplay();
 }
 
 // 座標補正
@@ -96,7 +96,7 @@ void PlayerStateStick::PositionCorrect(Ref<PlayerInternals> internalsRef, float 
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// 距離が近い
-	if (distance < 0.0f || (distance < internalsRef->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
@@ -104,20 +104,20 @@ void PlayerStateStick::PositionCorrect(Ref<PlayerInternals> internalsRef, float 
 		if (cos < -1.0f / 1.41421356f)
 		{
 			// 移動
-			internalsRef->pTransform->Translate(displacement);
+			internalsRef->transformRef->Translate(displacement);
 			// トランスフォームを適用
-			internalsRef->pBoxCollider->ApplyTransform();
+			internalsRef->boxColliderRef->ApplyTransform();
 			// 地面にいる状態にする
 			SetNextState(std::make_unique<PlayerStateOnGround>());
 			// 砂煙の再生
-			internalsRef->pParticleManager->Play<LandingParticle>();
+			internalsRef->particleManagerRef->Play<LandingParticle>();
 			return;
 		}
 		// 移動
-		internalsRef->pTransform->Translate(displacement);
+		internalsRef->transformRef->Translate(displacement);
 		// トランスフォームを適用
-		internalsRef->pBoxCollider->ApplyTransform();
+		internalsRef->boxColliderRef->ApplyTransform();
 
-		internalsRef->pWire->SetPlayerPosition(internalsRef->pBoxCollider->GetWorldBox().position);
+		internalsRef->wireRef->SetPlayerPosition(internalsRef->boxColliderRef->GetWorldBox().position);
 	}
 }

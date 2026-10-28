@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/16
+ * Last Updated: 2026/10/28
  *
  * ゲームの入力
  */
@@ -20,7 +20,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	GameInput(const Systems::IInput& input);
+	GameInput(Ref<const Systems::IInput> input);
 
 	// プレイヤーの移動入力を取得
 	Math::Vector3 GetPlayerMove()         const override;
@@ -51,6 +51,7 @@ private:
 
 	/* メンバ変数 */
 
-	const Systems::IInput& m_input;
+	// 入力管理
+	Ref<const Systems::IInput> m_input;
 
 };

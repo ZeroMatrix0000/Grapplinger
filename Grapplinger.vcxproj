@@ -206,6 +206,7 @@
     <ClCompile Include="Scripts\GameObjects\Objects\NPC\NPCManager.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\Player.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerCamera.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerInternals.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerModel.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerWire.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFalling.cpp" />

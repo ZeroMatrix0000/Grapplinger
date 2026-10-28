@@ -1,7 +1,7 @@
 /*
  * FileName:     SelectMenu.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * 選択メニュー
  */
@@ -9,12 +9,11 @@
 #include "Pch.h"
 #include "SelectMenu.h"
 
+#include "Scripts/Commons/Components/RectTransform.h"
+#include "Scripts/Commons/GameObjects/GameObject.h"
+#include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
 #include "Scripts/Commons/Renderings/Text/Text.h"
-#include "Scripts/Commons/Renderings/Canvas.h"
-#include "Scripts/Commons/GameObjects/GameObject.h"
-#include "Scripts/Commons/Components/RectTransform.h"
-#include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
@@ -28,19 +27,19 @@ SelectMenu::SelectMenu(const ComponentDesc& desc)
 	, m_pTexts{}
 	, m_Processes{}
 	, m_fontSizes{}
-	, m_refCursorImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
-	, m_refCursorRectTransform{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_cursorImageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
+	, m_cursorRectTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
 {
 }
 
 // 初期化処理
 void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	if (m_refCursorImage == GetOwner()->GetNullComponent<Renderings::Image>())
+	if (m_cursorImageRef == GetOwner()->GetNullComponent<Renderings::Image>())
 	{
 		Ref obj = Instantiate("Prefab_SelectMenuCursor");
-		m_refCursorImage = obj->GetComponent<Renderings::Image>();
-		m_refCursorRectTransform = obj->GetComponent<RectTransform>();
+		m_cursorImageRef = obj->GetComponent<Renderings::Image>();
+		m_cursorRectTransformRef = obj->GetComponent<RectTransform>();
 	}
 
 	// 選択番号を初期化
@@ -49,7 +48,7 @@ void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 	m_cursorDelayY.SetMovement(0.0f, 0.0f);
 
 	float cursorSwayTime = m_cursorSwayTimer.GetMax();
-	Ref canvasRef = m_refCursorImage->GetCanvasRef();
+	Ref canvasRef = m_cursorImageRef->GetCanvasRef();
 
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_params.width }, "Width");
@@ -67,7 +66,7 @@ void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 	serializer.Load(json);
 
 	m_cursorSwayTimer.Initialize(0.0f, 0.0f, cursorSwayTime);
-	m_refCursorImage->SetCanvasRef(canvasRef);
+	m_cursorImageRef->SetCanvasRef(canvasRef);
 }
 
 // 更新処理
@@ -89,7 +88,7 @@ void SelectMenu::Update(float elapsedTime)
 	};
 
 	// カーソルの位置を変更
-	m_refCursorRectTransform->SetPosition(m_params.basePosition + Math::Vector2{ -m_params.width / 2.0f, 0.0f } + cursorDelay);
+	m_cursorRectTransformRef->SetPosition(m_params.basePosition + Math::Vector2{ -m_params.width / 2.0f, 0.0f } + cursorDelay);
 
 	// フォントサイズを変更
 	for (size_t i = 0; i < m_pTexts.size(); i++)
@@ -105,7 +104,7 @@ void SelectMenu::AddOption(const std::wstring& str, const std::function<void()>&
 	Ref<GameObject> refObj = Instantiate("Prefab_SelectMenuText");
 	Ref text = refObj->AddComponent<Renderings::Text>();
 	text->SetStr(str);
-	text->SetCanvasRef(m_refCursorImage->GetCanvasRef());
+	text->SetCanvasRef(m_cursorImageRef->GetCanvasRef());
 	text->SetFontSize(m_params.fontSizeBegin);
 	Ref rectTransform = refObj->AddComponent<RectTransform>();
 	rectTransform->SetPosition(m_params.basePosition + Math::Vector2{ 0.0f, m_params.height + m_params.interval } * static_cast<float>(m_Processes.size()));

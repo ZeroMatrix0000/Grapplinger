@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerModel.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/22
+ * Last Updated: 2026/10/28
  *
  * プレイヤーのモデル
  */
@@ -37,26 +37,26 @@ public:
 	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
-	void Update(float elapsedTime, const Player& player);
+	void Update(float elapsedTime, Ref<const Player> playerRef);
 
 	// 移動
-	void Translate(float elapsedTime, const Player& player);
+	void Translate(float elapsedTime, Ref<const Player> playerRef);
 	// スケーリング
-	void Scaling(float elapsedTime, const Player& player);
+	void Scaling(float elapsedTime, Ref<const Player> playerRef);
 	// 回転
-	void Rotate(float elapsedTime, const Player& player);
+	void Rotate(float elapsedTime, Ref<const Player> playerRef);
 
-	// 映るカメラ画面を追加
-	void AddICameraScreen(Ref<const Renderings::ICameraScreen> iCameraScreen);
+	// 映るカメラ画面の参照を追加
+	void AddICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef);
 
 	// トランスフォームを設定
-	void SetTransform(const Transform& transform);
+	void SetTransform(Ref<const Transform> transformRef);
 
 	// 糸伸ばし時の角度を設定
 	void SetWireAngle(float angle) { m_wireAngle.SetTarget(angle); }
 
-	// パーティクル管理を設定
-	void SetParticleManager(Renderings::ParticleManager* pParticleManager) { m_pParticleManager = pParticleManager; }
+	// パーティクル管理の参照を設定
+	void SetParticleManagerRef(Ref<Renderings::ParticleManager> particleManagerRef) { m_particleManagerRef = particleManagerRef; }
 
 
 private:
@@ -85,13 +85,13 @@ private:
 	// 糸伸ばし時の傾き
 	Spring<float> m_wireAngle;
 
-	// 自身のトランスフォームのポインタ
+	// 自身のトランスフォームの参照
 	Ref<Transform> m_transformRef;
 
-	// シルエットのトランスフォームのポインタ
-	Ref<Transform> m_refSilhouette;
+	// シルエットのトランスフォームの参照
+	Ref<Transform> m_silhouetteRef;
 
 	// パーティクル管理
-	Renderings::ParticleManager* m_pParticleManager;
+	Ref<Renderings::ParticleManager> m_particleManagerRef;
 
 };

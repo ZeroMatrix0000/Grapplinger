@@ -1,7 +1,7 @@
 /*
  * FileName:     InteractCursor.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * 話しかける・調べる際のカーソル
  */
@@ -22,10 +22,10 @@ InteractCursor::InteractCursor(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_alphaVelocity{}
 	, m_alpha{}
-	, m_refTextTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refText{ GetOwner()->GetNullComponent<Renderings::Text>() }
-	, m_refImageTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
+	, m_textTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_textRef{ GetOwner()->GetNullComponent<Renderings::Text>() }
+	, m_imageTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_imageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
 {
 }
 
@@ -38,14 +38,14 @@ void InteractCursor::Initalize(const nlohmann::ordered_json& json, Ref<IGameObje
 
 	m_alpha.Initialize(0.0f, 0.0f, 1.0f);
 
-	if (m_refTextTransform == GetOwner()->GetNullComponent<RectTransform>())
+	if (m_textTransformRef == GetOwner()->GetNullComponent<RectTransform>())
 	{
 		Ref<GameObject> objRef = Instantiate("Prefab_InteractCursorText");
-		m_refTextTransform = objRef->GetComponent<RectTransform>();
-		m_refText = objRef->GetComponent<Renderings::Text>();
+		m_textTransformRef = objRef->GetComponent<RectTransform>();
+		m_textRef = objRef->GetComponent<Renderings::Text>();
 		objRef = Instantiate("Prefab_InteractCursorImage");
-		m_refImageTransform = objRef->GetComponent<RectTransform>();
-		m_refImage = objRef->GetComponent<Renderings::Image>();
+		m_imageTransformRef = objRef->GetComponent<RectTransform>();
+		m_imageRef = objRef->GetComponent<Renderings::Image>();
 	}
 }
 
@@ -55,26 +55,26 @@ void InteractCursor::Update(float elapsedTime, bool isFocused)
 	// 不透明度を設定
 	m_alpha += m_alphaVelocity * elapsedTime * (isFocused ? 1.0f : -1.0f);
 
-	Math::Color textColor = m_refText->GetFontColor();
+	Math::Color textColor = m_textRef->GetFontColor();
 	textColor.w = m_alpha;
-	m_refText->SetFontColor(textColor);
+	m_textRef->SetFontColor(textColor);
 
-	Math::Color imageColor = m_refImage->GetColor();
+	Math::Color imageColor = m_imageRef->GetColor();
 	imageColor.w = m_alpha;
-	m_refImage->SetColor(imageColor);
+	m_imageRef->SetColor(imageColor);
 }
 
 // 名前を設定
 void InteractCursor::SetName(const std::wstring& name)
 {
-	m_refText->SetStr(name);
+	m_textRef->SetStr(name);
 }
 
-// キャンバスを設定
-void InteractCursor::SetCanvas(const Renderings::Canvas& canvas)
+// キャンバスの参照を設定
+void InteractCursor::SetCanvasRef(Ref<const Renderings::Canvas> canvasRef)
 {
-	m_refText->SetCanvasRef(Ref{ canvas });
-	m_refImage->SetCanvasRef(Ref{ canvas });
+	m_textRef->SetCanvasRef(canvasRef);
+	m_imageRef->SetCanvasRef(canvasRef);
 }
 
 // 座標を設定
@@ -86,12 +86,12 @@ void InteractCursor::SetPosition(const Math::Vector2& position)
 		return;
 	}
 
-	m_refTextTransform->SetPosition(position);
-	m_refImageTransform->SetPosition(position);
+	m_textTransformRef->SetPosition(position);
+	m_imageTransformRef->SetPosition(position);
 }
 
 // キャンバスを取得
 const Renderings::Canvas& InteractCursor::GetCanvas() const
 {
-	return m_refText->GetCanvasRef().GetValue();
+	return m_textRef->GetCanvasRef().GetValue();
 }

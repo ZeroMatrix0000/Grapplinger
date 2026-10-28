@@ -1,7 +1,7 @@
 /*
  * FileName:     SampleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * サンプルシーン
  */
@@ -51,21 +51,15 @@ private:
 
 	/* メンバ変数 */
 
-	// テスト
-	std::unique_ptr<GameObject> m_test3D;
+	// カメラ画面の参照
+	Ref<Renderings::ICameraScreen> m_cameraScreenRef;
+	// デバッグカメラの参照
+	Ref<DebugCamera> m_debugCameraRef;
 
-	// 地面
-	std::unique_ptr<GameObject> m_ground;
+	// キャンバスの参照
+	Ref<Renderings::Canvas> m_canvasRef;
 
-	// カメラ画面
-	Renderings::ICameraScreen* m_pCameraScreen;
-	// デバッグカメラ
-	DebugCamera* m_pDebugCamera;
-
-	// キャンバス
-	Renderings::Canvas* m_pCanvas;
-
-	// パーティクル管理
-	Renderings::ParticleManager* m_pParticleManager;
+	// パーティクル管理の参照
+	Ref<Renderings::ParticleManager> m_particleManagerRef;
 
 };

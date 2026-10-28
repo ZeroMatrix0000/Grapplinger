@@ -1,7 +1,7 @@
 /*
  * FileName:     MessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * メッセージウィンドウ
  */
@@ -10,7 +10,6 @@
 #include "MessageWindow.h"
 
 #include "Scripts/Commons/Components/RectTransform.h"
-#include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
 #include "Scripts/Commons/Renderings/Text/Text.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
@@ -29,12 +28,12 @@ MessageWindow::MessageWindow(const ComponentDesc& desc)
 	, m_moveRate{}
 	, m_text{}
 	, m_textCount{}
-	, m_refBackgroundTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refBackground{ GetOwner()->GetNullComponent<Renderings::Image>() }
-	, m_refTextTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refText{ GetOwner()->GetNullComponent<Renderings::Text>() }
-	, m_refCharacterTransform{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refCharacter{ GetOwner()->GetNullComponent<Renderings::Text>() }
+	, m_backgroundTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_backgroundRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
+	, m_textTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_textRef{ GetOwner()->GetNullComponent<Renderings::Text>() }
+	, m_characterTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_characterRef{ GetOwner()->GetNullComponent<Renderings::Text>() }
 {
 }
 
@@ -50,43 +49,43 @@ void MessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjec
 	serializer.Load(json);
 
 	// メッセージウィンドウを生成
-	if (m_refBackgroundTransform == GetOwner()->GetNullComponent<RectTransform>())
+	if (m_backgroundTransformRef == GetOwner()->GetNullComponent<RectTransform>())
 	{
 		Ref<GameObject> refObj = Instantiate("Prefab_MessageWindowBackGround");
-		m_refBackgroundTransform = refObj->GetComponent<RectTransform>();
-		m_refBackground = refObj->GetComponent<Renderings::Image>();
-		refObj = Instantiate("Prefab_MessageWindowCharacter");
-		m_refCharacterTransform = refObj->GetComponent<RectTransform>();
-		m_refCharacter = refObj->GetComponent<Renderings::Text>();
+		m_backgroundTransformRef = refObj->GetComponent<RectTransform>();
+		m_backgroundRef = refObj->GetComponent<Renderings::Image>();
 		refObj = Instantiate("Prefab_MessageWindowText");
-		m_refTextTransform = refObj->GetComponent<RectTransform>();
-		m_refText = refObj->GetComponent<Renderings::Text>();
+		m_textTransformRef = refObj->GetComponent<RectTransform>();
+		m_textRef = refObj->GetComponent<Renderings::Text>();
+		refObj = Instantiate("Prefab_MessageWindowCharacter");
+		m_characterTransformRef = refObj->GetComponent<RectTransform>();
+		m_characterRef = refObj->GetComponent<Renderings::Text>();
 	}
 
 	if (canvasRef != GetOwner()->GetNullComponent<Renderings::Canvas>().Const())
 	{
 		// キャンバスを設定
-		m_refBackground->SetCanvasRef(canvasRef);
-		m_refCharacter->SetCanvasRef(canvasRef);
-		m_refText->SetCanvasRef(canvasRef);
+		m_backgroundRef->SetCanvasRef(canvasRef);
+		m_characterRef->SetCanvasRef(canvasRef);
+		m_textRef->SetCanvasRef(canvasRef);
 	}
 
 	// 移動率を初期化
 	m_moveRate.SetMovement(0.0f, 0.0f);
 
 	// サイズを取得
-	m_backgroundSize = m_refBackgroundTransform->GetRect().size;
-	m_characterSize = m_refCharacterTransform->GetRect().size;
-	m_textSize = m_refTextTransform->GetRect().size;
-	m_characterFontSize = m_refCharacter->GetFontSize();
-	m_textFontSize = m_refText->GetFontSize();
+	m_backgroundSize = m_backgroundTransformRef->GetRect().size;
+	m_characterSize = m_characterTransformRef->GetRect().size;
+	m_textSize = m_textTransformRef->GetRect().size;
+	m_characterFontSize = m_characterRef->GetFontSize();
+	m_textFontSize = m_textRef->GetFontSize();
 
 	// 非表示
-	m_refBackgroundTransform->SetSize(Math::Vector2::Zero);
-	m_refCharacterTransform->SetSize(Math::Vector2::Zero);
-	m_refTextTransform->SetSize(Math::Vector2::Zero);
-	m_refCharacter->SetFontSize(0.0f);
-	m_refText->SetFontSize(0.0f);
+	m_backgroundTransformRef->SetSize(Math::Vector2::Zero);
+	m_characterTransformRef->SetSize(Math::Vector2::Zero);
+	m_textTransformRef->SetSize(Math::Vector2::Zero);
+	m_characterRef->SetFontSize(0.0f);
+	m_textRef->SetFontSize(0.0f);
 
 }
 
@@ -99,15 +98,15 @@ void MessageWindow::Update(float elapsedTime)
 	float moveRate = m_moveRate.GetMovement();
 
 	// 透明度を変更
-	Math::Color color = m_refBackground->GetColor();
+	Math::Color color = m_backgroundRef->GetColor();
 	color.w = moveRate;
-	m_refBackground->SetColor(color);
-	color = m_refCharacter->GetFontColor();
+	m_backgroundRef->SetColor(color);
+	color = m_characterRef->GetFontColor();
 	color.w = moveRate;
-	m_refCharacter->SetFontColor(color);
-	color = m_refText->GetFontColor();
+	m_characterRef->SetFontColor(color);
+	color = m_textRef->GetFontColor();
 	color.w = moveRate;
-	m_refText->SetFontColor(color);
+	m_textRef->SetFontColor(color);
 
 	// 古い文字数
 	size_t oldTextCount = Math::RoundInt(m_textCount);
@@ -161,13 +160,13 @@ void MessageWindow::Update(float elapsedTime)
 	}
 
 	// サイズを変更
-	m_refBackgroundTransform->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_backgroundSize, moveRate));
-	m_refCharacterTransform->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_characterSize, moveRate));
-	m_refTextTransform->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_textSize, moveRate));
+	m_backgroundTransformRef->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_backgroundSize, moveRate));
+	m_characterTransformRef->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_characterSize, moveRate));
+	m_textTransformRef->SetSize(Math::Vector2::Lerp(Math::Vector2::Zero, m_textSize, moveRate));
 
 	// フォントサイズを変更
-	m_refCharacter->SetFontSize(m_characterFontSize * moveRate);
-	m_refText->SetFontSize(m_textFontSize * moveRate);
+	m_characterRef->SetFontSize(m_characterFontSize * moveRate);
+	m_textRef->SetFontSize(m_textFontSize * moveRate);
 
 	// 文字列を変更
 	if (isChanged)
@@ -184,7 +183,7 @@ void MessageWindow::Update(float elapsedTime)
 		str.append(L"<color=#00000000>");
 		str.append(rubyStr);
 
-		m_refText->SetStr(str);
+		m_textRef->SetStr(str);
 	}
 }
 
@@ -206,14 +205,14 @@ void MessageWindow::SetText(const std::wstring& text)
 {
 	m_text = text;
 	m_textCount.Initialize(0.0f, 0.0f, static_cast<float>(text.size()));
-	m_refText->SetStr(L"");
+	m_textRef->SetStr(L"");
 }
 
 // テキストを全て表示
 void MessageWindow::DisplayAllText()
 {
 	m_textCount = static_cast<float>(m_text.size());
-	m_refText->SetStr(m_text);
+	m_textRef->SetStr(m_text);
 }
 
 // 話者を設定
@@ -222,6 +221,6 @@ void MessageWindow::SetCharacter(const std::wstring& text)
 	// 空文字でなければ
 	if (!text.empty())
 	{
-		m_refCharacter->SetStr(text);
+		m_characterRef->SetStr(text);
 	}
 }

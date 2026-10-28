@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateExpandWire.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * プレイヤーの地面にいる状態
  */
@@ -26,7 +26,7 @@ PlayerStateExpandWire::PlayerStateExpandWire(const Math::Vector3& targetPosition
 // 開始処理
 void PlayerStateExpandWire::Enter(Ref<PlayerInternals> internalsRef)
 {
-	m_playerPosition = internalsRef->pBoxCollider->GetWorldBox().position;
+	m_playerPosition = internalsRef->boxColliderRef->GetWorldBox().position;
 
 	// 速度を 0 にする
 	internalsRef->moveVelocity = Math::Vector3::Zero;
@@ -37,7 +37,7 @@ void PlayerStateExpandWire::Enter(Ref<PlayerInternals> internalsRef)
 	direction.Normalize();
 
 	// モデルを回転
-	internalsRef->pModel->SetWireAngle(Math::Rad2Deg(Math::Arcsin(-direction.y / direction.Length())));
+	internalsRef->modelRef->SetWireAngle(Math::Rad2Deg(Math::Arcsin(-direction.y / direction.Length())));
 
 	Math::Quaternion wireRotation = Math::Quaternion::CreateFromRotationMatrix
 	(
@@ -54,9 +54,9 @@ void PlayerStateExpandWire::Enter(Ref<PlayerInternals> internalsRef)
 	);
 
 	// ターゲットを設定
-	internalsRef->pWire->SetTarget
+	internalsRef->wireRef->SetTarget
 	(
-		internalsRef->pBoxCollider->GetWorldBox().position,
+		internalsRef->boxColliderRef->GetWorldBox().position,
 		m_targetPosition,
 		wireRotation,
 		m_targetType == PlayerInternals::TargetType::Air
@@ -67,26 +67,26 @@ void PlayerStateExpandWire::Enter(Ref<PlayerInternals> internalsRef)
 void PlayerStateExpandWire::Update(Ref<PlayerInternals> internalsRef, float elapsedTime)
 {
 	// 糸の更新
-	internalsRef->pWire->Update(elapsedTime);
+	internalsRef->wireRef->Update(elapsedTime);
 
 	// 回転の更新
 	internalsRef->rotation.Tick(elapsedTime);
 
 	// 座標を調整
-	m_playerPosition = internalsRef->pWire->GetPlayerPosition();
-	internalsRef->pTransform->SetPosition(m_playerPosition + Math::Vector3::Down * internalsRef->pBoxCollider->GetWorldBox().size.y / 2.0f);
+	m_playerPosition = internalsRef->wireRef->GetPlayerPosition();
+	internalsRef->transformRef->SetPosition(m_playerPosition + Math::Vector3::Down * internalsRef->boxColliderRef->GetWorldBox().size.y / 2.0f);
 
 	// 回転させる
-	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
+	internalsRef->transformRef->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	internalsRef->pBoxCollider->ApplyTransform();
+	internalsRef->boxColliderRef->ApplyTransform();
 
 	// パーティクルの更新
-	internalsRef->pParticleManager->Update(elapsedTime);
+	internalsRef->particleManagerRef->Update(elapsedTime);
 
 	// 落下状態に戻す
-	if (internalsRef->pWire->GetCurrentState() == PlayerWire::State::None)
+	if (internalsRef->wireRef->GetCurrentState() == PlayerWire::State::None)
 	{
 		switch (m_targetType)
 		{
@@ -94,14 +94,14 @@ void PlayerStateExpandWire::Update(Ref<PlayerInternals> internalsRef, float elap
 			SetNextState(std::make_unique<PlayerStateFalling>());
 			internalsRef->fallSpeed = internalsRef->fallSpeed.GetMin();
 			internalsRef->canExpandWire = true;
-			internalsRef->pWire->UnDisplay();
+			internalsRef->wireRef->UnDisplay();
 			break;
 		case PlayerInternals::TargetType::Ground:
 			SetNextState(std::make_unique<PlayerStateStick>());
 			break;
 		case PlayerInternals::TargetType::Air:
 			SetNextState(std::make_unique<PlayerStateFalling>());
-			internalsRef->pWire->UnDisplay();
+			internalsRef->wireRef->UnDisplay();
 			break;
 		default:
 			break;

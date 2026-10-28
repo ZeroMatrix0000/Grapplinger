@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateOnGround.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * プレイヤーの地面にいる状態
  */
@@ -39,7 +39,7 @@ void PlayerStateOnGround::Update(Ref<PlayerInternals> internalsRef, float elapse
 	Math::Quaternion cameraRotation = Math::Quaternion::CreateFromAxisAngle
 	(
 		Math::Vector3::UnitY,
-		Math::Deg2Rad(internalsRef->P_CAMERA_SCREEN->GetCamera().rotation.y)
+		Math::Deg2Rad(internalsRef->CAMERA_SCREEN_REF->GetCamera().rotation.y)
 	);
 
 	// 最大の早さを調整
@@ -96,25 +96,25 @@ void PlayerStateOnGround::Update(Ref<PlayerInternals> internalsRef, float elapse
 		internalsRef->fallSpeed = -internalsRef->JUMP_POWER;
 		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
-		internalsRef->pParticleManager->Play<JumpingParticle>();
+		internalsRef->particleManagerRef->Play<JumpingParticle>();
 	}
 
 	// 糸の更新
-	internalsRef->pWire->Update(elapsedTime);
+	internalsRef->wireRef->Update(elapsedTime);
 
 	// 回転の更新
 	internalsRef->rotation.Tick(elapsedTime);
 
 	// 位置に速度を足す
-	internalsRef->pTransform->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
+	internalsRef->transformRef->Translate((internalsRef->moveVelocity - Math::Vector3::UnitY * internalsRef->fallSpeed) * elapsedTime);
 	// 回転させる
-	internalsRef->pTransform->SetRotation(internalsRef->rotation.GetCurrent());
+	internalsRef->transformRef->SetRotation(internalsRef->rotation.GetCurrent());
 
 	// 当たり判定の更新
-	internalsRef->pBoxCollider->ApplyTransform();
+	internalsRef->boxColliderRef->ApplyTransform();
 
 	// パーティクルの更新
-	internalsRef->pParticleManager->Update(elapsedTime);
+	internalsRef->particleManagerRef->Update(elapsedTime);
 }
 
 // 終了処理
@@ -128,7 +128,7 @@ void PlayerStateOnGround::PositionCorrect(Ref<PlayerInternals> internalsRef, flo
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// めり込んでいる、または、距離が近いかつ移動方向が下
-	if (distance < 0.0f || (distance < internalsRef->pBoxCollider->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
@@ -142,9 +142,9 @@ void PlayerStateOnGround::PositionCorrect(Ref<PlayerInternals> internalsRef, flo
 		}
 
 		// 移動
-		internalsRef->pTransform->Translate(displacement);
+		internalsRef->transformRef->Translate(displacement);
 		// トランスフォームを適用
-		internalsRef->pBoxCollider->ApplyTransform();
+		internalsRef->boxColliderRef->ApplyTransform();
 
 		// 地面についていることを確定させる
 		m_isGround = true;

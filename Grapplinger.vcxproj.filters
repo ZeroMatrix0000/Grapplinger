@@ -433,8 +433,15 @@
     <ClCompile Include="Scripts\Main\ResourcesInitializer.cpp">
       <Filter>Scripts\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.cpp" />
-    <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\DebugCameraInternals.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\DebugCameraInternals.cpp">
+      <Filter>Scripts\GameObjects\Objects\DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerInternals.cpp">
+      <Filter>Scripts\GameObjects\Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -861,8 +868,12 @@
     <ClInclude Include="Scripts\Main\ResourcesInitializer.h">
       <Filter>Scripts\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Commons\Systems\IsDerivedRegister.h" />
-    <ClInclude Include="Scripts\Main\IsDerivedRegister.h" />
+    <ClInclude Include="Scripts\Commons\Systems\IsDerivedRegister.h">
+      <Filter>Scripts\Commons\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Main\IsDerivedRegister.h">
+      <Filter>Scripts\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

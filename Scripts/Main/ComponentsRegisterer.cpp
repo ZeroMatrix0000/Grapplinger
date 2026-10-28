@@ -121,7 +121,7 @@ void ComponentsRegisterer::RegisterComponents
 	// アクション管理
 	componentManager->RegisterCreate<ActionManager>([iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<ActionManager>(desc, iResources.Get());
+			return std::make_unique<ActionManager>(desc, iResources);
 		});
 
 	// トランスフォーム

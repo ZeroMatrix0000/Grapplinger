@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionOpenMessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/10/28
  *
  * メッセージウィンドウ開アクション
  */
@@ -48,7 +48,7 @@ void ActionOpenMessageWindow::Enter()
 }
 
 // 更新処理
-void ActionOpenMessageWindow::Update(float elapsedTime, const IGameInput& iGameInput)
+void ActionOpenMessageWindow::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
 	// 開き終わるまで待たないか、開き終わったなら次のアクションへ移動
 	if (!m_isWait || !m_refMessageWindow->IsMoving())

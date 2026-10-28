@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * テキスト描画
  */
@@ -41,7 +41,7 @@ namespace Renderings
 		void End();
 
 		// ウィンドウサイズ変更時の処理
-		void OnWindowSizeChanged(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef);
+		void OnWindowSizeChanged(Ref<ID2D1Bitmap1> backBufferRef);
 
 		// テキストの参照を追加
 		void AddTextRef(Ref<const Text> textRef) override;

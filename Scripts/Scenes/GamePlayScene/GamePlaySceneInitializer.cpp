@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * ゲームプレイシーンの初期化関数
  */
@@ -33,24 +33,24 @@
 void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsRef) const
 {
 	// マウスをループ
-	internalsRef->gameContextRef->GetPIInput()->SetMousePositionLoop(true);
-	internalsRef->gameContextRef->GetPIInput()->DisplayCursor(false);
+	internalsRef->gameContextRef->GetIInput()->SetMousePositionLoop(true);
+	internalsRef->gameContextRef->GetIInput()->DisplayCursor(false);
 
 	// 出力サイズ
-	const Math::Vector2& outputSize = internalsRef->gameContextRef->GetPIWindowController()->GetOutputSize();
+	const Math::Vector2& outputSize = internalsRef->gameContextRef->GetIWindowController()->GetOutputSize();
 
 	// ゲームオブジェクト管理
-	auto* pIGameObjectManager = internalsRef->gameContextRef->GetPIGameObjectManager();
+	Ref iGameObjectManager = internalsRef->gameContextRef->GetIGameObjectManager();
 
-	pIGameObjectManager->SetGameObjectsRef(internalsRef->gameObjectsRef);
-	pIGameObjectManager->Load("Scene_GamePlay");
+	iGameObjectManager->SetGameObjectsRef(internalsRef->gameObjectsRef);
+	iGameObjectManager->Load("Scene_GamePlay");
 
 	// プレイヤーを取得
-	internalsRef->playerRef = pIGameObjectManager->Find("Player")->GetComponent<Player>();
+	internalsRef->playerRef = iGameObjectManager->Find("Player")->GetComponent<Player>();
 	internalsRef->playerRef->UpdateModel();
 
 	// プレイヤーカメラを取得
-	Ref<GameObject> camera = pIGameObjectManager->Find("PlayerCamera");
+	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");
 	internalsRef->iCameraScreenRef = camera->GetComponent<Renderings::ICameraScreen>();
 	internalsRef->playerCameraRef = camera->GetComponent<PlayerCamera>();
 	internalsRef->playerCameraRef->SetPosition(internalsRef->playerRef->GetCameraTarget());
@@ -58,46 +58,46 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->iCameraScreenRef->SetProjectionMatrix(outputSize);
 
 	// キャンバスを取得
-	internalsRef->canvasRef = pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>();
+	internalsRef->canvasRef = iGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>();
 	internalsRef->canvasRef->SetSize(outputSize);
 
 	// NPCマネージャーを取得
-	internalsRef->nPCManagerRef = pIGameObjectManager->Find("NPCManager")->GetComponent<NPCManager>();
+	internalsRef->nPCManagerRef = iGameObjectManager->Find("NPCManager")->GetComponent<NPCManager>();
 
 	// 地面を取得
-	Ref<GameObject> ground = pIGameObjectManager->Find("Ground");
+	Ref<GameObject> ground = iGameObjectManager->Find("Ground");
 	internalsRef->groundMeshRef = ground->GetComponent<Colliders::MeshCollider>();
 	internalsRef->groundModelRef = ground->GetComponent<Renderings::Model3D>();
 	internalsRef->groundMeshRef->ApplyTransform();
 
 	// レティクルを取得
-	internalsRef->reticleRef = pIGameObjectManager->Find("Reticle")->GetComponent<Renderings::Image>();
+	internalsRef->reticleRef = iGameObjectManager->Find("Reticle")->GetComponent<Renderings::Image>();
 
 	// はなすを取得
-	internalsRef->z2TalkRef = pIGameObjectManager->Find("Z2Talk")->GetComponent<Z2Talk>();
+	internalsRef->z2TalkRef = iGameObjectManager->Find("Z2Talk")->GetComponent<Z2Talk>();
 	// 上下の黒帯取得
-	internalsRef->blackBeltRef = pIGameObjectManager->Find("BlackBelt")->GetComponent<BlackBelt>();
+	internalsRef->blackBeltRef = iGameObjectManager->Find("BlackBelt")->GetComponent<BlackBelt>();
 	internalsRef->blackBeltRef->SetWidth(internalsRef->canvasRef->GetSize().x);
 
 	// メッセージウィンドウを取得
-	internalsRef->messageWindowRef = pIGameObjectManager->Find("MessageWindow")->GetComponent<MessageWindow>();
+	internalsRef->messageWindowRef = iGameObjectManager->Find("MessageWindow")->GetComponent<MessageWindow>();
 
 	// ターゲット照準を取得
-	internalsRef->targetPointRef = pIGameObjectManager->Find("TargetPoint")->GetComponent<TargetPoint>();
+	internalsRef->targetPointRef = iGameObjectManager->Find("TargetPoint")->GetComponent<TargetPoint>();
 
 	// アクション管理を取得
-	internalsRef->actionManagerRef = pIGameObjectManager->Find("ActionManager")->GetComponent<ActionManager>();
+	internalsRef->actionManagerRef = iGameObjectManager->Find("ActionManager")->GetComponent<ActionManager>();
 
 	// シェーダにプレイヤーの座標を設定
 	Ref constantBufferRef = internalsRef->groundModelRef->GetPModelSource()->GetPixelShader()->GetConstantBufferRef();
 	constantBufferRef->SetVariable("ShadowPosition", internalsRef->playerRef->GetPosition() + Math::Vector3::Down * internalsRef->playerRef->GetBox().size.y / 2.0f);
 	constantBufferRef->SetVariable("ShadowRadius", 0.75f);
 	// NPC の当たり判定
-	const auto nPCBoxes = internalsRef->nPCManagerRef->GetPBoxes();
-	for (size_t i = 0; i < nPCBoxes.size(); i++)
+	const auto nPCBoxRefs = internalsRef->nPCManagerRef->GetBoxRefs();
+	for (size_t i = 0; i < nPCBoxRefs.size(); i++)
 	{
-		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i)->position + Math::Vector3::Down * nPCBoxes.at(i)->size.y / 2.0f, 16 * (i + 1));
+		constantBufferRef->SetVariable("ShadowPosition", nPCBoxRefs.at(i)->position + Math::Vector3::Down * nPCBoxRefs.at(i)->size.y / 2.0f, 16 * (i + 1));
 		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + 1));
 	}
-	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + nPCBoxes.size()));
+	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + nPCBoxRefs.size()));
 }

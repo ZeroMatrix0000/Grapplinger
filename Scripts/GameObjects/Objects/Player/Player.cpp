@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  * 
  *
  * プレイヤー
@@ -16,26 +16,16 @@
 #include "Scripts/Main/IsDerivedRegister.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
-#include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Particle/ParticleManager.h"
 #include "Scripts/Commons/Components/Transform.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
-#include "Scripts/GameObjects/Particles/LandingParticle.h"
-#include "Scripts/GameObjects/Particles/JumpingParticle.h"
 
 // コンストラクタ
 Player::Player(const ComponentDesc& desc)
 	: Component{ desc }
-	, m_internals{}
+	, m_internals{ GetOwner() }
 {
-	m_internals.P_CAMERA_SCREEN = GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
-	m_internals.pTransform = GetOwner()->GetNullComponent<Transform>().Get();
-	m_internals.pBoxCollider = GetOwner()->GetNullComponent<Colliders::BoxCollider>().Get();
-	m_internals.pParticleManager = GetOwner()->GetNullComponent<Renderings::ParticleManager>().Get();
-	m_internals.pModel = GetOwner()->GetNullComponent<PlayerModel>().Get();
-	m_internals.pWire = GetOwner()->GetNullComponent<PlayerWire>().Get();
-
 	// 現在の状態を初期化
 	SetState(std::make_unique<PlayerStateOnGround>());
 }
@@ -43,11 +33,11 @@ Player::Player(const ComponentDesc& desc)
 // 初期化処理
 void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_internals.pTransform = GetOwner()->GetComponent<Transform>().Get();
-	m_internals.pBoxCollider = GetOwner()->GetComponent<Colliders::BoxCollider>().Get();
-	m_internals.pParticleManager = GetOwner()->GetComponent<Renderings::ParticleManager>().Get();
+	m_internals.transformRef = GetOwner()->GetComponent<Transform>();
+	m_internals.boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
+	m_internals.particleManagerRef = GetOwner()->GetComponent<Renderings::ParticleManager>();
 
-	m_internals.rotation.SetValue(m_internals.pTransform->GetRotation());
+	m_internals.rotation.SetValue(m_internals.transformRef->GetRotation());
 
 	float moveMaxSpeed = m_internals.moveMaxSpeed.GetMin();
 	float fallMaxSpeed = m_internals.fallSpeed.GetMax();
@@ -62,7 +52,7 @@ void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 	serializer.AddParameter(Ref{ m_internals.JUMP_POWER }, "JumpPower");
 	serializer.AddParameter(Ref{ m_internals.CAMERA_VELOCITY_COEFFICIENT }, "CameraVelocityCoefficient");
 	serializer.AddParameter(Ref{ coyoteTime }, "CoyoteTime");
-	serializer.AddParameter(Ref{ m_internals.P_CAMERA_SCREEN }, "CameraScreen");
+	serializer.AddParameter(m_internals.CAMERA_SCREEN_REF.Nest(), "CameraScreen");
 	serializer.Load(json);
 
 	m_internals.moveMaxSpeed.Initialize(0.0f, moveMaxSpeed, moveMaxSpeed * m_internals.DASH_RATIO);
@@ -73,30 +63,30 @@ void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 	m_internals.jumpBufferTime.Initialize(0.0f, 0.0f, coyoteTime);
 
 	// 当たり判定の更新
-	m_internals.pBoxCollider->ApplyTransform();
+	m_internals.boxColliderRef->ApplyTransform();
 
 	// モデルの生成
-	if (m_internals.pModel == GetOwner()->GetNullComponent<PlayerModel>().Get())
+	if (m_internals.modelRef == GetOwner()->GetNullComponent<PlayerModel>())
 	{
 		Ref obj = Instantiate("Prefab_PlayerModel");
-		m_internals.pModel = obj->GetComponent<PlayerModel>().Get();
-		m_internals.pModel->SetParticleManager(m_internals.pParticleManager);
+		m_internals.modelRef = obj->GetComponent<PlayerModel>();
+		m_internals.modelRef->SetParticleManagerRef(m_internals.particleManagerRef);
 	}
 
 	// 糸の生成
-	if (m_internals.pWire == GetOwner()->GetNullComponent<PlayerWire>().Get())
+	if (m_internals.wireRef == GetOwner()->GetNullComponent<PlayerWire>())
 	{
 		Ref obj = Instantiate("Prefab_PlayerWire");
-		m_internals.pWire = obj->GetComponent<PlayerWire>().Get();
+		m_internals.wireRef = obj->GetComponent<PlayerWire>();
 	}
 
 	// カメラを設定
-	if (m_internals.P_CAMERA_SCREEN != GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get())
+	if (m_internals.CAMERA_SCREEN_REF != GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Const())
 	{
-		m_internals.pBoxCollider->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
-		m_internals.pParticleManager->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
-		m_internals.pModel->AddICameraScreen(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
-		m_internals.pWire->AddICameraScreen(Ref<const Renderings::ICameraScreen>{ *m_internals.P_CAMERA_SCREEN });
+		m_internals.boxColliderRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+		m_internals.particleManagerRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+		m_internals.modelRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+		m_internals.wireRef->AddICameraScreen(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
 	}
 }
 
@@ -131,7 +121,7 @@ void Player::MeshCorrect(const Mesh& mesh)
 	// 直方体
 	const Math::Box& box = GetBox();
 	// 外接する非回転直方体（少し広めに）
-	Math::NonRotatingBox nonRotatingBox = m_internals.pBoxCollider->GetWorldBox().CreateNonRotatingBox();
+	Math::NonRotatingBox nonRotatingBox = m_internals.boxColliderRef->GetWorldBox().CreateNonRotatingBox();
 	nonRotatingBox.size *= 1.2f;
 
 	// 壁
@@ -216,8 +206,8 @@ void Player::MeshCorrect(const Mesh& mesh)
 // モデルの更新
 void Player::UpdateModel(float elapsedTime)
 {
-	m_internals.pModel->SetTransform(*m_internals.pTransform);
-	m_internals.pModel->Update(elapsedTime, *this);
+	m_internals.modelRef->SetTransform(m_internals.transformRef.Const());
+	m_internals.modelRef->Update(elapsedTime, Ref{ *this }.Const());
 }
 
 // 糸を伸ばす
@@ -230,13 +220,13 @@ void Player::ExpandWire(const Math::Vector3& targetPosition, PlayerInternals::Ta
 // 中心座標を取得
 const Math::Vector3& Player::GetPosition() const
 {
-	return m_internals.pBoxCollider->GetWorldBox().position;
+	return m_internals.boxColliderRef->GetWorldBox().position;
 }
 
 // 当たり判定を取得
 const Math::Box& Player::GetBox() const
 {
-	return m_internals.pBoxCollider->GetWorldBox();
+	return m_internals.boxColliderRef->GetWorldBox();
 }
 
 // 移動速度の比率を取得
@@ -250,7 +240,7 @@ Math::Vector3 Player::GetMoveVelocity() const
 {
 	if (IsState<PlayerStateExpandWire>())
 	{
-		return m_internals.pWire->GetPlayerVelocity();
+		return m_internals.wireRef->GetPlayerVelocity();
 	}
 	return m_internals.moveVelocity;
 }

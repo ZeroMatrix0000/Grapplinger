@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/19
+ * Last Updated: 2026/10/28
  *
  * ゲームの入力
  */
@@ -10,7 +10,7 @@
 #include "GameInput.h"
 
  // コンストラクタ
-GameInput::GameInput(const Systems::IInput& input)
+GameInput::GameInput(Ref<const Systems::IInput> input)
 	: IGameInput{}
 	, m_input{ input }
 {
@@ -23,22 +23,22 @@ Math::Vector3 GameInput::GetPlayerMove() const
 	Math::Vector3 direction{};
 
 	// 上
-	if (m_input.GetKey(KeyName::W) || m_input.GetKey(KeyName::Up))
+	if (m_input->GetKey(KeyName::W) || m_input->GetKey(KeyName::Up))
 	{
 		direction += Math::Vector3::Forward;
 	}
 	// 左
-	if (m_input.GetKey(KeyName::A) || m_input.GetKey(KeyName::Left))
+	if (m_input->GetKey(KeyName::A) || m_input->GetKey(KeyName::Left))
 	{
 		direction += Math::Vector3::Left;
 	}
 	// 下
-	if (m_input.GetKey(KeyName::S) || m_input.GetKey(KeyName::Down))
+	if (m_input->GetKey(KeyName::S) || m_input->GetKey(KeyName::Down))
 	{
 		direction += Math::Vector3::Backward;
 	}
 	// 右
-	if (m_input.GetKey(KeyName::D) || m_input.GetKey(KeyName::Right))
+	if (m_input->GetKey(KeyName::D) || m_input->GetKey(KeyName::Right))
 	{
 		direction += Math::Vector3::Right;
 	}
@@ -59,35 +59,35 @@ Math::Vector3 GameInput::GetPlayerMove() const
 // カメラの回転を取得
 Math::Vector2 GameInput::GetPlayerCameraRotate() const
 {
-	return m_input.GetMouseMovement() * MOUSE_COEFFICIENT;
+	return m_input->GetMouseMovement() * MOUSE_COEFFICIENT;
 }
 
 // プレイヤーのダッシュ入力を取得
 bool GameInput::GetPlayerDash() const
 {
-	return m_input.GetKey(KeyName::LeftShift);
+	return m_input->GetKey(KeyName::LeftShift);
 }
 
 // プレイヤーのジャンプ入力を取得
 bool GameInput::GetPlayerJump() const
 {
-	return m_input.GetKeyDown(KeyName::Space);
+	return m_input->GetKeyDown(KeyName::Space);
 }
 
 // プレイヤーの糸伸ばし入力を取得
 bool GameInput::GetPlayerExpandWire() const
 {
-	return m_input.GetMouseButtonDown(MouseButtonName::Left);
+	return m_input->GetMouseButtonDown(MouseButtonName::Left);
 }
 
 // フィールド上のオブジェクトのインタラクト入力を取得
 bool GameInput::GetFieldInteract() const
 {
-	return m_input.GetKeyDown(KeyName::Z);
+	return m_input->GetKeyDown(KeyName::Z);
 }
 
 // テキスト送り入力
 bool GameInput::GetTextScroll() const
 {
-	return m_input.GetKeyDown(KeyName::Z) || m_input.GetKeyDown(KeyName::X);
+	return m_input->GetKeyDown(KeyName::Z) || m_input->GetKeyDown(KeyName::X);
 }

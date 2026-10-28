@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * NPC管理
  */
@@ -25,8 +25,8 @@
 NPCManager::NPCManager(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_isHideCursor{}
-	, m_pNPCList{}
-	, m_pInteractCursorList{}
+	, m_nPCRefList{}
+	, m_interactCursorRefList{}
 	, m_pFocusedNPC{}
 {
 }
@@ -34,22 +34,22 @@ NPCManager::NPCManager(const ComponentDesc& desc)
 // 初期化処理
 void NPCManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	const Renderings::Canvas* pCanvas = nullptr;
+	Ref canvasRef = GetOwner()->GetNullComponent<Renderings::Canvas>().Const();
 
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_pNPCList }, "NPCList");
-	serializer.AddParameter(Ref{ pCanvas }, "Canvas");
+	serializer.AddParameter(Ref{ m_nPCRefList }, "NPCList");
+	serializer.AddParameter(canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	// NPC の数だけテキストを追加
-	for (int i = 0; i < m_pNPCList.size(); i++)
+	for (int i = 0; i < m_nPCRefList.size(); i++)
 	{
 		Ref interactCursor = Instantiate("Prefab_InteractCursor")->GetComponent<InteractCursor>();
-		m_pInteractCursorList.push_back(interactCursor);
-		interactCursor->SetName(m_pNPCList.at(i)->GetName());
-		if (pCanvas)
+		m_interactCursorRefList.push_back(interactCursor);
+		interactCursor->SetName(m_nPCRefList.at(i)->GetName());
+		if (canvasRef != GetOwner()->GetNullComponent<Renderings::Canvas>().Const())
 		{
-			interactCursor->SetCanvas(*pCanvas);
+			interactCursor->SetCanvasRef(canvasRef);
 		}
 	}
 }
@@ -57,10 +57,10 @@ void NPCManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 // 更新処理
 void NPCManager::Update(float elapsedTime)
 {
-	for (int i = 0; i < m_pNPCList.size(); i++)
+	for (int i = 0; i < m_nPCRefList.size(); i++)
 	{
-		m_pNPCList.at(i)->Update(elapsedTime);
-		m_pInteractCursorList.at(i)->Update(elapsedTime, m_pNPCList.at(i) == m_pFocusedNPC && !m_isHideCursor);
+		m_nPCRefList.at(i)->Update(elapsedTime);
+		m_interactCursorRefList.at(i)->Update(elapsedTime, m_nPCRefList.at(i).Get() == m_pFocusedNPC && !m_isHideCursor);
 	}
 }
 
@@ -72,71 +72,71 @@ void NPCManager::SetRotation(const Math::Vector3& playerPosition)
 
 	m_pFocusedNPC = nullptr;
 
-	for (auto* pNPC : m_pNPCList)
+	for (Ref nPCRef : m_nPCRefList)
 	{
 		// スピン中ならスキップ
-		if (pNPC->IsSpinning())
+		if (nPCRef->IsSpinning())
 		{
 			continue;
 		}
 
 		// プレイヤーとの距離
-		float distance = Math::Geometry::Distance(playerPosition, pNPC->GetSphere());
+		float distance = Math::Geometry::Distance(playerPosition, nPCRef->GetSphere());
 		// 距離がある程度近かったら
 		if (distance < 0.0f)
 		{
 			// 向く方向
-			Math::Vector3 direction = playerPosition - pNPC->GetPosition();
+			Math::Vector3 direction = playerPosition - nPCRef->GetPosition();
 			// Y軸方向は無視
 			direction.y = 0.0f;
 			// 正規化
 			direction.Normalize();
 			// 回転
 			Math::Quaternion rotation = Math::Quaternion::FromToRotation(Math::Vector3::Backward, direction);
-			pNPC->SetRotation(&rotation);
+			nPCRef->SetRotation(&rotation);
 
 			// 最も近いNPCを記録
 			if (distance < distanceMin)
 			{
 				distanceMin = distance;
-				m_pFocusedNPC = pNPC;
+				m_pFocusedNPC = nPCRef.Get();
 			}
 		}
 		else
 		{
-			pNPC->SetRotation();
+			nPCRef->SetRotation();
 		}
 	}
 }
 
 // カーソルを設定
-void NPCManager::SetCursor(const Renderings::ICameraScreen& iCameraScreen)
+void NPCManager::SetCursor(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
-	for (int i = 0; i < m_pNPCList.size(); i++)
+	for (int i = 0; i < m_nPCRefList.size(); i++)
 	{
-		const Math::Box& box = m_pNPCList.at(i)->GetBox();
+		const Math::Box& box = m_nPCRefList.at(i)->GetBox();
 
 		Math::Vector2 screenPosition = Math::Geometry::Projection
 		(
 			box.position + box.size * Math::Vector3::Up / 2.0f,
-			iCameraScreen.GetViewMatrix(),
-			iCameraScreen.GetProjectionMatrix(),
-			m_pInteractCursorList.at(i)->GetCanvas().GetSize()
+			iCameraScreenRef->GetViewMatrix(),
+			iCameraScreenRef->GetProjectionMatrix(),
+			m_interactCursorRefList.at(i)->GetCanvas().GetSize()
 		);
 
-		m_pInteractCursorList.at(i)->SetPosition(screenPosition);
+		m_interactCursorRefList.at(i)->SetPosition(screenPosition);
 	}
 }
 
 // プレイヤーとの当たり判定
-void NPCManager::PlayerCollide(Player* pPlayer)
+void NPCManager::PlayerCollide(Ref<Player> playerRef)
 {
 	// 直方体
-	const Math::Box& playerBox = pPlayer->GetBox();
+	const Math::Box& playerBox = playerRef->GetBox();
 
-	for (auto* pNPC : m_pNPCList)
+	for (Ref nPCRef : m_nPCRefList)
 	{
-		const Math::Box& nPCBox = pNPC->GetBox();
+		const Math::Box& nPCBox = nPCRef->GetBox();
 
 		// 外接する非回転直方体同士が触れていなければ何もしない
 		if (!Math::Geometry::IsCollide(playerBox.CreateNonRotatingBox(), nPCBox.CreateNonRotatingBox()))
@@ -152,24 +152,24 @@ void NPCManager::PlayerCollide(Player* pPlayer)
 		if (distance < 0.0f)
 		{
 			// 座標補正
-			pPlayer->PositionCorrect(distance, direction);
+			playerRef->PositionCorrect(distance, direction);
 			// プレイヤーが糸伸ばし中かつ移動中ならスピン
-			if (pPlayer->IsState<PlayerStateExpandWire>() && pPlayer->GetMoveVelocity() != Math::Vector3::Zero)
+			if (playerRef->IsState<PlayerStateExpandWire>() && playerRef->GetMoveVelocity() != Math::Vector3::Zero)
 			{
 				// 左側に当たったら時計回り
-				pNPC->Spin(Math::Vector3::Up.Dot(pPlayer->GetMoveVelocity().Cross(nPCBox.position - playerBox.position)) > 0.0f);
+				nPCRef->Spin(Math::Vector3::Up.Dot(playerRef->GetMoveVelocity().Cross(nPCBox.position - playerBox.position)) > 0.0f);
 			}
 		}
 	}
 }
 
 // 当たり判定を取得
-std::vector<const Math::Box*> NPCManager::GetPBoxes() const
+std::vector<Ref<const Math::Box>> NPCManager::GetBoxRefs() const
 {
-	std::vector<const Math::Box*> pBoxes{};
-	for (const auto* pNPC : m_pNPCList)
+	std::vector<Ref<const Math::Box>> boxRefs{};
+	for (Ref nPCRef : m_nPCRefList)
 	{
-		pBoxes.push_back(&pNPC->GetBox());
+		boxRefs.push_back(Ref{ nPCRef->GetBox() });
 	}
-	return pBoxes;
+	return boxRefs;
 }

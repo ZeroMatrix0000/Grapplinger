@@ -1,7 +1,7 @@
 /*
  * FileName:     TitleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * タイトルシーン
  */
@@ -63,18 +63,18 @@ private:
 
 	/* メンバ変数 */
 
-	// カメラ画面
-	Renderings::CameraScreen<Camera::EulerTargetCamera>* m_pCameraScreen;
-	// キャンバス
-	Renderings::Canvas* m_pCanvas;
+	// カメラ画面の参照
+	Ref<Renderings::CameraScreen<Camera::EulerTargetCamera>> m_cameraScreenRef;
+	// キャンバスの参照
+	Ref<Renderings::Canvas> m_canvasRef;
 
-	// 選択メニューコンポーネント
-	SelectMenu* m_pSelectMenu;
+	// 選択メニューコンポーネントの参照
+	Ref<SelectMenu> m_selectMenuRef;
 
-	// タイトル
-	RectTransform* m_pTitle;
-	// タイトル画像
-	Renderings::Image* m_pTitleImage;
+	// タイトルの参照
+	Ref<RectTransform> m_titleRef;
+	// タイトル画像の参照
+	Ref<Renderings::Image> m_titleImageRef;
 	// タイトルの基準位置
 	Math::Vector2 m_titlePosition;
 	// タイトルの移動周期

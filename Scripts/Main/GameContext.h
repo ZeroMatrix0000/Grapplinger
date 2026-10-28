@@ -1,7 +1,7 @@
 /*
  * FileName:     GameContext.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/31
+ * Last Updated: 2026/10/28
  *
  * ゲームコンテキスト
  */
@@ -49,29 +49,29 @@ public:
 	// 初期化処理
 	void Initialize
 	(
-		Systems::IWindowController* pIWindowController,
-		Systems::IInput*            pIInput,
-		IComponentManager*          pIComponentManager,
-		IGameObjectManager*         pIGameObjectManager,
-		ISceneManager*              pISceneManager,
-		IGameInput*                 pIGameInput
+		Ref<Systems::IWindowController> iWindowController,
+		Ref<Systems::IInput>            iInput,
+		Ref<IComponentManager>          iComponentManager,
+		Ref<IGameObjectManager>         iGameObjectManager,
+		Ref<ISceneManager>              iSceneManager,
+		Ref<IGameInput>                 iGameInput
 	);
 
 	// ウィンドウ管理インタフェースを取得
-	Systems::IWindowController* GetPIWindowController() const { return m_pIWindowController; }
+	Ref<Systems::IWindowController> GetIWindowController() const { return Ref{ *m_pIWindowController }; }
 	// 入力管理インタフェースを取得
-	Systems::IInput* GetPIInput() const { return m_pIInput; }
+	Ref<Systems::IInput> GetIInput() const { return Ref{ *m_pIInput }; }
 
 	// コンポーネント工場を取得
-	IComponentManager* GetPIComponentManager() const { return m_pIComponentManager; }
+	Ref<IComponentManager> GetIComponentManager() const { return Ref{ *m_pIComponentManager }; }
 	// コンポーネント工場を取得
-	IGameObjectManager* GetPIGameObjectManager() const { return m_pIGameObjectManager; }
+	Ref<IGameObjectManager> GetIGameObjectManager() const { return Ref{ *m_pIGameObjectManager }; }
 
 	// シーン管理インタフェースを取得
-	ISceneManager* GetPISceneManager() const { return m_pISceneManager; }
+	Ref<ISceneManager> GetISceneManager() const { return Ref{ *m_pISceneManager }; }
 
 	// ゲーム入力インタフェースを取得
-	IGameInput* GetPIGameInput() const { return m_pIGameInput; }
+	Ref<IGameInput> GetIGameInput() const { return Ref{ *m_pIGameInput }; }
 
 
 private:

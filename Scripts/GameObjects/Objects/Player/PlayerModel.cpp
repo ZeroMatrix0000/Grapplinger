@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerModel.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * プレイヤーのモデル
  */
@@ -32,8 +32,8 @@ PlayerModel::PlayerModel(const ComponentDesc& desc)
 	, m_dashAngle{}
 	, m_wireAngle{}
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
-	, m_refSilhouette{ GetOwner()->GetNullComponent<Transform>() }
-	, m_pParticleManager{}
+	, m_silhouetteRef{ GetOwner()->GetNullComponent<Transform>() }
+	, m_particleManagerRef{ GetOwner()->GetNullComponent<Renderings::ParticleManager>() }
 {
 }
 
@@ -55,56 +55,56 @@ void PlayerModel::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectF
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 
 	// シルエットを生成
-	if (m_refSilhouette == GetOwner()->GetNullComponent<Transform>())
+	if (m_silhouetteRef == GetOwner()->GetNullComponent<Transform>())
 	{
 		Ref obj = Instantiate("Prefab_PlayerSilhouette");
-		m_refSilhouette = obj->GetComponent<Transform>();
+		m_silhouetteRef = obj->GetComponent<Transform>();
 	}
 }
 
 // 更新処理
-void PlayerModel::Update(float elapsedTime, const Player& player)
+void PlayerModel::Update(float elapsedTime, Ref<const Player> playerRef)
 {
 	// 移動
-	Translate(elapsedTime, player);
+	Translate(elapsedTime, playerRef);
 	// 回転
-	Rotate(elapsedTime, player);
+	Rotate(elapsedTime, playerRef);
 	// スケーリング
-	Scaling(elapsedTime, player);
+	Scaling(elapsedTime, playerRef);
 }
 
 // 移動
-void PlayerModel::Translate(float elapsedTime, const Player& player)
+void PlayerModel::Translate(float elapsedTime, Ref<const Player> playerRef)
 {
 	// 落下状態 or 糸伸ばし状態
-	if (player.IsState<PlayerStateFalling>())
+	if (playerRef->IsState<PlayerStateFalling>())
 	{
 		m_bounceTime = 0.0f;
 		m_fallingHeight.SetTarget(0.0f);
 		m_fallingHeight.Tick(elapsedTime);
 
-		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
+		Math::Vector3 position = playerRef->GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
 		(
-			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
+			Math::Vector3::Down * playerRef->GetBox().size.y / 2.0f,
 			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
 		m_transformRef->SetPosition(position);
-		m_refSilhouette->SetPosition(position);
+		m_silhouetteRef->SetPosition(position);
 	}
 	// 糸伸ばし状態
-	else if (player.IsState<PlayerStateExpandWire>())
+	else if (playerRef->IsState<PlayerStateExpandWire>())
 	{
 		m_bounceTime = 0.0f;
 		m_fallingHeight.SetTarget(0.0f);
 		m_fallingHeight.Tick(elapsedTime);
 
-		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
+		Math::Vector3 position = playerRef->GetBox().position + Math::Vector3::Up * m_fallingHeight.GetCurrent() + Math::Vector3::Transform
 		(
-			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
-			Math::Euler{m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
+			Math::Vector3::Down * playerRef->GetBox().size.y / 2.0f,
+			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
 		m_transformRef->SetPosition(position);
-		m_refSilhouette->SetPosition(position);
+		m_silhouetteRef->SetPosition(position);
 	}
 	else
 	{
@@ -112,38 +112,38 @@ void PlayerModel::Translate(float elapsedTime, const Player& player)
 		m_bounceTime += elapsedTime;
 
 		// 地面に着地しているタイミングでダッシュ中なら砂煙を再生
-		if (bounceTime > m_bounceTime && player.GetMoveVelocityRatio() > 1.1f)
+		if (bounceTime > m_bounceTime && playerRef->GetMoveVelocityRatio() > 1.1f)
 		{
 			// 砂煙の再生
-			m_pParticleManager->Play<JumpingParticle>();
+			m_particleManagerRef->Play<JumpingParticle>();
 		}
 
 		// 跳ねる高さ
-		float height = m_bounceHeight * Math::Sin(m_bounceTime.GetRatio() * Math::PI) * player.GetMoveVelocityRatio();
+		float height = m_bounceHeight * Math::Sin(m_bounceTime.GetRatio() * Math::PI) * playerRef->GetMoveVelocityRatio();
 		m_fallingHeight.SetValue(height);
 		// 座標
-		Math::Vector3 position = player.GetBox().position + Math::Vector3::Up * height + Math::Vector3::Transform
+		Math::Vector3 position = playerRef->GetBox().position + Math::Vector3::Up * height + Math::Vector3::Transform
 		(
-			Math::Vector3::Down * player.GetBox().size.y / 2.0f,
+			Math::Vector3::Down * playerRef->GetBox().size.y / 2.0f,
 			Math::Euler{ m_wireAngle.GetCurrent(), 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation()
 		);
 		m_transformRef->SetPosition(position);
-		m_refSilhouette->SetPosition(position);
+		m_silhouetteRef->SetPosition(position);
 	}
 }
 
 // 回転
-void PlayerModel::Rotate(float elapsedTime, const Player& player)
+void PlayerModel::Rotate(float elapsedTime, Ref<const Player> playerRef)
 {
 	// 糸伸ばし状態
-	if (player.IsState<PlayerStateExpandWire>())
+	if (playerRef->IsState<PlayerStateExpandWire>())
 	{
 		m_dashAngle.SetTarget(0.0f);
 	}
 	else
 	{
 		// 移動速度で回転
-		m_dashAngle.SetTarget(Math::Clamp(player.GetMoveVelocityRatio() - 1.0f, 0.0f, 1.0f) * m_dashAngleMax, 200.0f, 25.0f);
+		m_dashAngle.SetTarget(Math::Clamp(playerRef->GetMoveVelocityRatio() - 1.0f, 0.0f, 1.0f) * m_dashAngleMax, 200.0f, 25.0f);
 		m_wireAngle.SetTarget(0.0f);
 	}
 
@@ -152,21 +152,21 @@ void PlayerModel::Rotate(float elapsedTime, const Player& player)
 
 	float rotationX = m_dashAngle.GetCurrent() + m_wireAngle.GetCurrent();
 	m_transformRef->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_transformRef->GetRotation());
-	m_refSilhouette->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_refSilhouette->GetRotation());
+	m_silhouetteRef->SetRotation(Math::Euler{ rotationX, 0.0f, 0.0f }.CreateQuaternion() * m_silhouetteRef->GetRotation());
 }
 
 // スケーリング
-void PlayerModel::Scaling(float elapsedTime, const Player& player)
+void PlayerModel::Scaling(float elapsedTime, Ref<const Player> playerRef)
 {
 	// 糸伸ばし状態
-	if (player.IsState<PlayerStateExpandWire>())
+	if (playerRef->IsState<PlayerStateExpandWire>())
 	{
 		m_scaling.SetTarget(Math::Vector3::Zero, 250.0f, 30.0f);
 	}
 	else
 	{
 		// 落下によるスケーリングの大きさ
-		float fallScaling = Math::Clamp(-player.GetFallSpeed() * m_fallSpeedCoefficient, -0.1f, 0.1f);
+		float fallScaling = Math::Clamp(-playerRef->GetFallSpeed() * m_fallSpeedCoefficient, -0.1f, 0.1f);
 		// 落下速度でスケールを変更
 		m_scaling.SetTarget(Math::Vector3{ -fallScaling / 2.0f, fallScaling, -fallScaling / 2.0f }, 250.0f, 30.0f);
 	}
@@ -174,23 +174,23 @@ void PlayerModel::Scaling(float elapsedTime, const Player& player)
 	m_scaling.Tick(elapsedTime);
 	Math::Vector3 scale = m_transformRef->GetScale() + m_scaling.GetCurrent();
 	m_transformRef->SetScale(scale);
-	m_refSilhouette->SetScale(scale);
+	m_silhouetteRef->SetScale(scale);
 }
 
 // 映るカメラ画面を追加
-void PlayerModel::AddICameraScreen(Ref<const Renderings::ICameraScreen> iCameraScreen)
+void PlayerModel::AddICameraScreenRef(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
-	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreen);
-	m_refSilhouette->GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreen);
+	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreenRef);
+	m_silhouetteRef->GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreenRef);
 }
 
 // トランスフォームを設定
-void PlayerModel::SetTransform(const Transform& transform)
+void PlayerModel::SetTransform(Ref<const Transform> transformRef)
 {
-	m_transformRef->SetPosition(transform.GetPosition());
-	m_transformRef->SetRotation(transform.GetRotation());
-	m_transformRef->SetScale(transform.GetScale());
-	m_refSilhouette->SetPosition(transform.GetPosition());
-	m_refSilhouette->SetRotation(transform.GetRotation());
-	m_refSilhouette->SetScale(transform.GetScale());
+	m_transformRef->SetPosition(transformRef->GetPosition());
+	m_transformRef->SetRotation(transformRef->GetRotation());
+	m_transformRef->SetScale(transformRef->GetScale());
+	m_silhouetteRef->SetPosition(transformRef->GetPosition());
+	m_silhouetteRef->SetRotation(transformRef->GetRotation());
+	m_silhouetteRef->SetScale(transformRef->GetScale());
 }

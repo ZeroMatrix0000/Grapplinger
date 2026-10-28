@@ -1,7 +1,7 @@
 /*
  * FileName:     TitleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * タイトルシーン
  */
@@ -31,11 +31,11 @@
 // コンストラクタ
 TitleScene::TitleScene(const ComponentDesc& desc, Ref<const GameContext> context)
 	: Scene{ desc, context }
-	, m_pCameraScreen{}
-	, m_pCanvas{}
-	, m_pSelectMenu{}
-	, m_pTitle{}
-	, m_pTitleImage{}
+	, m_cameraScreenRef{ GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>() }
+	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>() }
+	, m_selectMenuRef{ GetOwner()->GetNullComponent<SelectMenu>() }
+	, m_titleRef{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_titleImageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_titlePosition{}
 	, m_titleSway{}
 {
@@ -48,38 +48,38 @@ void TitleScene::Initialize(const SceneTransitionData& data)
 	const auto& gameContext = GetContext();
 
 	// 出力サイズ
-	const Math::Vector2& outputSize = gameContext->GetPIWindowController()->GetOutputSize();
+	const Math::Vector2& outputSize = gameContext->GetIWindowController()->GetOutputSize();
 
 	// ゲームオブジェクト管理
-	auto* pIGameObjectManager = gameContext->GetPIGameObjectManager();
+	Ref iGameObjectManager = gameContext->GetIGameObjectManager();
 
-	pIGameObjectManager->SetGameObjectsRef(GetGameObjects());
-	pIGameObjectManager->Load("Scene_Title");
+	iGameObjectManager->SetGameObjectsRef(GetGameObjects());
+	iGameObjectManager->Load("Scene_Title");
 
 	// カメラ画面を取得
-	m_pCameraScreen = pIGameObjectManager->Find("TitleCamera")->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Get();
-	m_pCameraScreen->SetProjectionMatrix(outputSize);
+	m_cameraScreenRef = iGameObjectManager->Find("TitleCamera")->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
+	m_cameraScreenRef->SetProjectionMatrix(outputSize);
 
 	// キャンバスを取得
-	m_pCanvas = pIGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>().Get();
-	m_pCanvas->SetSize(outputSize);
+	m_canvasRef = iGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>();
+	m_canvasRef->SetSize(outputSize);
 
 	// 地面を取得
-	Ref<GameObject> ground = pIGameObjectManager->Find("Ground");
+	Ref<GameObject> ground = iGameObjectManager->Find("Ground");
 	ground->GetComponent<Colliders::MeshCollider>()->ApplyTransform();
 	ground->GetComponent<Renderings::Model3D>()->GetPModelSource()->GetPixelShader()->GetConstantBufferRef()->SetVariable("ShadowCount", 0);
 
 	// 選択メニューを取得
-	m_pSelectMenu = pIGameObjectManager->Find("TitleMenu")->GetComponent<SelectMenu>().Get();
-	m_pSelectMenu->AddOption(L"スタート", [gameContext] { gameContext->GetPISceneManager()->SetNextScene<GamePlayScene>(); });
-	m_pSelectMenu->AddOption(L"ゲームを<ruby=しゅうりょう>終了</ruby>", [gameContext] { gameContext->GetPIWindowController()->Destroy(); });
+	m_selectMenuRef = iGameObjectManager->Find("TitleMenu")->GetComponent<SelectMenu>();
+	m_selectMenuRef->AddOption(L"スタート", [gameContext] { gameContext->GetISceneManager()->SetNextScene<GamePlayScene>(); });
+	m_selectMenuRef->AddOption(L"ゲームを<ruby=しゅうりょう>終了</ruby>", [gameContext] { gameContext->GetIWindowController()->Destroy(); });
 
 	// タイトルを取得
-	Ref<GameObject> title = pIGameObjectManager->Find("Title");
-	m_pTitle = title->GetComponent<RectTransform>().Get();
-	m_pTitleImage = title->GetComponent<Renderings::Image>().Get();
-	m_pTitleImage->GetPixelShader()->GetConstantBufferRef()->SetVariable("TextureSize", m_pTitleImage->GetSize());
-	m_titlePosition = m_pTitle->GetRect().position;
+	Ref<GameObject> title = iGameObjectManager->Find("Title");
+	m_titleRef = title->GetComponent<RectTransform>();
+	m_titleImageRef = title->GetComponent<Renderings::Image>();
+	m_titleImageRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("TextureSize", m_titleImageRef->GetSize());
+	m_titlePosition = m_titleRef->GetRect().position;
 	m_titleSway.Initialize(0.0f, 0.0f, 360.0f);
 }
 
@@ -87,44 +87,44 @@ void TitleScene::Initialize(const SceneTransitionData& data)
 void TitleScene::Update(float elapsedTime)
 {
 	// シーン切り替え中でないなら
-	if (!GetContext()->GetPISceneManager()->IsChanging())
+	if (!GetContext()->GetISceneManager()->IsChanging())
 	{
 		// 入力管理
-		auto* pIInput = GetContext()->GetPIInput();
+		Ref iInput = GetContext()->GetIInput();
 
 		// W or ↑ で上選択
-		if (pIInput->GetKeyDown(KeyName::W) || pIInput->GetKeyDown(KeyName::Up))
+		if (iInput->GetKeyDown(KeyName::W) || iInput->GetKeyDown(KeyName::Up))
 		{
-			m_pSelectMenu->SelectUp();
+			m_selectMenuRef->SelectUp();
 		}
 		// S or ↓ で下選択
-		if (pIInput->GetKeyDown(KeyName::S) || pIInput->GetKeyDown(KeyName::Down))
+		if (iInput->GetKeyDown(KeyName::S) || iInput->GetKeyDown(KeyName::Down))
 		{
-			m_pSelectMenu->SelectDown();
+			m_selectMenuRef->SelectDown();
 		}
 		// Z or Space で実行
-		if (pIInput->GetKeyDown(KeyName::Z) || pIInput->GetKeyDown(KeyName::Space))
+		if (iInput->GetKeyDown(KeyName::Z) || iInput->GetKeyDown(KeyName::Space))
 		{
-			m_pSelectMenu->Execute();
+			m_selectMenuRef->Execute();
 		}
 	}
 
 	// 選択メニューの更新
-	m_pSelectMenu->Update(elapsedTime);
+	m_selectMenuRef->Update(elapsedTime);
 
 	// タイトルの更新
 	m_titleSway += 90.0f * elapsedTime;
-	m_pTitle->SetPosition(m_titlePosition + Math::Vector2::UnitY * Math::Sin(Math::Deg2Rad(m_titleSway)) * 50.0f);
-	Ref bufferRef = m_pTitleImage->GetPixelShader()->GetConstantBufferRef();
+	m_titleRef->SetPosition(m_titlePosition + Math::Vector2::UnitY * Math::Sin(Math::Deg2Rad(m_titleSway)) * 50.0f);
+	Ref bufferRef = m_titleImageRef->GetPixelShader()->GetConstantBufferRef();
 	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
 	//buffer->SetVariable("timer", buffer->GetVariable<float>("time") + elapsedTime);
 
 	// カメラ画面の更新
-	Camera::EulerTargetCamera camera = m_pCameraScreen->GetCamera();
+	Camera::EulerTargetCamera camera = m_cameraScreenRef->GetCamera();
 	camera.rotation.y += 30.0f * elapsedTime;
 	camera.rotation.Format();
-	m_pCameraScreen->SetCamera(camera);
-	m_pCameraScreen->UpdateViewMatrix();
+	m_cameraScreenRef->SetCamera(camera);
+	m_cameraScreenRef->UpdateViewMatrix();
 }
 
 // 終了処理
@@ -138,10 +138,10 @@ void TitleScene::AcceptMessage(const std::string& message)
 	if (message == "WindowSizeChanged")
 	{
 		// 出力サイズ
-		const Math::Vector2& outputSize = GetContext()->GetPIWindowController()->GetOutputSize();
+		const Math::Vector2& outputSize = GetContext()->GetIWindowController()->GetOutputSize();
 		// プロジェクション行列を設定
-		m_pCameraScreen->SetProjectionMatrix(outputSize);
+		m_cameraScreenRef->SetProjectionMatrix(outputSize);
 		// キャンバスのサイズを設定
-		m_pCanvas->SetSize(outputSize);
+		m_canvasRef->SetSize(outputSize);
 	}
 }

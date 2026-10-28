@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/28
  *
  * ターゲット照準
  */
@@ -29,28 +29,28 @@ TargetPoint::TargetPoint(const ComponentDesc& desc)
 	, m_brightTimer{}
 	, m_info{}
 	, m_transformRef{ GetOwner()->GetNullComponent<RectTransform>() }
-	, m_refImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
-	, m_refPlayer{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
-	, m_refICameraScreen{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>() }
-	, m_pTargetObjects{}
-	, m_pGrounds{}
+	, m_imageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
+	, m_playerRef{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
+	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>() }
+	, m_targetObjectsRef{}
+	, m_groundsRef{}
 {
 }
 
 // 初期化処理
 void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_refImage = GetOwner()->GetComponent<Renderings::Image>();
+	m_imageRef = GetOwner()->GetComponent<Renderings::Image>();
 	m_transformRef = GetOwner()->GetComponent<RectTransform>();
 
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_targetDistance }, "TargetDistance");
 	serializer.AddParameter(Ref{ m_rayLength }, "RayLength");
 	serializer.AddParameter(Ref{ m_brightInterval }, "BrightInterval");
-	serializer.AddParameter(m_refPlayer.Nest(), "Player");
-	serializer.AddParameter(m_refICameraScreen.Nest(), "CameraScreen");
-	serializer.AddParameter(Ref{ m_pTargetObjects }, "TargetObjects");
-	serializer.AddParameter(Ref{ m_pGrounds }, "Grounds");
+	serializer.AddParameter(m_playerRef.Nest(), "Player");
+	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
+	serializer.AddParameter(Ref{ m_targetObjectsRef }, "TargetObjects");
+	serializer.AddParameter(Ref{ m_groundsRef }, "Grounds");
 	serializer.Load(json);
 }
 
@@ -62,20 +62,20 @@ void TargetPoint::Update(float elapsedTime)
 	if (m_brightTimer >= m_brightInterval)
 	{
 		m_brightTimer -= m_brightInterval;
-		Math::Color color = Math::Color{ m_refImage->GetColor() == Math::Color{ DirectX::Colors::Red } ? DirectX::Colors::Orange : DirectX::Colors::Red };
-		m_refImage->SetColor(color);
+		Math::Color color = Math::Color{ m_imageRef->GetColor() == Math::Color{ DirectX::Colors::Red } ? DirectX::Colors::Orange : DirectX::Colors::Red };
+		m_imageRef->SetColor(color);
 	}
 
 	m_info.position = Math::Vector3::Zero;
 	m_info.type = Type::Air;
 
 	// プレイヤーの座標
-	const Math::Vector3& playerPosition = m_refPlayer->GetWorldBox().position;
+	const Math::Vector3& playerPosition = m_playerRef->GetWorldBox().position;
 
 	// カメラの目線の位置
-	Math::Vector3 eyePosition = m_refICameraScreen->GetEyePosition();
+	Math::Vector3 eyePosition = m_iCameraScreenRef->GetEyePosition();
 	// カメラの目線の方向
-	Math::Vector3 eyeDirection = m_refICameraScreen->GetEyeDirection();
+	Math::Vector3 eyeDirection = m_iCameraScreenRef->GetEyeDirection();
 
 	// 距離の最小
 	float distanceMin = 0.0f;
@@ -83,10 +83,10 @@ void TargetPoint::Update(float elapsedTime)
 	// 画面の中心に最も近いオブジェクトを探す
 	{
 
-		for (auto* pTargetObject : m_pTargetObjects)
+		for (Ref targetObjectRef : m_targetObjectsRef)
 		{
 			// 球
-			const Math::Sphere& sphere = pTargetObject->GetWorldSphere();
+			const Math::Sphere& sphere = targetObjectRef->GetWorldSphere();
 
 			// カメラの中心から発射されるレイとの距離
 			float distance = Math::Geometry::Distance
@@ -116,9 +116,9 @@ void TargetPoint::Update(float elapsedTime)
 		Math::Vector2 screenPosition = Math::Geometry::Projection
 		(
 			m_info.position,
-			m_refICameraScreen->GetViewMatrix(),
-			m_refICameraScreen->GetProjectionMatrix(),
-			m_refImage->GetCanvasRef()->GetSize()
+			m_iCameraScreenRef->GetViewMatrix(),
+			m_iCameraScreenRef->GetProjectionMatrix(),
+			m_imageRef->GetCanvasRef()->GetSize()
 		);
 
 		m_transformRef->SetPosition(screenPosition);
@@ -128,9 +128,9 @@ void TargetPoint::Update(float elapsedTime)
 	distanceMin = m_targetDistance;
 
 	// 地面なら探す
-	for (const auto* pGround : m_pGrounds)
+	for (Ref groundRef : m_groundsRef)
 	{
-		const auto& mesh = pGround->GetWorldMesh();
+		const auto& mesh = groundRef->GetWorldMesh();
 
 		for (const auto& face : mesh.f)
 		{
@@ -164,7 +164,7 @@ void TargetPoint::Update(float elapsedTime)
 	// ターゲットが地面なら
 	if (m_info.type == Type::Ground)
 	{
-		m_transformRef->SetPosition(m_refImage->GetCanvasRef()->GetSize() / 2.0f);
+		m_transformRef->SetPosition(m_imageRef->GetCanvasRef()->GetSize() / 2.0f);
 		return;
 	}
 
@@ -176,14 +176,14 @@ void TargetPoint::Update(float elapsedTime)
 // ターゲットを表示
 void TargetPoint::Appear(bool isAppear)
 {
-	m_refImage->SetColor(isAppear ? DirectX::Colors::Red : DirectX::Colors::Transparent);
+	m_imageRef->SetColor(isAppear ? DirectX::Colors::Red : DirectX::Colors::Transparent);
 }
 
 // ターゲット情報を取得
 const TargetPoint::Info& TargetPoint::GetTargetInfo()
 {
 	// プレイヤーの座標
-	const Math::Vector3& playerPosition = m_refPlayer->GetWorldBox().position;
+	const Math::Vector3& playerPosition = m_playerRef->GetWorldBox().position;
 	// プレイヤーからターゲットを指す方向
 	Math::Vector3 direction = m_info.position - playerPosition;
 
@@ -192,9 +192,9 @@ const TargetPoint::Info& TargetPoint::GetTargetInfo()
 
 	direction /= distanceMin;
 
-	for (const auto* pGround : m_pGrounds)
+	for (Ref groundRef : m_groundsRef)
 	{
-		const auto& mesh = pGround->GetWorldMesh();
+		const auto& mesh = groundRef->GetWorldMesh();
 
 		for (const auto& face : mesh.f)
 		{

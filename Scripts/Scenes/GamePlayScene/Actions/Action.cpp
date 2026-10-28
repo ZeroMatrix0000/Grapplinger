@@ -1,7 +1,7 @@
 /*
  * FileName:     Action.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/09/10
+ * Last Updated: 2026/10/28
  *
  * アクション
  */
@@ -34,7 +34,7 @@ void Action::Enter()
 }
 
 // 更新処理
-void Action::Update(float elapsedTime, const IGameInput& iGameInput)
+void Action::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
 	// 次のアクションに移動
 	GoNext();

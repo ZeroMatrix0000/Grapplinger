@@ -38,6 +38,8 @@ Renderings::TextRenderer::TextRenderer()
 // 初期化処理
 void Renderings::TextRenderer::Initialize(Ref<ID2D1Device7> deviceRef, Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef)
 {
+	m_pContext = contextRef.Get();
+
 	// DirectWrite
 	Utility::ThrowIfFailed(DWriteCreateFactory
 	(
@@ -65,7 +67,7 @@ void Renderings::TextRenderer::Initialize(Ref<ID2D1Device7> deviceRef, Ref<ID2D1
 	m_textContext->CreateEffect(CLSID_D2D1Composite, m_compositeEffect.GetAddressOf());
 	m_compositeEffect->SetValue(D2D1_COMPOSITE_PROP_MODE, D2D1_COMPOSITE_MODE_SOURCE_IN);
 
-	OnWindowSizeChanged(contextRef, backBufferRef);
+	OnWindowSizeChanged(backBufferRef);
 }
 
 // フォントコレクションの作成
@@ -391,9 +393,8 @@ void Renderings::TextRenderer::End()
 }
 
 // ウィンドウサイズ変更時の処理
-void Renderings::TextRenderer::OnWindowSizeChanged(Ref<ID2D1DeviceContext7> contextRef, Ref<ID2D1Bitmap1> backBufferRef)
+void Renderings::TextRenderer::OnWindowSizeChanged(Ref<ID2D1Bitmap1> backBufferRef)
 {
-	m_pContext = contextRef.Get();
 	m_pBackBuffer = backBufferRef.Get();
 }
 
