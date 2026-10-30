@@ -136,6 +136,9 @@
     <Filter Include="Scripts\GameObjects\UIs\TargetPoint">
       <UniqueIdentifier>{21746c16-cc3e-459a-a450-d01b1cd55da7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\GameObjects\Objects\Slime">
+      <UniqueIdentifier>{1d304f80-6309-48b5-8ac2-1b45c38b6fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Main\WinMain.cpp">
@@ -441,6 +444,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerInternals.cpp">
       <Filter>Scripts\GameObjects\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\Slime.cpp">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -873,6 +879,9 @@
     </ClInclude>
     <ClInclude Include="Scripts\Main\IsDerivedRegister.h">
       <Filter>Scripts\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\Slime.h">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

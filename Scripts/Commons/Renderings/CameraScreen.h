@@ -1,7 +1,7 @@
 /*
  * FileName:     CameraScreen.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/30
  *
  * カメラ画面
  */
@@ -40,6 +40,7 @@ namespace Renderings
 			: ICameraScreen{ desc }
 			, m_camera{}
 			, m_viewAngle{}
+			, m_projectionDistance{ 100.0f }
 			, m_view{}
 			, m_projection{}
 			, m_outputSize{}
@@ -52,6 +53,7 @@ namespace Renderings
 			Systems::JsonSerializer serializer{ iGameObjectFinder };
 			serializer.AddParameter(Ref{ m_camera }, "Camera");
 			serializer.AddParameter(Ref{ m_viewAngle }, "ViewAngle");
+			serializer.AddParameter(Ref{ m_projectionDistance }, "ProjectionDistance");
 			serializer.Load(json);
 		}
 
@@ -81,7 +83,7 @@ namespace Renderings
 				Math::Deg2Rad(m_viewAngle),
 				outputSize.x / outputSize.y,
 				0.1f,
-				1000.0f
+				m_projectionDistance
 			);
 
 			m_outputSize = outputSize;
@@ -119,6 +121,8 @@ namespace Renderings
 
 		// 視野角
 		float m_viewAngle;
+		// 描画距離
+		float m_projectionDistance;
 
 		// ビュー行列
 		Math::Matrix m_view;

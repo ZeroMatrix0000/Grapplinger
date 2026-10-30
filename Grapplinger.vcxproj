@@ -214,6 +214,7 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateOnGround.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateExpandWire.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateStick.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\Slime.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\JumpingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\LandingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\PoppingParticle.cpp" />
@@ -342,6 +343,7 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStates.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateExpandWire.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateStick.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\Slime.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\JumpingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\LandingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\PoppingParticle.h" />

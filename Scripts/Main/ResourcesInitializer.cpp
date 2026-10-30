@@ -1,7 +1,7 @@
 /*
  * FileName:     ResourcesInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/10/30
  *
  * リソース初期化
  */
@@ -113,6 +113,7 @@ void ResourcesInitializer::InitializeResources
 	resources->GetEditableModelSource("Player")->SetDrawingOrder(2000);
 	resources->GetEditableModelSource("NPC")->SetDrawingOrder(2000);
 	resources->GetEditableModelSource("Box")->SetDrawingOrder(2000);
+	resources->GetEditableModelSource("Slime")->SetDrawingOrder(2000);
 
 	// 深度ステンシルステートの詳細
 	D3D11_DEPTH_STENCIL_DESC desc = {};
