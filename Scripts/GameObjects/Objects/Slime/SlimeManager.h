@@ -10,6 +10,14 @@
 
 #include "Scripts/Commons/Components/Component.h"
 
+namespace Components
+{
+	class Transform;
+}
+namespace Renderings
+{
+	class ParticleManager;
+}
 class Slime;
 class Player;
 
@@ -45,5 +53,10 @@ private:
 
 	// スライムの参照リスト
 	std::vector<Ref<Slime>> m_slimeRefList;
+
+	// トランスフォームの参照
+	Ref<Transform> m_transformRef;
+	// パーティクル管理の参照
+	Ref<Renderings::ParticleManager> m_particleManagerRef;
 
 };

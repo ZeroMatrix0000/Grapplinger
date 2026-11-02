@@ -454,8 +454,13 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeManager.cpp">
       <Filter>Scripts\GameObjects\Objects\Slime</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.cpp" />
-    <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.cpp">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp">
+      <Filter>Scripts\GameObjects\Objects\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Particles\SlimeDefeatParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -902,6 +907,9 @@
     </ClInclude>
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStates.h">
       <Filter>Scripts\GameObjects\Objects\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Particles\SlimeDefeatParticle.h">
+      <Filter>Scripts\GameObjects\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

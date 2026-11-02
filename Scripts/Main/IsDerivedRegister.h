@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/23
+ * Last Updated: 2026/11/02
  *
  * 継承関係の登録
  */
@@ -60,6 +60,7 @@ class LandingParticle;
 class PoppingParticle;
 class SparklingParticle;
 class WindCutParticle;
+class SlimeDefeatParticle;
 
 #define IS_DERIVED_REGISTER(T, U) \
 template<> \
@@ -104,5 +105,6 @@ IS_DERIVED_REGISTER(LandingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(PoppingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(SparklingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(WindCutParticle, Renderings::Particle)
+IS_DERIVED_REGISTER(SlimeDefeatParticle, Renderings::Particle)
 
 #undef IS_DERIVED_REGISTER

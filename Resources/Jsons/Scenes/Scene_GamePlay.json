@@ -416,8 +416,11 @@
 				"SlimeList": [
 					"SlimeTest",
 					"SlimeTest2"
-				]
-			}
+				],
+				"CameraScreen": "PlayerCamera"
+			},
+			"ParticleManager": {},
+			"Transform": {}
 		}
 	}
 ]
