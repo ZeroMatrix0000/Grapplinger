@@ -1,7 +1,7 @@
 /*
  * FileName:     Component.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * コンポーネント
  */
@@ -49,6 +49,9 @@ namespace Components
 
 		// 未参照ゲームオブジェクトを取得
 		Ref<GameObject> GetNullGameObject() const;
+
+		// ゲームオブジェクトを破棄
+		void Destroy(Ref<GameObject> owner) const;
 
 
 	protected:

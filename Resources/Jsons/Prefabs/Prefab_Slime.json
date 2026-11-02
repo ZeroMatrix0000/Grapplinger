@@ -1,0 +1,39 @@
+{
+	"Transform": {},
+	"Model3D": {
+		"ModelSourceName": "Slime"
+	},
+	"BoxCollider": {
+		"Position": {
+			"X": 0.0,
+			"Y": 0.5,
+			"Z": 0.0
+		},
+		"Size": {
+			"X": 1.0,
+			"Y": 1.0,
+			"Z": 1.0
+		},
+		"Color": {
+			"R": 0.4,
+			"G": 0.8,
+			"B": 0.4,
+			"A": 1.0
+		}
+	},
+	"SphereCollider": {
+		"Position": {
+			"X": 0.0,
+			"Y": 0.5,
+			"Z": 0.0
+		},
+		"Radius": 5.0,
+		"Color": {
+			"R": 1.0,
+			"G": 0.5,
+			"B": 0.5,
+			"A": 1.0
+		}
+	},
+	"Slime": {}
+}

@@ -215,6 +215,8 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateExpandWire.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateStick.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\Slime.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\JumpingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\LandingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\PoppingParticle.cpp" />
@@ -248,6 +250,9 @@
     <ClCompile Include="Scripts\Scenes\SampleScene\SampleScene.cpp" />
     <ClCompile Include="Scripts\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenu.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeManager.cpp" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeManager.h" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutWire.json" />
     <None Include="Resources\Jsons\Events\Event_TalkHowTo.json" />
@@ -268,6 +273,7 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_SelectMenu.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_SelectMenuCursor.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_SelectMenuText.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_Slime.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_Z2Talk.json" />
     <None Include="Resources\Jsons\Scenes\Scene_GamePlay.json" />
     <None Include="Resources\Jsons\Scenes\Scene_Sample.json" />
@@ -344,6 +350,8 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateExpandWire.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateStick.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\Slime.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStates.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\JumpingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\LandingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\PoppingParticle.h" />

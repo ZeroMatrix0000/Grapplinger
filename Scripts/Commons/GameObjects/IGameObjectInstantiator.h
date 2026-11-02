@@ -1,7 +1,7 @@
 /*
  * FileName:     IGameObjectInstantiator.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/11/02
  *
  * ゲームオブジェクト生成のインタフェース
  */
@@ -34,6 +34,9 @@ namespace GameObjects
 
 		// 未参照ゲームオブジェクトを取得
 		virtual Ref<GameObject> GetNullGameObject() const = 0;
+
+		// ゲームオブジェクトを破棄
+		virtual void Destroy(Ref<GameObject> owner) = 0;
 
 	};
 }

@@ -35,6 +35,7 @@ class PlayerCamera;
 class NPC;
 class NPCManager;
 class Slime;
+class SlimeManager;
 class SelectMenu;
 class InteractCursor;
 class Z2Talk;
@@ -80,6 +81,7 @@ IS_DERIVED_REGISTER(PlayerCamera, Component)
 IS_DERIVED_REGISTER(NPC, Component)
 IS_DERIVED_REGISTER(NPCManager, Component)
 IS_DERIVED_REGISTER(Slime, Component)
+IS_DERIVED_REGISTER(SlimeManager, Component)
 IS_DERIVED_REGISTER(SelectMenu, Component)
 IS_DERIVED_REGISTER(InteractCursor, Component)
 IS_DERIVED_REGISTER(Z2Talk, Component)

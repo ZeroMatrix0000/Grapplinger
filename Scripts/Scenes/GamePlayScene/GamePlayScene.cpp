@@ -80,10 +80,10 @@ void GamePlayScene::Update(float elapsedTime)
 		m_internals.playerRef->GetPosition() + Math::Vector3::Down * m_internals.playerRef->GetBox().size.y / 2.0f
 	);
 	// NPC の当たり判定
-	const auto nPCBoxRefs = m_internals.nPCManagerRef->GetBoxRefs();
-	for (size_t i = 0; i < nPCBoxRefs.size(); i++)
+	const auto nPCBoxes = m_internals.nPCManagerRef->GetBoxes();
+	for (size_t i = 0; i < nPCBoxes.size(); i++)
 	{
-		constantBufferRef->SetVariable("ShadowPosition", nPCBoxRefs.at(i)->position + Math::Vector3::Down * nPCBoxRefs.at(i)->size.y / 2.0f, 16 * (i + 1));
+		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i).position + Math::Vector3::Down * nPCBoxes.at(i).size.y / 2.0f, 16 * (i + 1));
 	}
 }
 

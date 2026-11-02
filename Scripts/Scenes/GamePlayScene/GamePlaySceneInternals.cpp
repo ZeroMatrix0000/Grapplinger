@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.hpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * ゲームプレイシーンの内部データ
  */
@@ -23,6 +23,7 @@ GamePlaySceneInternals::GamePlaySceneInternals
 	, playerRef{ owner->GetNullComponent<Player>() }
 	, playerCameraRef{ owner->GetNullComponent<PlayerCamera>() }
 	, nPCManagerRef{ owner->GetNullComponent<NPCManager>() }
+	, slimeManagerRef{ owner->GetNullComponent<SlimeManager>() }
 	, groundMeshRef{ owner->GetNullComponent<Colliders::MeshCollider>() }
 	, groundModelRef{ owner->GetNullComponent<Renderings::Model3D>() }
 	, reticleRef{ owner->GetNullComponent<Renderings::Image>() }

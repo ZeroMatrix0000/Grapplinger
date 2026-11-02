@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * ゲームプレイシーンの内部データ
  */
@@ -29,6 +29,7 @@ class GameContext;
 class Player;
 class PlayerCamera;
 class NPCManager;
+class SlimeManager;
 class Z2Talk;
 class BlackBelt;
 class MessageWindow;
@@ -64,6 +65,8 @@ struct GamePlaySceneInternals
 
 	// NPC管理
 	Ref<NPCManager> nPCManagerRef;
+	// スライム管理
+	Ref<SlimeManager> slimeManagerRef;
 
 	// 地面
 	Ref<Colliders::MeshCollider> groundMeshRef;

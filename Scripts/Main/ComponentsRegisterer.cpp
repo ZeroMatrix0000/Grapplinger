@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/30
+ * Last Updated: 2026/11/02
  *
  * コンポーネント登録者
  */
@@ -18,6 +18,7 @@
 #include "../GameObjects/Objects/NPC/NPC.h"
 #include "../GameObjects/Objects/NPC/NPCManager.h"
 #include "../GameObjects/Objects/Slime/Slime.h"
+#include "../GameObjects/Objects/Slime/SlimeManager.h"
 #include "../GameObjects/UIs/SelectMenu/SelectMenu.h"
 #include "../GameObjects/UIs/InteractCursor/InteractCursor.h"
 #include "../GameObjects/UIs/Z2Talk/Z2Talk.h"
@@ -170,6 +171,7 @@ void ComponentsRegisterer::RegisterComponents
 	REGISTER(NPCManager, "NPCManager");
 	// スライム
 	REGISTER(Slime, "Slime");
+	REGISTER(SlimeManager, "SlimeManager");
 	// 選択メニュー
 	REGISTER(SelectMenu, "SelectMenu");
 	// カーソル

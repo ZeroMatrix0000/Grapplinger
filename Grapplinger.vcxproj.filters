@@ -139,6 +139,9 @@
     <Filter Include="Scripts\GameObjects\Objects\Slime">
       <UniqueIdentifier>{1d304f80-6309-48b5-8ac2-1b45c38b6fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\GameObjects\Objects\Slime\States">
+      <UniqueIdentifier>{593f1bd2-dbe7-44a4-8b38-ea829ac6e493}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Main\WinMain.cpp">
@@ -448,6 +451,11 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\Slime.cpp">
       <Filter>Scripts\GameObjects\Objects\Slime</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeManager.cpp">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -883,6 +891,18 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\Slime.h">
       <Filter>Scripts\GameObjects\Objects\Slime</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeManager.h">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.h">
+      <Filter>Scripts\GameObjects\Objects\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.h">
+      <Filter>Scripts\GameObjects\Objects\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStates.h">
+      <Filter>Scripts\GameObjects\Objects\Slime\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -966,6 +986,9 @@
     </None>
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json">
       <Filter>Jsons\Events</Filter>
+    </None>
+    <None Include="Resources\Jsons\Prefabs\Prefab_Slime.json">
+      <Filter>Jsons\Prefabs</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/02
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -16,6 +16,7 @@
 #include "Scripts/GameObjects/Objects/Player/PlayerCamera.h"
 #include "Scripts/GameObjects/Objects/Player/States/PlayerStates.h"
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
+#include "Scripts/GameObjects/Objects/Slime/SlimeManager.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -24,6 +25,9 @@
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
+#include "Scripts/Commons/Renderings/Model3D/Model3D.h"
+#include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
+#include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 
 // コンストラクタ
 GamePlaySceneStateField::GamePlaySceneStateField()
@@ -57,9 +61,13 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	internalsRef->nPCManagerRef->Update(elapsedTime);
 	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.Const());
 
+	// スライムの更新
+	internalsRef->slimeManagerRef->Update(elapsedTime);
+
 	// プレイヤーの更新
 	internalsRef->playerRef->Update(elapsedTime, iGameInput->GetPlayerMove(), iGameInput->GetPlayerDash(), iGameInput->GetPlayerJump());
 	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef);
+	internalsRef->slimeManagerRef->PlayerCollide(internalsRef->playerRef);
 	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
 	internalsRef->playerRef->UpdateModel(elapsedTime);
 
@@ -99,6 +107,16 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// ターゲットの更新
 	internalsRef->targetPointRef->Update(elapsedTime);
+
+	// シェーダにオブジェクトの座標を設定
+	Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
+	auto slimeBoxes = internalsRef->slimeManagerRef->GetBoxes();
+	for (size_t i = 0; i < slimeBoxes.size(); i++)
+	{
+		constantBufferRef->SetVariable("ShadowPosition", slimeBoxes.at(i).position + Math::Vector3::Down * slimeBoxes.at(i).size.y / 2.0f, 16 * (i + internalsRef->nPCManagerRef->GetNPCCount() + 1));
+		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + internalsRef->nPCManagerRef->GetNPCCount() + 1));
+	}
+	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + internalsRef->nPCManagerRef->GetNPCCount() + slimeBoxes.size()));
 }
 
 // 終了処理

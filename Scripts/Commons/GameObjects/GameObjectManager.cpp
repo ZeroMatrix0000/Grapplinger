@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * ゲームオブジェクト管理
  */
@@ -140,10 +140,10 @@ Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& j
 	// ゲームオブジェクト
 	std::unique_ptr<GameObject> owner = std::make_unique<GameObject>(m_iComponentManager);
 	// ポインタ
-	Ref<GameObject> refOwner{ *owner };
-	refOwner->SetName(jsonName);
+	Ref<GameObject> ownerRef{ *owner };
+	ownerRef->SetName(jsonName);
 	// コンポーネントを追加
-	std::vector<Component*> pComponents = AddComponents(json.GetValue(), refOwner);
+	std::vector<Component*> pComponents = AddComponents(json.GetValue(), ownerRef);
 	// コンポーネントを初期化
 	InitializeComponents(json.GetValue(), pComponents);
 
@@ -156,7 +156,17 @@ Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& j
 		m_gameObjectsRef->push_back(std::move(owner));
 	}
 
-	return refOwner;
+	return ownerRef;
+}
+
+// ゲームオブジェクトを破棄
+void GameObjects::GameObjectManager::Destroy(Ref<GameObject> owner)
+{
+	auto it = std::ranges::find_if(m_gameObjectsRef.GetValue(), [owner](const std::unique_ptr<GameObject>& obj) { return obj.get() == owner.Get(); });
+	if (it != m_gameObjectsRef->end())
+	{
+		m_gameObjectsRef->erase(it);
+	}
 }
 
 // コンポーネントを追加

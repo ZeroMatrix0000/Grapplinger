@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/02
  *
  * NPC管理
  */
@@ -52,8 +52,11 @@ public:
 	// プレイヤーとの当たり判定
 	void PlayerCollide(Ref<Player> playerRef);
 
+	// NPCの数を取得
+	size_t GetNPCCount() const { return m_nPCRefList.size(); }
+
 	// 当たり判定を取得
-	std::vector<Ref<const Math::Box>> GetBoxRefs() const;
+	std::vector<Math::Box> GetBoxes() const;
 
 	// カーソルが合っているNPCを取得
 	const NPC* GetPFocusedNPC() const { return m_pFocusedNPC; }

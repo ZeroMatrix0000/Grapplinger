@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * ゲームオブジェクト管理
  */
@@ -44,6 +44,9 @@ namespace GameObjects
 
 		// 未参照ゲームオブジェクトを取得
 		Ref<GameObject> GetNullGameObject() const override { return Ref{ *m_nullReference }; }
+
+		// ゲームオブジェクトを破棄
+		void Destroy(Ref<GameObject> owner) override;
 
 		// コンポーネントを追加関数を追加
 		template<typename TComponent> requires IsDerived<TComponent, Component>

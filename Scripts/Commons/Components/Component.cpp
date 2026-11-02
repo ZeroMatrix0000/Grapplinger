@@ -1,7 +1,7 @@
 /*
  * FileName:     Component.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/02
  *
  * コンポーネント
  */
@@ -29,4 +29,10 @@ Ref<GameObject> Components::Component::Instantiate(const std::string& name) cons
 Ref<GameObject> Components::Component::GetNullGameObject() const
 {
 	return m_iGameObjectInstantiator->GetNullGameObject();
+}
+
+// ゲームオブジェクトを破棄
+void Components::Component::Destroy(Ref<GameObject> owner) const
+{
+	m_iGameObjectInstantiator->Destroy(owner);
 }

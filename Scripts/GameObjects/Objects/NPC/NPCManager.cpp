@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/02
  *
  * NPC管理
  */
@@ -164,12 +164,12 @@ void NPCManager::PlayerCollide(Ref<Player> playerRef)
 }
 
 // 当たり判定を取得
-std::vector<Ref<const Math::Box>> NPCManager::GetBoxRefs() const
+std::vector<Math::Box> NPCManager::GetBoxes() const
 {
-	std::vector<Ref<const Math::Box>> boxRefs{};
+	std::vector<Math::Box> boxes{};
 	for (Ref nPCRef : m_nPCRefList)
 	{
-		boxRefs.push_back(Ref{ nPCRef->GetBox() });
+		boxes.push_back(nPCRef->GetBox());
 	}
-	return boxRefs;
+	return boxes;
 }

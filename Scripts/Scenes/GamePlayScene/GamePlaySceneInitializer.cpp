@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/02
  *
  * ゲームプレイシーンの初期化関数
  */
@@ -14,6 +14,7 @@
 #include "Scripts/GameObjects/Objects/Player/Player.h"
 #include "Scripts/GameObjects/Objects/Player/PlayerCamera.h"
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
+#include "Scripts/GameObjects/Objects/Slime/SlimeManager.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -63,6 +64,8 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 
 	// NPCマネージャーを取得
 	internalsRef->nPCManagerRef = iGameObjectManager->Find("NPCManager")->GetComponent<NPCManager>();
+	// スライム管理を取得
+	internalsRef->slimeManagerRef = iGameObjectManager->Find("SlimeManager")->GetComponent<SlimeManager>();
 
 	// 地面を取得
 	Ref<GameObject> ground = iGameObjectManager->Find("Ground");
@@ -88,16 +91,22 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	// アクション管理を取得
 	internalsRef->actionManagerRef = iGameObjectManager->Find("ActionManager")->GetComponent<ActionManager>();
 
-	// シェーダにプレイヤーの座標を設定
+	// シェーダにオブジェクトの座標を設定
 	Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
 	constantBufferRef->SetVariable("ShadowPosition", internalsRef->playerRef->GetPosition() + Math::Vector3::Down * internalsRef->playerRef->GetBox().size.y / 2.0f);
 	constantBufferRef->SetVariable("ShadowRadius", 0.75f);
-	// NPC の当たり判定
-	const auto nPCBoxRefs = internalsRef->nPCManagerRef->GetBoxRefs();
-	for (size_t i = 0; i < nPCBoxRefs.size(); i++)
+	// 当たり判定
+	auto nPCBoxes = internalsRef->nPCManagerRef->GetBoxes();
+	for (size_t i = 0; i < nPCBoxes.size(); i++)
 	{
-		constantBufferRef->SetVariable("ShadowPosition", nPCBoxRefs.at(i)->position + Math::Vector3::Down * nPCBoxRefs.at(i)->size.y / 2.0f, 16 * (i + 1));
+		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i).position + Math::Vector3::Down * nPCBoxes.at(i).size.y / 2.0f, 16 * (i + 1));
 		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + 1));
 	}
-	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + nPCBoxRefs.size()));
+	auto slimeBoxes = internalsRef->slimeManagerRef->GetBoxes();
+	for (size_t i = 0; i < slimeBoxes.size(); i++)
+	{
+		constantBufferRef->SetVariable("ShadowPosition", slimeBoxes.at(i).position + Math::Vector3::Down * slimeBoxes.at(i).size.y / 2.0f, 16 * (i + nPCBoxes.size() + 1));
+		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + nPCBoxes.size() + 1));
+	}
+	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + nPCBoxes.size() + slimeBoxes.size()));
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     JsonSerializer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/22
+ * Last Updated: 2026/11/02
  *
  * Jsonのシリアライズ
  */
@@ -28,7 +28,7 @@ namespace Systems
 		/* メンバ関数 */
 
 		// コンストラクタ
-		JsonSerializer(Ref<IGameObjectFinder> iGameObjectFinderRef);
+		JsonSerializer(Ref<IGameObjectFinder> iGameObjectFinder);
 
 		// パラメータを追加
 		template<typename T>
