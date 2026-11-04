@@ -20,7 +20,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	PlayerStateDefeat();
+	PlayerStateDefeat(bool isFalling);
 
 	// 開始処理
 	void Enter(Ref<PlayerInternals> internalsRef) override;
@@ -31,6 +31,15 @@ public:
 
 	// 座標補正
 	void PositionCorrect(Ref<PlayerInternals> internalsRef, float distance, const Math::Vector3& direction) override;
+
+
+private:
+
+
+	/* メンバ変数 */
+
+	// 落下死かどうか
+	bool m_isFalling;
 
 
 };

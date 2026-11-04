@@ -76,8 +76,8 @@ void PlayerModel::Update(float elapsedTime, Ref<const Player> playerRef)
 // 移動
 void PlayerModel::Translate(float elapsedTime, Ref<const Player> playerRef)
 {
-	// 落下状態 or 糸伸ばし状態
-	if (playerRef->IsState<PlayerStateFalling>())
+	// 落下状態 or 敗北状態
+	if (playerRef->IsState<PlayerStateFalling>() || playerRef->IsState<PlayerStateDefeat>())
 	{
 		m_bounceTime = 0.0f;
 		m_fallingHeight.SetTarget(0.0f);
@@ -158,13 +158,8 @@ void PlayerModel::Rotate(float elapsedTime, Ref<const Player> playerRef)
 // スケーリング
 void PlayerModel::Scaling(float elapsedTime, Ref<const Player> playerRef)
 {
-	// 敗北状態
-	if (playerRef->IsState<PlayerStateDefeat>())
-	{
-		m_scaling.SetValue(-Math::Vector3::One);
-	}
 	// 糸伸ばし状態
-	else if (playerRef->IsState<PlayerStateExpandWire>())
+	if (playerRef->IsState<PlayerStateExpandWire>())
 	{
 		m_scaling.SetTarget(Math::Vector3::Zero, 250.0f, 30.0f);
 	}

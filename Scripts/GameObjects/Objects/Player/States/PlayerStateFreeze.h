@@ -20,7 +20,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	PlayerStateFreeze();
+	PlayerStateFreeze(bool isFalling);
 
 	// 開始処理
 	void Enter(Ref<PlayerInternals> internalsRef) override;
@@ -39,6 +39,9 @@ public:
 
 
 	/* メンバ変数 */
+
+	// 落下死かどうか
+	bool m_isFalling;
 
 	// タイマー
 	Limited m_timer;

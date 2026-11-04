@@ -20,6 +20,8 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 	, m_rotationXDeg{}
 	, m_distance{}
 	, m_maxDistance{}
+	, m_isFixed{}
+	, m_eyePosition{}
 	, m_camera{}
 	, m_cameraScreenRef{ GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>() }
 {
@@ -38,6 +40,8 @@ void PlayerCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObject
 	m_rotationXDeg.Initialize(camera.rotation.x, -80.0f, 45.0f);
 	m_distance = camera.distance;
 	m_maxDistance = camera.distance;
+
+	m_isFixed = false;
 
 	m_camera.SetValue(camera);
 }
@@ -63,6 +67,11 @@ void PlayerCamera::Rotate(const Math::Vector2& rotate)
 // メッシュによる座標補正
 void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosition)
 {
+	if (m_isFixed)
+	{
+		return;
+	}
+
 	// レイの方向
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::UnitZ, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }.CreateQuaternion());
 
@@ -88,6 +97,11 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 // 直方体による座標補正
 void PlayerCamera::BoxCorrect(const Math::Box& box, const Math::Vector3& centerPosition)
 {
+	if (m_isFixed)
+	{
+		return;
+	}
+
 	// レイの方向
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::UnitZ, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }.CreateQuaternion());
 
@@ -101,6 +115,22 @@ void PlayerCamera::BoxCorrect(const Math::Box& box, const Math::Vector3& centerP
 	m_distance = Math::Min(angledDistance, m_distance);
 }
 
+// ターゲットの位置を変更
+void PlayerCamera::SetTarget(const Math::Vector3& target)
+{
+	m_target = target;
+
+	// 固定カメラの計算
+	if (m_isFixed)
+	{
+		Math::Vector3 direction = m_eyePosition - m_target;
+		m_distance = direction.Length();
+
+		m_rotationXDeg = Math::Rad2Deg(Math::Arcsin(-direction.y / m_distance));
+		m_rotationYDeg = Math::Rad2Deg(Math::Arctan2(direction.x, direction.z));
+	}
+}
+
 // カメラを移動
 void PlayerCamera::SetPosition(const Math::Vector3& position)
 {
@@ -109,4 +139,12 @@ void PlayerCamera::SetPosition(const Math::Vector3& position)
 	m_camera.SetValue(camera);
 
 	m_cameraScreenRef->SetCamera(m_camera.GetCurrent());
+}
+
+// カメラを固定
+void PlayerCamera::FixEyePosition()
+{
+	m_isFixed = true;
+	m_eyePosition = m_camera.GetCurrent().GetEyePosition();
+	m_rotationXDeg.Initialize(m_rotationXDeg, -180.0f, 180.0f);
 }

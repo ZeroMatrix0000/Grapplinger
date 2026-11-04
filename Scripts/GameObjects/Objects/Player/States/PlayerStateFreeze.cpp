@@ -12,8 +12,9 @@
 #include "PlayerStates.h"
 
 // コンストラクタ
-PlayerStateFreeze::PlayerStateFreeze()
+PlayerStateFreeze::PlayerStateFreeze(bool isFalling)
 	: PlayerState{}
+	, m_isFalling{ isFalling }
 	, m_timer{}
 {
 }
@@ -30,7 +31,7 @@ void PlayerStateFreeze::Update(Ref<PlayerInternals> internalsRef, float elapsedT
 	m_timer += elapsedTime;
 	if (m_timer.IsMax())
 	{
-		SetNextState(std::make_unique<PlayerStateDefeat>());
+		SetNextState(std::make_unique<PlayerStateDefeat>(m_isFalling));
 	}
 }
 

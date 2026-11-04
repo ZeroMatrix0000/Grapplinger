@@ -220,7 +220,7 @@ void Player::ExpandWire(const Math::Vector3& targetPosition, PlayerInternals::Ta
 // 敗北する
 void Player::Defeat()
 {
-	SetState(std::make_unique<PlayerStateFreeze>());
+	SetState(std::make_unique<PlayerStateFreeze>(false));
 }
 
 // 中心座標を取得

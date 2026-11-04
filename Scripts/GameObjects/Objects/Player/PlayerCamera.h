@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/04
  *
  * プレイヤーカメラ
  */
@@ -37,10 +37,13 @@ public:
 	void BoxCorrect(const Math::Box& box, const Math::Vector3& centerPosition);
 
 	// ターゲットの位置を変更
-	void SetTarget(const Math::Vector3& target) { m_target = target; }
+	void SetTarget(const Math::Vector3& target);
 
 	// カメラを移動
 	void SetPosition(const Math::Vector3& position);
+
+	// カメラを固定
+	void FixEyePosition();
 
 
 private:
@@ -58,6 +61,11 @@ private:
 	float m_distance;
 	// カメラの最大距離
 	float m_maxDistance;
+
+	// 目線を固定しているか
+	bool m_isFixed;
+	// 目線の位置
+	Math::Vector3 m_eyePosition;
 
 	// カメラ
 	Spring<Camera::EulerTargetCamera> m_camera;

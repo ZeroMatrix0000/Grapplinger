@@ -71,6 +71,9 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 			// プレイヤーの丸影の半径を 0 に
 			Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
 			constantBufferRef->SetVariable("ShadowRadius", 0.0f);
+
+			// カメラを固定
+			internalsRef->playerCameraRef->FixEyePosition();
 		}
 
 		m_retryTimer -= elapsedTime;

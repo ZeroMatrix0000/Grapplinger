@@ -37,7 +37,7 @@ void PlayerStateExpandWire::Enter(Ref<PlayerInternals> internalsRef)
 	direction.Normalize();
 
 	// モデルを回転
-	internalsRef->modelRef->SetWireAngle(Math::Rad2Deg(Math::Arcsin(-direction.y / direction.Length())));
+	internalsRef->modelRef->SetWireAngle(Math::Rad2Deg(Math::Arcsin(-direction.y)));
 
 	Math::Quaternion wireRotation = Math::Quaternion::CreateFromRotationMatrix
 	(

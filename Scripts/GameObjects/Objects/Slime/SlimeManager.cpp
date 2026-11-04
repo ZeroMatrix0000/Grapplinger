@@ -86,8 +86,6 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 
 		if (distance < 0.0f)
 		{
-			// 座標補正
-			playerRef->PositionCorrect(distance, direction);
 			// プレイヤーが糸伸ばし中かつ移動中なら消す
 			if (playerRef->IsState<PlayerStateExpandWire>() && playerRef->GetMoveVelocity() != Math::Vector3::Zero)
 			{
