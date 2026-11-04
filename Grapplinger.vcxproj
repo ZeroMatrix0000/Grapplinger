@@ -209,7 +209,9 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerInternals.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerModel.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\PlayerWire.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateDefeat.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFalling.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFreeze.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateOnAir.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateOnGround.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Player\States\PlayerStateExpandWire.cpp" />
@@ -219,6 +221,7 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\JumpingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\LandingParticle.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Particles\PlayerDefeatParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\PoppingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\SlimeDefeatParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\SparklingParticle.cpp" />
@@ -252,6 +255,8 @@
     <ClCompile Include="Scripts\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenu.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeManager.cpp" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateDefeat.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFreeze.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeManager.h" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json" />
@@ -355,6 +360,7 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStates.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\JumpingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\LandingParticle.h" />
+    <ClInclude Include="Scripts\GameObjects\Particles\PlayerDefeatParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\PoppingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\SlimeDefeatParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\SparklingParticle.h" />

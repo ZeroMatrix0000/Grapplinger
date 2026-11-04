@@ -86,7 +86,7 @@ namespace Scenes
 		template<typename TScene> requires IsDerived<TScene, Scene>
 		void AddScene(const std::function<std::unique_ptr<Scene>()>& CreateComponent)
 		{
-			m_CreateComponentList.emplace(typeid(TScene), CreateComponent);
+			m_CreateComponentList.emplace(typeid(Ref<TScene>), CreateComponent);
 		}
 
 		// はじめのシーンを設定
@@ -94,7 +94,7 @@ namespace Scenes
 		void SetFirstScene(const TTransitionData& data = TTransitionData{})
 		{
 			// シーンの初期化
-			m_currentScene = m_CreateComponentList.at(typeid(TScene))();
+			m_currentScene = m_CreateComponentList.at(typeid(Ref<TScene>))();
 			m_currentScene->Initialize(data);
 		}
 

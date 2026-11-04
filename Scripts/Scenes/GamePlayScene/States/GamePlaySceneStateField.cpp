@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/04
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -28,15 +28,19 @@
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
+#include "Scripts/Commons/Scenes/ISceneManager.h"
 
 // コンストラクタ
 GamePlaySceneStateField::GamePlaySceneStateField()
+	: m_retryTimer{}
 {
 }
 
 // 開始処理
 void GamePlaySceneStateField::Enter(Ref<GamePlaySceneInternals> internalsRef)
 {
+	m_retryTimer.Initialize(0.75f, 0.0f, 0.75f);
+
 	// レティクルを表示
 	internalsRef->reticleRef->SetColor(DirectX::Colors::White);
 	// ターゲット照準を表示
@@ -46,8 +50,35 @@ void GamePlaySceneStateField::Enter(Ref<GamePlaySceneInternals> internalsRef)
 // 更新処理
 void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime)
 {
+	// プレイヤーがフリーズ状態なら何もしない
+	if (internalsRef->playerRef->IsState<PlayerStateFreeze>())
+	{
+		internalsRef->playerRef->Update(elapsedTime, Math::Vector3::Zero, false, false);
+		return;
+	}
+
 	// ゲーム入力
 	Ref iGameInput = internalsRef->gameContextRef->GetIGameInput();
+
+	// 敗北状態
+	if (internalsRef->playerRef->IsState<PlayerStateDefeat>())
+	{
+		// 入力を無効化
+		if (iGameInput->GetIsActive())
+		{
+			iGameInput->SetActive(false);
+
+			// プレイヤーの丸影の半径を 0 に
+			Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
+			constantBufferRef->SetVariable("ShadowRadius", 0.0f);
+		}
+
+		m_retryTimer -= elapsedTime;
+		if (!internalsRef->gameContextRef->GetISceneManager()->IsChanging() && m_retryTimer.IsMin())
+		{
+			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<GamePlayScene>();
+		}
+	}
 
 	// 糸伸ばし入力で糸を伸ばす
 	if (iGameInput->GetPlayerExpandWire() && internalsRef->playerRef->CanExpandWire())

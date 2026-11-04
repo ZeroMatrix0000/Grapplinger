@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/06
+ * Last Updated: 2026/11/04
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -30,5 +30,14 @@ public:
 	void Update(Ref<GamePlaySceneInternals> internalsRef, float elapsedTime) override;
 	// 終了処理
 	void Exit(Ref<GamePlaySceneInternals> internalsRef) override;
+
+
+private:
+
+
+	/* メンバ変数 */
+
+	// リトライまでの時間
+	Limited m_retryTimer;
 
 };

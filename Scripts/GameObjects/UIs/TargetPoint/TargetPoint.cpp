@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/04
  *
  * ターゲット照準
  */
@@ -82,7 +82,6 @@ void TargetPoint::Update(float elapsedTime)
 
 	// 画面の中心に最も近いオブジェクトを探す
 	{
-
 		for (Ref targetObjectRef : m_targetObjectsRef)
 		{
 			// 球

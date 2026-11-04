@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeDefeatParticle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/04
  *
  * スライム倒しパーティクル
  */
@@ -49,6 +49,8 @@ private:
 	std::vector<Math::Vector3> m_directions;
 	// 回転方向
 	std::vector<Math::Vector3> m_rotateDirections;
+	// 回転速度
+	std::vector<float> m_rotateVelocities;
 	// 大きさ
 	Easing::Value<Math::Vector3> m_scale;
 

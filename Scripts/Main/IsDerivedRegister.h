@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/04
  *
  * 継承関係の登録
  */
@@ -49,6 +49,8 @@ class PlayerStateOnAir;
 class PlayerStateFalling;
 class PlayerStateExpandWire;
 class PlayerStateStick;
+class PlayerStateFreeze;
+class PlayerStateDefeat;
 
 namespace Renderings
 {
@@ -61,6 +63,7 @@ class PoppingParticle;
 class SparklingParticle;
 class WindCutParticle;
 class SlimeDefeatParticle;
+class PlayerDefeatParticle;
 
 #define IS_DERIVED_REGISTER(T, U) \
 template<> \
@@ -99,6 +102,8 @@ IS_DERIVED_REGISTER(PlayerStateOnAir, PlayerState)
 IS_DERIVED_REGISTER(PlayerStateFalling, PlayerState)
 IS_DERIVED_REGISTER(PlayerStateExpandWire, PlayerState)
 IS_DERIVED_REGISTER(PlayerStateStick, PlayerState)
+IS_DERIVED_REGISTER(PlayerStateFreeze, PlayerState)
+IS_DERIVED_REGISTER(PlayerStateDefeat, PlayerState)
 
 IS_DERIVED_REGISTER(JumpingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(LandingParticle, Renderings::Particle)
@@ -106,5 +111,6 @@ IS_DERIVED_REGISTER(PoppingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(SparklingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(WindCutParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(SlimeDefeatParticle, Renderings::Particle)
+IS_DERIVED_REGISTER(PlayerDefeatParticle, Renderings::Particle)
 
 #undef IS_DERIVED_REGISTER

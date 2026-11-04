@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/04
  *
  * ゲームの入力
  */
@@ -13,12 +13,18 @@
 GameInput::GameInput(Ref<const Systems::IInput> input)
 	: IGameInput{}
 	, m_input{ input }
+	, m_isActive{ true }
 {
 }
 
 // プレイヤーの移動入力を取得
 Math::Vector3 GameInput::GetPlayerMove() const
 {
+	if (!m_isActive)
+	{
+		return Math::Vector3::Zero;
+	}
+
 	// 方向
 	Math::Vector3 direction{};
 
@@ -59,35 +65,65 @@ Math::Vector3 GameInput::GetPlayerMove() const
 // カメラの回転を取得
 Math::Vector2 GameInput::GetPlayerCameraRotate() const
 {
+	if (!m_isActive)
+	{
+		return Math::Vector2::Zero;
+	}
+
 	return m_input->GetMouseMovement() * MOUSE_COEFFICIENT;
 }
 
 // プレイヤーのダッシュ入力を取得
 bool GameInput::GetPlayerDash() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetKey(KeyName::LeftShift);
 }
 
 // プレイヤーのジャンプ入力を取得
 bool GameInput::GetPlayerJump() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetKeyDown(KeyName::Space);
 }
 
 // プレイヤーの糸伸ばし入力を取得
 bool GameInput::GetPlayerExpandWire() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetMouseButtonDown(MouseButtonName::Left);
 }
 
 // フィールド上のオブジェクトのインタラクト入力を取得
 bool GameInput::GetFieldInteract() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetKeyDown(KeyName::Z);
 }
 
 // テキスト送り入力
 bool GameInput::GetTextScroll() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetKeyDown(KeyName::Z) || m_input->GetKeyDown(KeyName::X);
 }

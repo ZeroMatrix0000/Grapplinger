@@ -66,4 +66,7 @@ private:
 	// 初期化関数
 	GamePlaySceneInitializer m_Initializer;
 
+	// スタートしたかどうか
+	bool m_isStarted;
+
 };

@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/18
+ * Last Updated: 2026/11/04
  *
  * プレイヤー
  */
@@ -40,6 +40,9 @@ public:
 
 	// 糸を伸ばす
 	void ExpandWire(const Math::Vector3& targetPosition, PlayerInternals::TargetType targetType);
+
+	// 敗北する
+	void Defeat();
 
 	// 回転を設定
 	void SetRotation(const Math::Quaternion& rotation) { m_internals.rotation.SetTarget(rotation); }

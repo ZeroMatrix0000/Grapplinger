@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/04
  * 
  *
  * プレイヤー
@@ -215,6 +215,12 @@ void Player::ExpandWire(const Math::Vector3& targetPosition, PlayerInternals::Ta
 {
 	m_internals.canExpandWire = false;
 	SetState(std::make_unique<PlayerStateExpandWire>(targetPosition, targetType));
+}
+
+// 敗北する
+void Player::Defeat()
+{
+	SetState(std::make_unique<PlayerStateFreeze>());
 }
 
 // 中心座標を取得

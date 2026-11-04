@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/04
  *
  * スライム管理
  */
@@ -97,6 +97,11 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 				m_slimeRefList.erase(m_slimeRefList.begin() + i);
 				Destroy(slimeRef->GetOwner());
 				i--;
+			}
+			// プレイヤーの敗北
+			else if(!playerRef->IsState<PlayerStateDefeat>())
+			{
+				playerRef->Defeat();
 			}
 		}
 	}

@@ -40,7 +40,7 @@ namespace Scenes
 		template<typename TScene> requires IsDerived<TScene, Scene>
 		void SetNextScene(const TTransitionData& data = TTransitionData{})
 		{
-			SetNextScene(typeid(TScene), data);
+			SetNextScene(typeid(Ref<TScene>), data);
 		}
 
 		// シーン切り替え中かどうか

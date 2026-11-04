@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeDefeatParticle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/04
  *
  * スライム倒しパーティクル
  */
@@ -14,6 +14,10 @@
 // コンストラクタ
 SlimeDefeatParticle::SlimeDefeatParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
 	: Renderings::Particle{ iModelRenderer, iResources }
+	, m_directions{}
+	, m_rotateDirections{}
+	, m_rotateVelocities{}
+	, m_scale{}
 {
 }
 
@@ -38,7 +42,7 @@ void SlimeDefeatParticle::Initalize(Ref<const Transform> transformRef)
 			Random::GetFloatRange(0.0f, 360.0f)
 		}.CreateQuaternion();
 		// 拡大
-		pUpdateElement->scale = Math::Vector3::One * 0.25f;
+		pUpdateElement->scale = Math::Vector3::One * 0.5f;
 
 		// モデルを設定
 		SetModelSource("Box", Ref{ *pRenderElement });
@@ -65,6 +69,8 @@ void SlimeDefeatParticle::Initalize(Ref<const Transform> transformRef)
 				Random::GetFloatRange(-1.0f, 1.0f),
 				Random::GetFloatRange(-1.0f, 1.0f)
 			});
+		m_rotateVelocities.push_back(m_rotateDirections.back().Length() * Math::PI * 2.0f);
+		m_rotateDirections.back().Normalize();
 	}
 	ApplyTransform();
 
@@ -93,7 +99,7 @@ void SlimeDefeatParticle::Update(float elapsedTime)
 		GetUpdateElementRef(i)->rotation *= Math::Quaternion::CreateFromAxisAngle
 		(
 			m_rotateDirections.at(i),
-			m_rotateDirections.at(i).Length() * Math::PI * 2.0f * elapsedTime
+			m_rotateVelocities.at(i) * elapsedTime
 		);
 		// 拡大
 		GetUpdateElementRef(i)->scale = m_scale.GetMovement();

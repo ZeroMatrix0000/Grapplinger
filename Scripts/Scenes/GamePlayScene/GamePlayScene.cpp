@@ -12,6 +12,7 @@
 #include "GamePlaySceneInternals.h"
 #include "States/GamePlaySceneStateField.h"
 #include "Scripts/Main/GameContext.h"
+#include "Scripts/Main/IGameInput.h"
 #include "Scripts/Main/IsDerivedRegister.h"
 #include "Scripts/GameObjects/Objects/Player/Player.h"
 #include "Scripts/GameObjects/Objects/Player/PlayerCamera.h"
@@ -33,6 +34,7 @@ GamePlayScene::GamePlayScene(const ComponentDesc& desc, Ref<const GameContext> c
 	, m_internals{ GetGameObjects(), GetContext(), GetOwner() }
 	, m_currentState{}
 	, m_Initializer{}
+	, m_isStarted{}
 {
 }
 
@@ -49,16 +51,19 @@ void GamePlayScene::Initialize(const SceneTransitionData& data)
 // 更新処理
 void GamePlayScene::Update(float elapsedTime)
 {
-	// シーン切り替え中なら何もしない
-	if (GetContext()->GetISceneManager()->IsChanging())
+	// シーン移動中でないかつ入力が無効化されているなら入力を有効化
+	if (!GetContext()->GetISceneManager()->IsChanging() && !m_isStarted)
 	{
-		return;
+		m_isStarted = true;
+		GetContext()->GetIGameInput()->SetActive(true);
 	}
 
 	// F5でシーン移動
-	if (GetContext()->GetIInput()->GetKeyDown(KeyName::F5))
+	if (GetContext()->GetIInput()->GetKeyDown(KeyName::F5) && GetContext()->GetIGameInput()->GetIsActive())
 	{
 		GetContext()->GetISceneManager()->SetNextScene<GamePlayScene>();
+		// 入力を無効化
+		GetContext()->GetIGameInput()->SetActive(false);
 		return;
 	}
 
