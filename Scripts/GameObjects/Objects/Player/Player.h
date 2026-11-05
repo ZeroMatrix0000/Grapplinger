@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/05
  *
  * プレイヤー
  */
@@ -43,6 +43,9 @@ public:
 
 	// 敗北する
 	void Defeat();
+
+	// 落下判定床チェック
+	void DeathFloorCheck(const Math::Box& deathFloor);
 
 	// 回転を設定
 	void SetRotation(const Math::Quaternion& rotation) { m_internals.rotation.SetTarget(rotation); }

@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateFreeze.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/05
  *
  * プレイヤーのフリーズ状態
  */
@@ -20,7 +20,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	PlayerStateFreeze(bool isFalling);
+	PlayerStateFreeze();
 
 	// 開始処理
 	void Enter(Ref<PlayerInternals> internalsRef) override;
@@ -39,9 +39,6 @@ public:
 
 
 	/* メンバ変数 */
-
-	// 落下死かどうか
-	bool m_isFalling;
 
 	// タイマー
 	Limited m_timer;

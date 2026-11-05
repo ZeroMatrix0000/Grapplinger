@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/05
  *
  * ゲームプレイシーンの内部データ
  */
@@ -17,6 +17,7 @@ namespace GameObjects
 namespace Colliders
 {
 	class MeshCollider;
+	class BoxCollider;
 }
 namespace Renderings
 {
@@ -71,6 +72,9 @@ struct GamePlaySceneInternals
 	// 地面
 	Ref<Colliders::MeshCollider> groundMeshRef;
 	Ref<Renderings::Model3D> groundModelRef;
+
+	// 落下判定床
+	Ref<Colliders::BoxCollider> deathFloorRef;
 
 	// レティクル
 	Ref<Renderings::Image> reticleRef;

@@ -26,6 +26,7 @@ GamePlaySceneInternals::GamePlaySceneInternals
 	, slimeManagerRef{ owner->GetNullComponent<SlimeManager>() }
 	, groundMeshRef{ owner->GetNullComponent<Colliders::MeshCollider>() }
 	, groundModelRef{ owner->GetNullComponent<Renderings::Model3D>() }
+	, deathFloorRef{ owner->GetNullComponent<Colliders::BoxCollider>() }
 	, reticleRef{ owner->GetNullComponent<Renderings::Image>() }
 	, z2TalkRef{ owner->GetNullComponent<Z2Talk>() }
 	, blackBeltRef{ owner->GetNullComponent<BlackBelt>() }

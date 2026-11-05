@@ -24,6 +24,7 @@
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
+#include "Scripts/Commons/Colliders/BoxCollider.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
@@ -104,6 +105,7 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	internalsRef->slimeManagerRef->PlayerCollide(internalsRef->playerRef);
 	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
 	internalsRef->playerRef->UpdateModel(elapsedTime);
+	internalsRef->playerRef->DeathFloorCheck(internalsRef->deathFloorRef->GetWorldBox());
 
 	// カメラの更新
 	internalsRef->playerCameraRef->SetTarget(internalsRef->playerRef->GetCameraTarget());

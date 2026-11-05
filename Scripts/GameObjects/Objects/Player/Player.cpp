@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/05
  * 
  *
  * プレイヤー
@@ -220,7 +220,26 @@ void Player::ExpandWire(const Math::Vector3& targetPosition, PlayerInternals::Ta
 // 敗北する
 void Player::Defeat()
 {
-	SetState(std::make_unique<PlayerStateFreeze>(false));
+	SetState(std::make_unique<PlayerStateFreeze>());
+}
+
+// 落下判定床チェック
+void Player::DeathFloorCheck(const Math::Box& deathFloor)
+{
+	// プレイヤーの直方体
+	const Math::Box& playerBox = GetBox();
+
+	// 外接する非回転直方体同士が触れていなければ何もしない
+	if (!Math::Geometry::IsCollide(playerBox.CreateNonRotatingBox(), deathFloor.CreateNonRotatingBox()))
+	{
+		return;
+	}
+
+	// 直方体同士が触れていたら落花死
+	if (Math::Geometry::IsCollide(playerBox, deathFloor))
+	{
+		SetState(std::make_unique<PlayerStateDefeat>(true));
+	}
 }
 
 // 中心座標を取得

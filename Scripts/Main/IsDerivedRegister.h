@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/05
  *
  * 継承関係の登録
  */

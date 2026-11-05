@@ -23,6 +23,7 @@
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Commons/GameObjects/IGameObjectManager.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
+#include "Scripts/Commons/Colliders/BoxCollider.h"
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
@@ -72,6 +73,10 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->groundMeshRef = ground->GetComponent<Colliders::MeshCollider>();
 	internalsRef->groundModelRef = ground->GetComponent<Renderings::Model3D>();
 	internalsRef->groundMeshRef->ApplyTransform();
+
+	// 落下判定床を取得
+	internalsRef->deathFloorRef = iGameObjectManager->Find("DeathFloor")->GetComponent<Colliders::BoxCollider>();
+	internalsRef->deathFloorRef->ApplyTransform();
 
 	// レティクルを取得
 	internalsRef->reticleRef = iGameObjectManager->Find("Reticle")->GetComponent<Renderings::Image>();

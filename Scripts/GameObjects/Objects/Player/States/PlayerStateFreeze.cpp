@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateFreeze.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/05
  *
  * プレイヤーのフリーズ状態
  */
@@ -12,9 +12,8 @@
 #include "PlayerStates.h"
 
 // コンストラクタ
-PlayerStateFreeze::PlayerStateFreeze(bool isFalling)
+PlayerStateFreeze::PlayerStateFreeze()
 	: PlayerState{}
-	, m_isFalling{ isFalling }
 	, m_timer{}
 {
 }
@@ -31,7 +30,7 @@ void PlayerStateFreeze::Update(Ref<PlayerInternals> internalsRef, float elapsedT
 	m_timer += elapsedTime;
 	if (m_timer.IsMax())
 	{
-		SetNextState(std::make_unique<PlayerStateDefeat>(m_isFalling));
+		SetNextState(std::make_unique<PlayerStateDefeat>(false));
 	}
 }
 
