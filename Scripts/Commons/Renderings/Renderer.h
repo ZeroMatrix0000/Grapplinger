@@ -1,7 +1,7 @@
 /*
  * FileName:     Renderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/05
  *
  * 描画
  */
@@ -30,6 +30,18 @@ namespace Renderings
 	public:
 
 
+		/* 列挙型 */
+
+		// 描画モード
+		enum class RenderMode
+		{
+			Model,
+			Both,
+			Collider,
+			Length
+		};
+
+
 		/* メンバ関数 */
 
 		// コンストラクタ
@@ -45,8 +57,10 @@ namespace Renderings
 		// 描画処理
 		void Render();
 
-		// 描画モードを返る
+		// 描画モードを変更
 		void ChangeRenderMode();
+		// 描画モードを取得
+		RenderMode GetRenderMode() const { return m_renderMode; };
 
 		// モデル描画インタフェースを取得
 		Ref<Renderings::Model3DRenderer>  GetModelRenderer()    { return Ref{ m_modelRenderer }; }
@@ -59,18 +73,6 @@ namespace Renderings
 
 
 	private:
-
-
-		/* 列挙型 */
-
-		// 描画モード
-		enum class RenderMode
-		{
-			Model,
-			Both,
-			Collider,
-			Length
-		};
 
 
 		/* メンバ変数 */

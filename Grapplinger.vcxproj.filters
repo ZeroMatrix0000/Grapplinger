@@ -1047,5 +1047,8 @@
     <FxCompile Include="Shaders\PixelShaders\TitleLogo2.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\GroundDebug.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
