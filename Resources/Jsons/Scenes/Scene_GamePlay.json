@@ -444,5 +444,28 @@
 				]
 			}
 		}
+	},
+	{
+		"Name": "DarkCrystal",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": 20.0,
+					"Y": 15.0,
+					"Z": 0.0
+				}
+			},
+			"Model3D": {
+				"ModelSourceName": "DarkCrystal",
+				"CameraScreens": [
+					"PlayerCamera"
+				]
+			},
+			"BoxCollider": {
+				"CameraScreens": [
+					"PlayerCamera"
+				]
+			}
+		}
 	}
 ]

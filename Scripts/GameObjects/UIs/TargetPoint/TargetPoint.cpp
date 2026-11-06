@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/06
  *
  * ターゲット照準
  */
@@ -32,7 +32,7 @@ TargetPoint::TargetPoint(const ComponentDesc& desc)
 	, m_imageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_playerRef{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
 	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>() }
-	, m_targetObjectsRef{}
+	, m_targetObjectRefs{}
 	, m_groundsRef{}
 {
 }
@@ -49,9 +49,14 @@ void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectF
 	serializer.AddParameter(Ref{ m_brightInterval }, "BrightInterval");
 	serializer.AddParameter(m_playerRef.Nest(), "Player");
 	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
-	serializer.AddParameter(Ref{ m_targetObjectsRef }, "TargetObjects");
+	serializer.AddParameter(Ref{ m_targetObjectRefs }, "TargetObjects");
 	serializer.AddParameter(Ref{ m_groundsRef }, "Grounds");
 	serializer.Load(json);
+
+	for (Ref targetObjectRef : m_targetObjectRefs)
+	{
+		targetObjectRef->AddMethodWhenDestroy([&, targetObjectRef] { DeleteTarget(targetObjectRef); });
+	}
 }
 
 // 更新処理
@@ -82,7 +87,7 @@ void TargetPoint::Update(float elapsedTime)
 
 	// 画面の中心に最も近いオブジェクトを探す
 	{
-		for (Ref targetObjectRef : m_targetObjectsRef)
+		for (Ref targetObjectRef : m_targetObjectRefs)
 		{
 			// 球
 			const Math::Sphere& sphere = targetObjectRef->GetWorldSphere();
@@ -213,4 +218,10 @@ const TargetPoint::Info& TargetPoint::GetTargetInfo()
 	}
 
 	return m_info;
+}
+
+// ターゲットを削除
+void TargetPoint::DeleteTarget(Ref<Colliders::SphereCollider> targetObjectRef)
+{
+	m_targetObjectRefs.erase(std::ranges::find(m_targetObjectRefs, targetObjectRef));
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/06
  *
  * ターゲット照準
  */
@@ -77,6 +77,12 @@ public:
 private:
 
 
+	/* メンバ関数 */
+
+	// ターゲットを削除
+	void DeleteTarget(Ref<Colliders::SphereCollider> targetObjectRef);
+
+
 	/* メンバ変数 */
 
 	// ターゲットにできる距離
@@ -104,7 +110,7 @@ private:
 	Ref<Renderings::ICameraScreen> m_iCameraScreenRef;
 
 	// ターゲットの参照リスト
-	std::vector<Ref<Colliders::SphereCollider>> m_targetObjectsRef;
+	std::vector<Ref<Colliders::SphereCollider>> m_targetObjectRefs;
 
 	// 地面の参照リスト
 	std::vector<Ref<Colliders::MeshCollider>> m_groundsRef;
