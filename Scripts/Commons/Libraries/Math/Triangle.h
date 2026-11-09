@@ -1,7 +1,7 @@
 /*
  * FileName:     Triangle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/06
+ * Last Updated: 2026/11/09
  *
  * 三角形
  */
@@ -40,6 +40,11 @@ namespace Libraries
 
 			// 外接する非回転直方体を生成
 			NonRotatingBox CreateNonRotatingBox() const;
+
+
+			/* 演算子オーバーロード */
+
+			Triangle& operator+=(const Vector3& v);
 
 
 			/* メンバ変数 */

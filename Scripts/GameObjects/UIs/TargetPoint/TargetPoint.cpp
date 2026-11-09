@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/06
+ * Last Updated: 2026/11/09
  *
  * ターゲット照準
  */
@@ -140,6 +140,12 @@ void TargetPoint::Update(float elapsedTime)
 		{
 			// メッシュの三角形
 			Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)) , mesh.v.at(face.at(2)) };
+
+			// 方向が法線と反対方向でなければスキップ
+			if (triangle.GetNormal().Dot(eyeDirection) > 0.0f)
+			{
+				continue;
+			}
 
 			// カメラの中心と三角形の方向指定最短距離
 			float distance = Math::Geometry::AngledDistance(eyePosition, triangle, eyeDirection);

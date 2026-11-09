@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateOnGround.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/09
  *
  * プレイヤーの地面にいる状態
  */
@@ -128,13 +128,13 @@ void PlayerStateOnGround::PositionCorrect(Ref<PlayerInternals> internalsRef, flo
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// めり込んでいる、または、距離が近いかつ移動方向が下
-	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && cos < -1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
 
 		// 移動方向の角度が 45° 以上なら真上に移動する
-		if (Math::Abs(cos) > 1.0f / 1.41421356f)
+		if (cos < -1.0f / 1.41421356f)
 		{
 			displacement = Math::Vector3::Up / cos * distance;
 			// 落下速度を 0 にする

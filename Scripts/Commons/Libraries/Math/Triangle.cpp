@@ -1,7 +1,7 @@
 /*
  * FileName:     Triangle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/06/30
+ * Last Updated: 2026/11/09
  *
  * 三角形
  */
@@ -40,4 +40,12 @@ Math::NonRotatingBox Libraries::Math::Triangle::CreateNonRotatingBox() const
 	}
 
 	return NonRotatingBox{ (min + max) / 2.0f, max - min };
+}
+
+Math::Triangle& Libraries::Math::Triangle::operator+=(const Vector3& v)
+{
+	v1 += v;
+	v2 += v;
+	v3 += v;
+	return *this;
 }

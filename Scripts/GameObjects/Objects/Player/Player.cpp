@@ -133,16 +133,17 @@ void Player::MeshCorrect(const Mesh& mesh)
 	{
 		// メッシュの三角形を取得
 		Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)) , mesh.v.at(face.at(2)) };
+		triangle += triangle.GetNormal() * 0.01f;
 		// 外接する非回転直方体が触れていなければ何もしない
 		if (!Math::Geometry::IsCollide(nonRotatingBox, triangle.CreateNonRotatingBox()))
 		{
 			continue;
 		}
 
-		float cos = triangle.GetNormal().Dot(Math::Vector3::Up);
+		float cos = triangle.GetNormal().Dot(Math::Vector3::Down);
 
 		// 法線の角度が 45° 以上なら床、でなければ壁
-		if (Math::Abs(cos) > 1.0f / 1.41421356f)
+		if (cos < -1.0f / 1.41421356f)
 		{
 			floors.push_back(triangle);
 		}
@@ -180,9 +181,9 @@ void Player::MeshCorrect(const Mesh& mesh)
 	// 床
 	for (const auto& floor : floors)
 	{
-		Math::Vector3 newDirection{};
+		Math::Vector3 newDirection = Math::Vector3::Down;
 
-		float newDistance = Math::Geometry::Distance(floor, box, &newDirection, false);
+		float newDistance = Math::Geometry::AngledDistance(box, floor, newDirection);
 
 		// 最短距離を更新
 		if (newDistance < distance)

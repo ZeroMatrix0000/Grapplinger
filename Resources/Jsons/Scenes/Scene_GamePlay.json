@@ -236,19 +236,19 @@
 		"Components": {
 			"Transform": {
 				"Scale": {
-					"X": 3.0,
-					"Y": 3.0,
-					"Z": 3.0
+					"X": 1.5,
+					"Y": 1.5,
+					"Z": 1.5
 				}
 			},
 			"Model3D": {
-				"ModelSourceName": "NewGrounds",
+				"ModelSourceName": "TestStage",
 				"CameraScreens": [
 					"PlayerCamera"
 				]
 			},
 			"MeshCollider": {
-				"MeshName": "NewGrounds",
+				"MeshName": "TestStage",
 				"CameraScreens": [
 					"PlayerCamera"
 				]
@@ -437,29 +437,6 @@
 					"Y": 1.0,
 					"Z": 200.0
 				}
-			},
-			"BoxCollider": {
-				"CameraScreens": [
-					"PlayerCamera"
-				]
-			}
-		}
-	},
-	{
-		"Name": "DarkCrystal",
-		"Components": {
-			"Transform": {
-				"Position": {
-					"X": 20.0,
-					"Y": 15.0,
-					"Z": 0.0
-				}
-			},
-			"Model3D": {
-				"ModelSourceName": "DarkCrystal",
-				"CameraScreens": [
-					"PlayerCamera"
-				]
 			},
 			"BoxCollider": {
 				"CameraScreens": [

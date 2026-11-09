@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateFalling.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/09
  *
  * プレイヤーの地面にいる状態
  */
@@ -117,7 +117,7 @@ void PlayerStateFalling::PositionCorrect(Ref<PlayerInternals> internalsRef, floa
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
 		// 移動方向の角度が 45° 以上なら真上に移動する
-		if (Math::Abs(cos) > 1.0f / 1.41421356f)
+		if (cos < -1.0f / 1.41421356f)
 		{
 			displacement = Math::Vector3::Up / cos * distance;
 

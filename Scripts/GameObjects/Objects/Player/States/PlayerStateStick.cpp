@@ -96,7 +96,7 @@ void PlayerStateStick::PositionCorrect(Ref<PlayerInternals> internalsRef, float 
 	float cos = direction.Dot(Math::Vector3::Up);
 
 	// 距離が近い
-	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && Math::Abs(cos) > 1.0f / 1.41421356f))
+	if (distance < 0.0f || (distance < internalsRef->boxColliderRef->GetWorldBox().size.y / 8.0f && cos < -1.0f / 1.41421356f))
 	{
 		// 移動量
 		Math::Vector3 displacement = direction * distance;
