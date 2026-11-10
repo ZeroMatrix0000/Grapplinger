@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 画像描画
  */
@@ -17,6 +17,8 @@ namespace Systems
 
 namespace Renderings
 {
+	class PixelShader;
+
 	// 画像描画
 	class ImageRenderer : public IImageRenderer
 	{
@@ -52,6 +54,9 @@ namespace Renderings
 		// 画像の大きさを取得
 		Math::Vector2 GetImageSize(Ref<const Image> imageRef) const override;
 
+		// ピクセルシェーダを設定
+		void SetPixelShader(Ref<const PixelShader> pixelShader) { m_pPixelShader = pixelShader.Get(); }
+
 		// 画像の参照リストのソート
 		void SortImageRefs();
 
@@ -77,6 +82,9 @@ namespace Renderings
 
 		// コモンステート
 		const DirectX::CommonStates* m_pCommonStates;
+
+		// ピクセルシェーダのポインタ
+		const PixelShader* m_pPixelShader;
 
 	};
 }

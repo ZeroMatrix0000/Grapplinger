@@ -1,7 +1,7 @@
 /*
  * FileName:     InteractCursor.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 話しかける・調べる際のカーソル
  */
@@ -34,8 +34,10 @@ public:
 	// コンストラクタ
 	InteractCursor(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime, bool isFocused);

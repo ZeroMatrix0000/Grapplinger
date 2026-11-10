@@ -1050,5 +1050,8 @@
     <FxCompile Include="Shaders\PixelShaders\GroundDebug.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\UnlitBasic.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

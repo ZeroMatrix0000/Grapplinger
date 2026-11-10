@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/10
  *
  * スライム管理
  */
@@ -22,29 +22,29 @@
 SlimeManager::SlimeManager(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_slimeRefList{}
+	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const() }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_particleManagerRef{ GetOwner()->GetNullComponent<Renderings::ParticleManager>() }
 {
 }
 
+// 初期値を設定
+void SlimeManager::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_slimeRefList }, "SlimeList");
+	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
+	serializer.Load(json);
+}
+
 // 初期化処理
-void SlimeManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void SlimeManager::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 	m_particleManagerRef = GetOwner()->GetComponent<Renderings::ParticleManager>();
 
-	// カメラ画面の参照
-	Ref iCameraScreenRef = GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const();
-
-	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_slimeRefList }, "SlimeList");
-	serializer.AddParameter(iCameraScreenRef.Nest(), "CameraScreen");
-	serializer.Load(json);
-
-	if (iCameraScreenRef != GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const())
-	{
-		m_particleManagerRef->AddICameraScreenRef(iCameraScreenRef);
-	}
+	// カメラ画面を設定
+	m_particleManagerRef->AddICameraScreenRef(m_iCameraScreenRef);
 }
 
 // 更新処理

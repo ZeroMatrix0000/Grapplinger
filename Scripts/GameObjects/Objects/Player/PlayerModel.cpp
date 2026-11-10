@@ -37,8 +37,8 @@ PlayerModel::PlayerModel(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void PlayerModel::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void PlayerModel::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	float bounceTime = m_bounceTime.GetMax();
 
@@ -51,15 +51,16 @@ void PlayerModel::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectF
 	serializer.Load(json);
 
 	m_bounceTime.Initialize(0.0f, 0.0f, bounceTime);
+}
 
+// 初期化処理
+void PlayerModel::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 
 	// シルエットを生成
-	if (m_silhouetteRef == GetOwner()->GetNullComponent<Transform>())
-	{
-		Ref obj = Instantiate("Prefab_PlayerSilhouette");
-		m_silhouetteRef = obj->GetComponent<Transform>();
-	}
+	Ref obj = Instantiate("Prefab_PlayerSilhouette");
+	m_silhouetteRef = obj->GetComponent<Transform>();
 }
 
 // 更新処理

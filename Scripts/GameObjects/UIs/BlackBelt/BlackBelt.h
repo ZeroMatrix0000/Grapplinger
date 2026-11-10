@@ -1,7 +1,7 @@
 /*
  * FileName:     BlackBelt.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 上下の黒帯
  */
@@ -17,6 +17,7 @@ namespace Components
 namespace Renderings
 {
 	class Image;
+	class Canvas;
 }
 
 // 上下の黒帯
@@ -31,8 +32,10 @@ public:
 	// コンストラクタ
 	BlackBelt(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -57,6 +60,9 @@ private:
 
 	// 移動率
 	Easing::Value<float> m_moveRate;
+
+	// カメラ画面のインタフェースの参照
+	Ref<const Renderings::Canvas> m_canvasRef;
 
 	// 上の画像のトランスフォームの参照
 	Ref<RectTransform> m_topImageTransformRef;

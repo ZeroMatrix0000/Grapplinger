@@ -222,11 +222,6 @@
 		"Name": "NPCManager",
 		"Components": {
 			"NPCManager": {
-				"NPCList": [
-					"NPC操作方法",
-					"NPCワイヤーについて",
-					"NPCテキストについて"
-				],
 				"Canvas": "Canvas"
 			}
 		}

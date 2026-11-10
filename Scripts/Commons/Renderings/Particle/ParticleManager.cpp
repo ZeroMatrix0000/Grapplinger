@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * パーティクル管理
  */
@@ -25,14 +25,18 @@ Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<IMod
 {
 }
 
-// 初期化処理
-void Renderings::ParticleManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Renderings::ParticleManager::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_transformRef = GetOwner()->GetComponent<Transform>().Const();
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void Renderings::ParticleManager::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	m_transformRef = GetOwner()->GetComponent<Transform>().Const();
 }
 
 // 更新処理

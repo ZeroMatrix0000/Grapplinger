@@ -1,7 +1,7 @@
 /*
  * FileName:     Image.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 画像
  */
@@ -37,8 +37,8 @@ Renderings::Image::~Image()
 	m_iImageRenderer->RemoveImageRef(Ref{ *this }.Const());
 }
 
-// 初期化処理
-void Renderings::Image::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Renderings::Image::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	std::string imageSourceName{};
 	std::string pixelShaderName{};
@@ -48,7 +48,7 @@ void Renderings::Image::Initalize(const nlohmann::ordered_json& json, Ref<IGameO
 	serializer.AddParameter(Ref{ m_color }, "Color");
 	serializer.AddParameter(Ref{ pixelShaderName }, "PixelShaderName");
 	serializer.AddParameter(Ref{ m_orderInLayer }, "OrderInLayer");
-	serializer.AddParameter(Ref<Ref<const Renderings::Canvas>>{ m_canvasRef }, "Canvas");
+	serializer.AddParameter(m_canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	if (!imageSourceName.empty())
@@ -59,6 +59,11 @@ void Renderings::Image::Initalize(const nlohmann::ordered_json& json, Ref<IGameO
 	{
 		SetPixelShader(pixelShaderName);
 	}
+}
+
+// 初期化処理
+void Renderings::Image::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // 画像ソースを設定

@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * NPC管理
  */
@@ -25,42 +25,38 @@
 NPCManager::NPCManager(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_isHideCursor{}
-	, m_nPCRefList{}
-	, m_interactCursorRefList{}
+	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() }
+	, m_nPCRefs{}
+	, m_interactCursorRefs{}
 	, m_pFocusedNPC{}
 {
 }
 
-// 初期化処理
-void NPCManager::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void NPCManager::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	Ref canvasRef = GetOwner()->GetNullComponent<Renderings::Canvas>().Const();
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_nPCRefList }, "NPCList");
-	serializer.AddParameter(canvasRef.Nest(), "Canvas");
+	serializer.AddParameter(m_canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
+}
 
-	// NPC の数だけテキストを追加
-	for (int i = 0; i < m_nPCRefList.size(); i++)
+// 初期化処理
+void NPCManager::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	// キャンバスを設定
+	for (Ref interactCursorRef : m_interactCursorRefs)
 	{
-		Ref interactCursor = Instantiate("Prefab_InteractCursor")->GetComponent<InteractCursor>();
-		m_interactCursorRefList.push_back(interactCursor);
-		interactCursor->SetName(m_nPCRefList.at(i)->GetName());
-		if (canvasRef != GetOwner()->GetNullComponent<Renderings::Canvas>().Const())
-		{
-			interactCursor->SetCanvasRef(canvasRef);
-		}
+		interactCursorRef->SetCanvasRef(m_canvasRef);
 	}
 }
 
 // 更新処理
 void NPCManager::Update(float elapsedTime)
 {
-	for (int i = 0; i < m_nPCRefList.size(); i++)
+	for (int i = 0; i < m_nPCRefs.size(); i++)
 	{
-		m_nPCRefList.at(i)->Update(elapsedTime);
-		m_interactCursorRefList.at(i)->Update(elapsedTime, m_nPCRefList.at(i).Get() == m_pFocusedNPC && !m_isHideCursor);
+		m_nPCRefs.at(i)->Update(elapsedTime);
+		m_interactCursorRefs.at(i)->Update(elapsedTime, m_nPCRefs.at(i).Get() == m_pFocusedNPC && !m_isHideCursor);
 	}
 }
 
@@ -72,7 +68,7 @@ void NPCManager::SetRotation(const Math::Vector3& playerPosition)
 
 	m_pFocusedNPC = nullptr;
 
-	for (Ref nPCRef : m_nPCRefList)
+	for (Ref nPCRef : m_nPCRefs)
 	{
 		// スピン中ならスキップ
 		if (nPCRef->IsSpinning())
@@ -112,19 +108,19 @@ void NPCManager::SetRotation(const Math::Vector3& playerPosition)
 // カーソルを設定
 void NPCManager::SetCursor(Ref<const Renderings::ICameraScreen> iCameraScreenRef)
 {
-	for (int i = 0; i < m_nPCRefList.size(); i++)
+	for (int i = 0; i < m_nPCRefs.size(); i++)
 	{
-		const Math::Box& box = m_nPCRefList.at(i)->GetBox();
+		const Math::Box& box = m_nPCRefs.at(i)->GetBox();
 
 		Math::Vector2 screenPosition = Math::Geometry::Projection
 		(
 			box.position + box.size * Math::Vector3::Up / 2.0f,
 			iCameraScreenRef->GetViewMatrix(),
 			iCameraScreenRef->GetProjectionMatrix(),
-			m_interactCursorRefList.at(i)->GetCanvas().GetSize()
+			m_interactCursorRefs.at(i)->GetCanvas().GetSize()
 		);
 
-		m_interactCursorRefList.at(i)->SetPosition(screenPosition);
+		m_interactCursorRefs.at(i)->SetPosition(screenPosition);
 	}
 }
 
@@ -134,7 +130,7 @@ void NPCManager::PlayerCollide(Ref<Player> playerRef)
 	// 直方体
 	const Math::Box& playerBox = playerRef->GetBox();
 
-	for (Ref nPCRef : m_nPCRefList)
+	for (Ref nPCRef : m_nPCRefs)
 	{
 		const Math::Box& nPCBox = nPCRef->GetBox();
 
@@ -167,9 +163,20 @@ void NPCManager::PlayerCollide(Ref<Player> playerRef)
 std::vector<Math::Box> NPCManager::GetBoxes() const
 {
 	std::vector<Math::Box> boxes{};
-	for (Ref nPCRef : m_nPCRefList)
+	for (Ref nPCRef : m_nPCRefs)
 	{
 		boxes.push_back(nPCRef->GetBox());
 	}
 	return boxes;
+}
+
+// NPC を追加
+void NPCManager::AddNPC(Ref<NPC> nPCRef)
+{
+	m_nPCRefs.push_back(nPCRef);
+	Ref interactCursorRef = Instantiate("Prefab_InteractCursor")->GetComponent<InteractCursor>();
+	m_interactCursorRefs.push_back(interactCursorRef);
+	interactCursorRef->SetName(nPCRef->GetName());
+	// キャンバスを設定
+	interactCursorRef->SetCanvasRef(m_canvasRef);
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerWire.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * プレイヤーの糸
  */
@@ -48,15 +48,9 @@ PlayerWire::PlayerWire(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void PlayerWire::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void PlayerWire::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_transformRef = GetOwner()->GetComponent<Transform>();
-
-	m_rotationAngle.Initialize(0.0f, -180.0f, 180.0f);
-
-	m_currentState = State::None;
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ THICKNESS }, "Thickness");
 	serializer.AddParameter(Ref{ EXPAND_SPEED }, "ExpandSpeed");
@@ -65,14 +59,21 @@ void PlayerWire::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 	serializer.AddParameter(Ref{ CONTRACT_ACCELERATION }, "ContractAcceleration");
 	serializer.AddParameter(Ref{ MIN_LENGTH }, "MinLength");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void PlayerWire::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	m_transformRef = GetOwner()->GetComponent<Transform>();
+
+	m_rotationAngle.Initialize(0.0f, -180.0f, 180.0f);
+
+	m_currentState = State::None;
 
 	// パーティクル管理生成
-	if (m_refParticleManager == GetOwner()->GetNullComponent<Renderings::ParticleManager>())
-	{
-		Ref obj = Instantiate("Prefab_PlayerWireParticleManager");
-		m_refParticleManager = obj->GetComponent<Renderings::ParticleManager>();
-		m_refParticleManagerTransform = obj->GetComponent<Transform>();
-	}
+	Ref obj = Instantiate("Prefab_PlayerWireParticleManager");
+	m_refParticleManager = obj->GetComponent<Renderings::ParticleManager>();
+	m_refParticleManagerTransform = obj->GetComponent<Transform>();
 }
 
 // 更新処理

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * アクション管理
  */
@@ -29,8 +29,10 @@ public:
 	// コンストラクタ
 	ActionManager(const ComponentDesc& desc, Ref<Systems::IResources> iResources);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime, Ref<const IGameInput> iGameInput);

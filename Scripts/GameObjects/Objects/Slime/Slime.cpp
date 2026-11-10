@@ -1,7 +1,7 @@
 /*
  * FileName:     Slime.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * スライム
  */
@@ -22,12 +22,21 @@ Slime::Slime(const ComponentDesc& desc)
 	: Component{ desc }
 	, m_internals{ GetOwner() }
 	, m_currentState{}
+	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const() }
 {
 	m_currentState = std::make_unique<SlimeStateIdle>();
 }
 
+// 初期値を設定
+void Slime::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
+	serializer.Load(json);
+}
+
 // 初期化処理
-void Slime::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void Slime::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_internals.transformRef = GetOwner()->GetComponent<Transform>();
 	m_internals.boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
@@ -35,19 +44,10 @@ void Slime::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder>
 	m_internals.boxColliderRef->ApplyTransform();
 	m_internals.sphereColliderRef->ApplyTransform();
 
-	// カメラ画面の参照
-	Ref iCameraScreenRef = GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const();
-
-	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(iCameraScreenRef.Nest(), "CameraScreen");
-	serializer.Load(json);
-
-	if (iCameraScreenRef != GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const())
-	{
-		GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(iCameraScreenRef);
-		m_internals.boxColliderRef->AddICameraScreenRef(iCameraScreenRef);
-		m_internals.sphereColliderRef->AddICameraScreenRef(iCameraScreenRef);
-	}
+	// カメラを追加
+	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(m_iCameraScreenRef);
+	m_internals.boxColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
+	m_internals.sphereColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
 }
 
 // 更新処理

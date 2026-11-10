@@ -1,7 +1,7 @@
 /*
  * FileName:     Transform.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * トランスフォーム
  */
@@ -22,7 +22,7 @@ Components::Transform::Transform(const ComponentDesc& desc)
 }
 
 // 初期化処理
-void Components::Transform::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void Components::Transform::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_position }, "Position");
@@ -30,7 +30,12 @@ void Components::Transform::Initalize(const nlohmann::ordered_json& json, Ref<IG
 	serializer.AddParameter(Ref{ m_scale }, "Scale");
 	serializer.Load(json);
 
-	UpdateWorldMatrix();
+	m_isChanged = true;
+}
+
+// 初期化処理
+void Components::Transform::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // 座標を設定
@@ -74,14 +79,4 @@ const Math::Matrix& Components::Transform::GetWorldMatrix() const
 		m_isChanged = false;
 	}
 	return m_matrix;
-}
-
-// 行列を更新
-void Components::Transform::UpdateWorldMatrix()
-{
-	m_matrix =
-		Math::Matrix::CreateScale(m_scale) *
-		Math::Matrix::CreateFromQuaternion(m_rotation) *
-		Math::Matrix::CreateTranslation(m_position)
-	;
 }

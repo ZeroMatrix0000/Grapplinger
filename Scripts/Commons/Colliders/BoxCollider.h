@@ -1,7 +1,7 @@
 /*
  * FileName:     BoxCollider.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 長方形の当たり判定
  */
@@ -36,8 +36,10 @@ namespace Colliders
 		// デストラクタ
 		~BoxCollider();
 
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 座標を設定
 		void SetPosition(const Math::Vector3& position) { m_box.position = position; }
@@ -80,7 +82,7 @@ namespace Colliders
 		Math::Color m_color;
 
 		// トランスフォームの参照
-		Ref<Transform> m_transformRef;
+		Ref<const Transform> m_transformRef;
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const Renderings::ICameraScreen>> m_iCameraScreenRefs;

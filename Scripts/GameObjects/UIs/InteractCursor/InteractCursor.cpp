@@ -29,24 +29,25 @@ InteractCursor::InteractCursor(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void InteractCursor::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void InteractCursor::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_alphaVelocity }, "AlphaVelocity");
 	serializer.Load(json);
+}
 
+// 初期化処理
+void InteractCursor::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 	m_alpha.Initialize(0.0f, 0.0f, 1.0f);
 
-	if (m_textTransformRef == GetOwner()->GetNullComponent<RectTransform>())
-	{
-		Ref<GameObject> objRef = Instantiate("Prefab_InteractCursorText");
-		m_textTransformRef = objRef->GetComponent<RectTransform>();
-		m_textRef = objRef->GetComponent<Renderings::Text>();
-		objRef = Instantiate("Prefab_InteractCursorImage");
-		m_imageTransformRef = objRef->GetComponent<RectTransform>();
-		m_imageRef = objRef->GetComponent<Renderings::Image>();
-	}
+	Ref<GameObject> objRef = Instantiate("Prefab_InteractCursorText");
+	m_textTransformRef = objRef->GetComponent<RectTransform>();
+	m_textRef = objRef->GetComponent<Renderings::Text>();
+	objRef = Instantiate("Prefab_InteractCursorImage");
+	m_imageTransformRef = objRef->GetComponent<RectTransform>();
+	m_imageRef = objRef->GetComponent<Renderings::Image>();
 }
 
 // 更新処理

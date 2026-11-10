@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionSetMessageWindowText.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * メッセージウィンドウ開アクション
  */
@@ -23,12 +23,17 @@ ActionSetMessageWindowText::ActionSetMessageWindowText(const ComponentDesc& desc
 {
 }
 
-// 初期化処理
-void ActionSetMessageWindowText::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void ActionSetMessageWindowText::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(m_refMessageWindow.Nest(), "MessageWindow");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void ActionSetMessageWindowText::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // パラメータを設定

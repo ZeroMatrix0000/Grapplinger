@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/21
+ * Last Updated: 2026/11/10
  *
  * デバッグ用カメラ
  */
@@ -24,14 +24,14 @@ public:
 	// コンストラクタ
 	DebugCamera(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
 
-	// カメラ画面を設定
-	void SetPCameraScreen();
 	// 入力を設定
 	void SetInput(const Math::Vector2Int& mouseMovement, bool mouseButtonRight, bool mouseButtonMiddle, int mouseWheelDelta);
 

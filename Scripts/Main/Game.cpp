@@ -82,6 +82,7 @@ void Game::Initialize(const HWND& hWindow)
 	m_renderer.GetModelRenderer()->SetDepthStencilView(m_deviceResources.GetDepthStencilViewRef());
 	m_renderer.GetModelRenderer()->SetVertexShader(m_resources.GetVertexShader("InstancingTest"));
 	m_renderer.GetModelRenderer()->SetPixelShader(m_resources.GetPixelShader("InstancingTest"));
+	m_renderer.GetImageRenderer()->SetPixelShader(m_resources.GetPixelShader("UnlitBasic"));
 	m_renderer.GetTextRenderer()->CreateFontCollection(L"Resources\\Fonts");
 
 	// タイマーの初期化

@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 3Dモデル
  */
@@ -35,8 +35,8 @@ Renderings::Model3D::~Model3D()
 	}
 }
 
-// 初期化処理
-void Renderings::Model3D::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Renderings::Model3D::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	std::string modelSourceName{};
 
@@ -50,6 +50,11 @@ void Renderings::Model3D::Initalize(const nlohmann::ordered_json& json, Ref<IGam
 	{
 		SetModelSource(modelSourceName);
 	}
+}
+
+// 初期化処理
+void Renderings::Model3D::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // モデルソースを設定

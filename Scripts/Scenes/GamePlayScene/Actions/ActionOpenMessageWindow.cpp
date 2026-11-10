@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionOpenMessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * メッセージウィンドウ開アクション
  */
@@ -21,12 +21,17 @@ ActionOpenMessageWindow::ActionOpenMessageWindow(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void ActionOpenMessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void ActionOpenMessageWindow::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(m_refMessageWindow.Nest(), "MessageWindow");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void ActionOpenMessageWindow::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // パラメータを設定

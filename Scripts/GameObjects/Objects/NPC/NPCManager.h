@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * NPC管理
  */
@@ -17,6 +17,7 @@ namespace Components
 namespace Renderings
 {
 	class ICameraScreen;
+	class Canvas;
 }
 class NPC;
 class InteractCursor;
@@ -34,8 +35,10 @@ public:
 	// コンストラクタ
 	NPCManager(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -53,13 +56,16 @@ public:
 	void PlayerCollide(Ref<Player> playerRef);
 
 	// NPCの数を取得
-	size_t GetNPCCount() const { return m_nPCRefList.size(); }
+	size_t GetNPCCount() const { return m_nPCRefs.size(); }
 
 	// 当たり判定を取得
 	std::vector<Math::Box> GetBoxes() const;
 
 	// カーソルが合っているNPCを取得
 	const NPC* GetPFocusedNPC() const { return m_pFocusedNPC; }
+
+	// NPC を追加
+	void AddNPC(Ref<NPC> nPCRef);
 
 
 private:
@@ -70,10 +76,13 @@ private:
 	// カーソルを隠しているか
 	bool m_isHideCursor;
 
+	// キャンバスの参照
+	Ref<const Renderings::Canvas> m_canvasRef;
+
 	// NPCの参照リスト
-	std::vector<Ref<NPC>> m_nPCRefList;
+	std::vector<Ref<NPC>> m_nPCRefs;
 	// カーソルの参照リスト
-	std::vector<Ref<InteractCursor>> m_interactCursorRefList;
+	std::vector<Ref<InteractCursor>> m_interactCursorRefs;
 
 	// カーソルが合っているMPCのポインタ
 	NPC* m_pFocusedNPC;

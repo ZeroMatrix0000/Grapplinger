@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateStick.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * プレイヤーの張り付き状態
  */
@@ -66,6 +66,8 @@ void PlayerStateStick::Update(Ref<PlayerInternals> internalsRef, float elapsedTi
 		internalsRef->jumpBufferTime = internalsRef->jumpBufferTime.GetMin();
 		// 砂煙の再生
 		internalsRef->particleManagerRef->Play<JumpingParticle>();
+		// ワイヤーを伸ばせるようにする
+		internalsRef->canExpandWire = true;
 	}
 
 	// 糸の更新

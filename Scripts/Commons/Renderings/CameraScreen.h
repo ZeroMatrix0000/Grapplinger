@@ -1,7 +1,7 @@
 /*
  * FileName:     CameraScreen.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/30
+ * Last Updated: 2026/11/10
  *
  * カメラ画面
  */
@@ -47,14 +47,19 @@ namespace Renderings
 		{
 		}
 
-		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override
 		{
 			Systems::JsonSerializer serializer{ iGameObjectFinder };
 			serializer.AddParameter(Ref{ m_camera }, "Camera");
 			serializer.AddParameter(Ref{ m_viewAngle }, "ViewAngle");
 			serializer.AddParameter(Ref{ m_projectionDistance }, "ProjectionDistance");
 			serializer.Load(json);
+		}
+
+		// 初期化処理
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override
+		{
 		}
 
 		// ビュー行列を更新

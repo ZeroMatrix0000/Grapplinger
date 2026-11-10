@@ -1,7 +1,7 @@
 /*
  * FileName:     Action.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * アクション
  */
@@ -26,8 +26,10 @@ public:
 	// デストラクタ
 	virtual ~Action() = default;
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// パラメータを設定
 	virtual void SetParams(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder);

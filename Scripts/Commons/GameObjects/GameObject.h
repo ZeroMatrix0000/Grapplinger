@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObject.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * ゲームオブジェクト
  */
@@ -29,6 +29,9 @@ namespace GameObjects
 
 		// コンストラクタ
 		GameObject(Ref<IComponentManager> iComponentManager);
+
+		// 初期化処理
+		void Initialize(Ref<IGameObjectFinder> iGameObjectFinder);
 
 		// 名前を設定
 		void SetName(const std::string& name) { m_name = name; }

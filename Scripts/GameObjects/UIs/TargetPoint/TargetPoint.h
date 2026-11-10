@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/06
+ * Last Updated: 2026/11/10
  *
  * ターゲット照準
  */
@@ -61,8 +61,10 @@ public:
 	// コンストラクタ
 	TargetPoint(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);

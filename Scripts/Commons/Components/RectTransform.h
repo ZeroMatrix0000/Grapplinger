@@ -1,7 +1,7 @@
 /*
  * FileName:     RectTransform.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 2D用トランスフォーム
  */
@@ -24,8 +24,10 @@ namespace Components
 		// コンストラクタ
 		RectTransform(const ComponentDesc& desc);
 
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 座標を設定
 		void SetPosition(const Math::Vector2& position) { m_rect.position = position; }

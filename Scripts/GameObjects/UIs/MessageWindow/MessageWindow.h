@@ -1,7 +1,7 @@
 /*
  * FileName:     MessageWindow.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * メッセージウィンドウ
  */
@@ -18,6 +18,7 @@ namespace Renderings
 {
 	class Text;
 	class Image;
+	class Canvas;
 }
 
 // メッセージウィンドウ
@@ -32,8 +33,10 @@ public:
 	// コンストラクタ
 	MessageWindow(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -85,6 +88,9 @@ private:
 	std::wstring m_text;
 	// 文字数カウント
 	Limited m_textCount;
+
+	// カメラ画面のインタフェースの参照
+	Ref<const Renderings::Canvas> m_canvasRef;
 
 	// 背景のトランスフォームの参照
 	Ref<RectTransform> m_backgroundTransformRef;

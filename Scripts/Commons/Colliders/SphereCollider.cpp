@@ -1,7 +1,7 @@
 /*
  * FileName:     SphereCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 球の当たり判定
  */
@@ -22,7 +22,7 @@ Colliders::SphereCollider::SphereCollider(const ComponentDesc& desc, Ref<Renderi
 	, m_sphere{}
 	, m_worldSphere{}
 	, m_color{ DirectX::Colors::LightGreen }
-	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
 	, m_iCameraScreenRefs{}
 	, m_iColliderRenderer{ iColliderRenderer }
 {
@@ -37,17 +37,20 @@ Colliders::SphereCollider::~SphereCollider()
 	m_iColliderRenderer->RemovePSphereCollider(Ref{ *this }.Const());
 }
 
-// 初期化処理
-void Colliders::SphereCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Colliders::SphereCollider::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_transformRef = GetOwner()->GetComponent<Transform>();
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_sphere.centerPosition }, "Position");
 	serializer.AddParameter(Ref{ m_sphere.radius }, "Radius");
 	serializer.AddParameter(Ref{ m_color }, "Color");
 	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void Colliders::SphereCollider::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // 映るカメラ画面の参照を追加
@@ -72,15 +75,14 @@ void Colliders::SphereCollider::RemoveICameraScreenRef(Ref<const Renderings::ICa
 // トランスフォームを適用
 void Colliders::SphereCollider::ApplyTransform()
 {
-	// 取得できなければ何もしない
-	if (m_transformRef == GetOwner()->GetNullComponent<Transform>())
+	// トランスフォームを取得
+	if (m_transformRef == GetOwner()->GetNullComponent<Transform>().Const())
 	{
-		m_worldSphere = m_sphere;
-		return;
+		m_transformRef = GetOwner()->GetConstComponent<Transform>();
 	}
 
 	// ワールド行列
-	Math::Matrix world = m_transformRef->GetWorldMatrix();
+	const Math::Matrix& world = m_transformRef->GetWorldMatrix();
 	// 拡大
 	Math::Vector3 scale = m_transformRef->GetScale();
 

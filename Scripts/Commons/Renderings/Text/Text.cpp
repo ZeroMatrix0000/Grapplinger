@@ -1,7 +1,7 @@
 /*
  * FileName:     Text.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * テキスト
  */
@@ -42,8 +42,8 @@ Renderings::Text::~Text()
 	m_iTextRenderer->RemoveTextRef(Ref{ *this }.Const());
 }
 
-// 初期化処理
-void Renderings::Text::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Renderings::Text::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	std::wstring str = m_str.GetSourceStr();
 	bool isDecoration = m_str.IsDecoration();
@@ -65,4 +65,9 @@ void Renderings::Text::Initalize(const nlohmann::ordered_json& json, Ref<IGameOb
 
 	m_str.SetIsDecoration(isDecoration);
 	m_str.SetStr(str);
+}
+
+// 初期化処理
+void Renderings::Text::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }

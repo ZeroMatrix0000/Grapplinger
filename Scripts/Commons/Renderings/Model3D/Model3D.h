@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 3Dモデル
  */
@@ -35,8 +35,10 @@ namespace Renderings
 		// デストラクタ
 		~Model3D();
 
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 色を設定
 		void SetColor(const Math::Color& color) { m_color = color; }

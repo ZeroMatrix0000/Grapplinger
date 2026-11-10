@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/05
+ * Last Updated: 2026/11/10
  * 
  *
  * プレイヤー
@@ -30,15 +30,9 @@ Player::Player(const ComponentDesc& desc)
 	SetState(std::make_unique<PlayerStateOnGround>());
 }
 
-// 初期化処理
-void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Player::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_internals.transformRef = GetOwner()->GetComponent<Transform>();
-	m_internals.boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
-	m_internals.particleManagerRef = GetOwner()->GetComponent<Renderings::ParticleManager>();
-
-	m_internals.rotation.SetValue(m_internals.transformRef->GetRotation());
-
 	float moveMaxSpeed = m_internals.moveMaxSpeed.GetMin();
 	float fallMaxSpeed = m_internals.fallSpeed.GetMax();
 	float coyoteTime = m_internals.fallCoyoteTime.GetMax();
@@ -61,33 +55,34 @@ void Player::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder
 
 	m_internals.fallCoyoteTime.Initialize(0.0f, 0.0f, coyoteTime);
 	m_internals.jumpBufferTime.Initialize(0.0f, 0.0f, coyoteTime);
+}
+
+// 初期化処理
+void Player::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	m_internals.transformRef = GetOwner()->GetComponent<Transform>();
+	m_internals.boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
+	m_internals.particleManagerRef = GetOwner()->GetComponent<Renderings::ParticleManager>();
+
+	m_internals.rotation.SetValue(m_internals.transformRef->GetRotation());
 
 	// 当たり判定の更新
 	m_internals.boxColliderRef->ApplyTransform();
 
 	// モデルの生成
-	if (m_internals.modelRef == GetOwner()->GetNullComponent<PlayerModel>())
-	{
-		Ref obj = Instantiate("Prefab_PlayerModel");
-		m_internals.modelRef = obj->GetComponent<PlayerModel>();
-		m_internals.modelRef->SetParticleManagerRef(m_internals.particleManagerRef);
-	}
+	Ref obj = Instantiate("Prefab_PlayerModel");
+	m_internals.modelRef = obj->GetComponent<PlayerModel>();
+	m_internals.modelRef->SetParticleManagerRef(m_internals.particleManagerRef);
 
 	// 糸の生成
-	if (m_internals.wireRef == GetOwner()->GetNullComponent<PlayerWire>())
-	{
-		Ref obj = Instantiate("Prefab_PlayerWire");
-		m_internals.wireRef = obj->GetComponent<PlayerWire>();
-	}
+	obj = Instantiate("Prefab_PlayerWire");
+	m_internals.wireRef = obj->GetComponent<PlayerWire>();
 
 	// カメラを設定
-	if (m_internals.CAMERA_SCREEN_REF != GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>().Const())
-	{
-		m_internals.boxColliderRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
-		m_internals.particleManagerRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
-		m_internals.modelRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
-		m_internals.wireRef->AddICameraScreen(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
-	}
+	m_internals.boxColliderRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+	m_internals.particleManagerRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+	m_internals.modelRef->AddICameraScreenRef(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
+	m_internals.wireRef->AddICameraScreen(Ref<const Renderings::ICameraScreen>{ m_internals.CAMERA_SCREEN_REF.GetValue() });
 }
 
 // 更新処理

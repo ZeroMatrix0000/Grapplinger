@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerStateOnGround.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/09
+ * Last Updated: 2026/11/10
  *
  * プレイヤーの地面にいる状態
  */

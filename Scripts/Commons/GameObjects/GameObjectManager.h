@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * ゲームオブジェクト管理
  */
@@ -37,7 +37,7 @@ namespace GameObjects
 		void Load(const std::string& jsonName) override;
 
 		// ゲームオブジェクトを名前で検索
-		Ref<GameObject> Find(const std::string& name) const override;
+		Ref<GameObject> Find(const std::string& name, bool message = true) const override;
 
 		// ゲームオブジェクトを生成
 		Ref<GameObject> Instantiate(const std::string& jsonName, bool dontDestroyOnLoad) override;
@@ -70,8 +70,8 @@ namespace GameObjects
 
 		// コンポーネントを追加
 		std::vector<Component*> AddComponents(const nlohmann::ordered_json& json, Ref<GameObject> owner);
-		// コンポーネントを初期化
-		void InitializeComponents(const nlohmann::ordered_json& json, const std::vector<Component*>& pComponents);
+		// コンポーネントの初期値を設定
+		void SetComponentsSerializeField(const nlohmann::ordered_json& json, const std::vector<Component*>& pComponents);
 
 
 		/* メンバ変数 */

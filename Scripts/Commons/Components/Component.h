@@ -39,8 +39,10 @@ namespace Components
 		Component(const Component&) = delete;
 		Component& operator=(const Component&) = delete;
 
+		// 初期値を設定
+		virtual void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) = 0;
 		// 初期化処理
-		virtual void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) = 0;
+		virtual void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) = 0;
 
 		// 所有者を取得
 		Ref<GameObject> GetOwner() { return m_owner = m_owner; }

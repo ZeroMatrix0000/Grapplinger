@@ -25,7 +25,9 @@ namespace Components
 		Transform(const ComponentDesc& desc);
 
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		// 初期化処理
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 座標を設定
 		void SetPosition(const Math::Vector3& position);
@@ -49,12 +51,6 @@ namespace Components
 
 
 	private:
-
-
-		/* メンバ関数 */
-
-		// 行列を更新
-		void UpdateWorldMatrix();
 
 
 		/* メンバ変数 */

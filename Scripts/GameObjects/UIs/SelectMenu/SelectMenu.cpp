@@ -1,7 +1,7 @@
 /*
  * FileName:     SelectMenu.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 選択メニュー
  */
@@ -24,31 +24,19 @@ SelectMenu::SelectMenu(const ComponentDesc& desc)
 	, m_selectNumber{}
 	, m_cursorDelayY{}
 	, m_cursorSwayTimer{}
-	, m_pTexts{}
+	, m_textRefs{}
 	, m_Processes{}
 	, m_fontSizes{}
+	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() }
 	, m_cursorImageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_cursorRectTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
 {
 }
 
-// 初期化処理
-void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void SelectMenu::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	if (m_cursorImageRef == GetOwner()->GetNullComponent<Renderings::Image>())
-	{
-		Ref obj = Instantiate("Prefab_SelectMenuCursor");
-		m_cursorImageRef = obj->GetComponent<Renderings::Image>();
-		m_cursorRectTransformRef = obj->GetComponent<RectTransform>();
-	}
-
-	// 選択番号を初期化
-	m_selectNumber = 0;
-	// カーソルのY座標のズレ
-	m_cursorDelayY.SetMovement(0.0f, 0.0f);
-
 	float cursorSwayTime = m_cursorSwayTimer.GetMax();
-	Ref canvasRef = m_cursorImageRef->GetCanvasRef();
 
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_params.width }, "Width");
@@ -62,11 +50,25 @@ void SelectMenu::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFi
 	serializer.AddParameter(Ref{ m_params.cursorSwaySize }, "CursorSwaySize");
 	serializer.AddParameter(Ref{ m_params.fontSizeBegin }, "FontSizeBegin");
 	serializer.AddParameter(Ref{ m_params.fontSizeEnd }, "FontSizeEnd");
-	serializer.AddParameter(canvasRef.Nest(), "Canvas");
+	serializer.AddParameter(m_canvasRef.Nest(), "Canvas");
 	serializer.Load(json);
 
 	m_cursorSwayTimer.Initialize(0.0f, 0.0f, cursorSwayTime);
-	m_cursorImageRef->SetCanvasRef(canvasRef);
+}
+
+// 初期化処理
+void SelectMenu::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	Ref obj = Instantiate("Prefab_SelectMenuCursor");
+	m_cursorImageRef = obj->GetComponent<Renderings::Image>();
+	m_cursorRectTransformRef = obj->GetComponent<RectTransform>();
+
+	// 選択番号を初期化
+	m_selectNumber = 0;
+	// カーソルのY座標のズレ
+	m_cursorDelayY.SetMovement(0.0f, 0.0f);
+
+	m_cursorImageRef->SetCanvasRef(m_canvasRef);
 }
 
 // 更新処理
@@ -91,10 +93,10 @@ void SelectMenu::Update(float elapsedTime)
 	m_cursorRectTransformRef->SetPosition(m_params.basePosition + Math::Vector2{ -m_params.width / 2.0f, 0.0f } + cursorDelay);
 
 	// フォントサイズを変更
-	for (size_t i = 0; i < m_pTexts.size(); i++)
+	for (size_t i = 0; i < m_textRefs.size(); i++)
 	{
 		m_fontSizes.at(i).Tick(elapsedTime);
-		m_pTexts.at(i)->SetFontSize(m_fontSizes.at(i).GetMovement());
+		m_textRefs.at(i)->SetFontSize(m_fontSizes.at(i).GetMovement());
 	}
 }
 
@@ -110,7 +112,7 @@ void SelectMenu::AddOption(const std::wstring& str, const std::function<void()>&
 	rectTransform->SetPosition(m_params.basePosition + Math::Vector2{ 0.0f, m_params.height + m_params.interval } * static_cast<float>(m_Processes.size()));
 	rectTransform->SetSize(Math::Vector2{ m_params.width, m_params.height });
 
-	m_pTexts.push_back(text);
+	m_textRefs.push_back(text);
 	m_Processes.push_back(Process);
 	m_fontSizes.push_back(Easing::Value<float>{});
 	m_fontSizes.back().SetMovement(static_cast<int>(m_fontSizes.size()) == m_selectNumber + 1 ? m_params.fontSizeEnd : m_params.fontSizeBegin, 0.0f);

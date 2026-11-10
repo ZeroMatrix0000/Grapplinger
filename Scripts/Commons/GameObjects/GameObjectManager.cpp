@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * ゲームオブジェクト管理
  */
@@ -68,9 +68,9 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 		Ref prefabJson = m_iResources->GetJson(it.value().get<std::string>());
 
 		// コンポーネントを追加
-		std::vector<Component*> pComponents = AddComponents(prefabJson.GetValue(), Ref{*m_gameObjectsRef->at(i)});
+		std::vector<Component*> pComponents = AddComponents(prefabJson.GetValue(), Ref{ *m_gameObjectsRef->at(i) });
 		// コンポーネントを初期化
-		InitializeComponents(prefabJson.GetValue(), pComponents);
+		SetComponentsSerializeField(prefabJson.GetValue(), pComponents);
 	}
 
 	i = -1;
@@ -107,22 +107,32 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 		}
 
 		// コンポーネントを初期化
-		InitializeComponents(it.value(), pComponentsList.at(i));
+		SetComponentsSerializeField(it.value(), pComponentsList.at(i));
+	}
+
+
+	size_t length = m_gameObjectsRef->size();
+	for (int i = 0; i < length; i++)
+	{
+		m_gameObjectsRef->at(i)->Initialize(Ref<IGameObjectFinder>{ *this });
 	}
 }
 
 // ゲームオブジェクトを名前で検索
-Ref<GameObject> GameObjects::GameObjectManager::Find(const std::string& name) const
+Ref<GameObject> GameObjects::GameObjectManager::Find(const std::string& name, bool message) const
 {
 	auto it = std::ranges::find_if(m_gameObjectsRef.GetValue(), [&](const std::unique_ptr<GameObject>& gameObject) {return gameObject->GetName() == name; });
 	if (it == m_gameObjectsRef->end())
 	{
-		// エラーメッセージを追加
-		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
-		(
-			L"ゲームオブジェクトが見つかりません。 | name: %s",
-			Utility::string2wstring(name).c_str()
-		));
+		if (message)
+		{
+			// エラーメッセージを追加
+			Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
+			(
+				L"ゲームオブジェクトが見つかりません。 | name: %s",
+				Utility::string2wstring(name).c_str()
+			));
+		}
 		return Ref{ *m_nullReference };
 	}
 	else
@@ -145,7 +155,8 @@ Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& j
 	// コンポーネントを追加
 	std::vector<Component*> pComponents = AddComponents(json.GetValue(), ownerRef);
 	// コンポーネントを初期化
-	InitializeComponents(json.GetValue(), pComponents);
+	SetComponentsSerializeField(json.GetValue(), pComponents);
+	ownerRef->Initialize(Ref<IGameObjectFinder>{ *this });
 
 	if (dontDestroyOnLoad)
 	{
@@ -197,8 +208,8 @@ std::vector<Component*> GameObjects::GameObjectManager::AddComponents(const nloh
 	return pComponents;
 }
 
-// コンポーネントを初期化
-void GameObjects::GameObjectManager::InitializeComponents(const nlohmann::ordered_json& json, const std::vector<Component*>& pComponents)
+// コンポーネントの初期値を設定
+void GameObjects::GameObjectManager::SetComponentsSerializeField(const nlohmann::ordered_json& json, const std::vector<Component*>& pComponents)
 {
 	int i = -1;
 	for (const auto& element : json)
@@ -210,6 +221,6 @@ void GameObjects::GameObjectManager::InitializeComponents(const nlohmann::ordere
 			continue;
 		}
 
-		pComponents.at(i)->Initalize(element, Ref<IGameObjectFinder>{ *this });
+		pComponents.at(i)->SetSerializeField(element, Ref<IGameObjectFinder>{ *this });
 	}
 }

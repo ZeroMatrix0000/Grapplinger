@@ -1,7 +1,7 @@
 /*
  * FileName:     Canvas.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * カメラ画面
  */
@@ -35,8 +35,10 @@ namespace Renderings
 		// コンストラクタ
 		Canvas(const ComponentDesc& desc);
 
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
 		void Initialize(FixedSize fixedSize, const Math::Vector2& outputSize);
 		

@@ -1,7 +1,7 @@
 /*
  * FileName:     Action.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * アクション
  */
@@ -18,8 +18,13 @@ Action::Action(const ComponentDesc& desc)
 {
 }
 
+// 初期値を設定
+void Action::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+}
+
 // 初期化処理
-void Action::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void Action::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 }
 

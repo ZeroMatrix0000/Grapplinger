@@ -1,7 +1,7 @@
 /*
  * FileName:     BlackBelt.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * 上下の黒帯
  */
@@ -20,6 +20,7 @@ BlackBelt::BlackBelt(const ComponentDesc& desc)
 	, m_moveTime{}
 	, m_height{}
 	, m_moveRate{}
+	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() }
 	, m_topImageTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_topImageRef{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_bottomImageTransformRef{ GetOwner()->GetNullComponent<RectTransform>() }
@@ -27,36 +28,35 @@ BlackBelt::BlackBelt(const ComponentDesc& desc)
 {
 }
 
+// 初期値を設定
+void BlackBelt::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_moveTime }, "MoveTime");
+	serializer.AddParameter(m_canvasRef.Nest(), "Canvas");
+	serializer.Load(json);
+}
+
 // 初期化処理
-void BlackBelt::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void BlackBelt::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_moveRate.SetMovement(0.0f, 0.0f);
 
-	Ref canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() };
-
-	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_moveTime }, "MoveTime");
-	serializer.AddParameter(canvasRef.Nest(), "Canvas");
-	serializer.Load(json);
-
 	// 画像を生成
-	if (m_topImageTransformRef == GetOwner()->GetNullComponent<RectTransform>())
-	{
-		Ref<GameObject> refObj = Instantiate("Prefab_BlackBeltImage");
-		m_topImageTransformRef = refObj->GetComponent<RectTransform>();
-		m_topImageRef = refObj->GetComponent<Renderings::Image>();
-		m_topImageTransformRef->SetAnchor(Utility::AlignmentPoint::TopCenter);
-		refObj = Instantiate("Prefab_BlackBeltImage");
-		m_bottomImageTransformRef = refObj->GetComponent<RectTransform>();
-		m_bottomImageRef = refObj->GetComponent<Renderings::Image>();
-		m_bottomImageTransformRef->SetAnchor(Utility::AlignmentPoint::BottomCenter);
+	Ref<GameObject> refObj = Instantiate("Prefab_BlackBeltImage");
+	m_topImageTransformRef = refObj->GetComponent<RectTransform>();
+	m_topImageRef = refObj->GetComponent<Renderings::Image>();
+	m_topImageTransformRef->SetAnchor(Utility::AlignmentPoint::TopCenter);
+	refObj = Instantiate("Prefab_BlackBeltImage");
+	m_bottomImageTransformRef = refObj->GetComponent<RectTransform>();
+	m_bottomImageRef = refObj->GetComponent<Renderings::Image>();
+	m_bottomImageTransformRef->SetAnchor(Utility::AlignmentPoint::BottomCenter);
 
-		// 高さを取得
-		m_height = m_topImageTransformRef->GetRect().size.y;
-	}
+	// 高さを取得
+	m_height = m_topImageTransformRef->GetRect().size.y;
 
-	m_topImageRef->SetCanvasRef(canvasRef);
-	m_bottomImageRef->SetCanvasRef(canvasRef);
+	m_topImageRef->SetCanvasRef(m_canvasRef);
+	m_bottomImageRef->SetCanvasRef(m_canvasRef);
 }
 
 // 更新処理

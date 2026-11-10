@@ -1,7 +1,7 @@
 /*
  * FileName:     SelectMenu.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/21
+ * Last Updated: 2026/11/10
  *
  * 選択メニュー
  */
@@ -15,6 +15,7 @@ namespace Renderings
 {
 	class Image;
 	class Text;
+	class Canvas;
 }
 namespace Components
 {
@@ -33,8 +34,10 @@ public:
 	// コンストラクタ
 	SelectMenu(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -66,12 +69,15 @@ private:
 	// カーソルの左右の揺れの周期
 	Cycled m_cursorSwayTimer;
 
-	// 選択肢のテキストのポインタ
-	std::vector<Ref<Renderings::Text>> m_pTexts;
+	// 選択肢のテキストの参照
+	std::vector<Ref<Renderings::Text>> m_textRefs;
 	// 選択肢の処理
 	std::vector<std::function<void()>> m_Processes;
 	// 選択肢の表示サイズ
 	std::vector<Easing::Value<float>> m_fontSizes;
+
+	// カメラ画面のインタフェースの参照
+	Ref<const Renderings::Canvas> m_canvasRef;
 
 	// カーソル画像の参照
 	Ref<Renderings::Image> m_cursorImageRef;

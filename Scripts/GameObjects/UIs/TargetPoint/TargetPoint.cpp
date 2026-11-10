@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/09
+ * Last Updated: 2026/11/10
  *
  * ターゲット照準
  */
@@ -37,12 +37,9 @@ TargetPoint::TargetPoint(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void TargetPoint::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_imageRef = GetOwner()->GetComponent<Renderings::Image>();
-	m_transformRef = GetOwner()->GetComponent<RectTransform>();
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_targetDistance }, "TargetDistance");
 	serializer.AddParameter(Ref{ m_rayLength }, "RayLength");
@@ -52,6 +49,13 @@ void TargetPoint::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectF
 	serializer.AddParameter(Ref{ m_targetObjectRefs }, "TargetObjects");
 	serializer.AddParameter(Ref{ m_groundsRef }, "Grounds");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void TargetPoint::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	m_imageRef = GetOwner()->GetComponent<Renderings::Image>();
+	m_transformRef = GetOwner()->GetComponent<RectTransform>();
 
 	for (Ref targetObjectRef : m_targetObjectRefs)
 	{

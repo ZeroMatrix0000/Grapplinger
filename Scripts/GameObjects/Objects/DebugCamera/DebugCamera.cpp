@@ -1,7 +1,7 @@
 /*
  * FileName:     DebugCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * デバッグ用カメラ
  */
@@ -23,10 +23,15 @@ DebugCamera::DebugCamera(const ComponentDesc& desc)
 	SetState(std::make_unique<DebugCameraStateIdle>());
 }
 
-// 初期化処理
-void DebugCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void DebugCamera::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	SetPCameraScreen();
+}
+
+// 初期化処理
+void DebugCamera::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	m_internals.cameraScreenRef = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
 }
 
 // 更新処理
@@ -41,12 +46,6 @@ void DebugCamera::Update(float elapsedTime)
 
 	// 状態ごとの処理
 	m_currentState->Update(Ref{ m_internals }, elapsedTime);
-}
-
-// カメラ画面を設定
-void DebugCamera::SetPCameraScreen()
-{
-	m_internals.cameraScreenRef = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();
 }
 
 // 入力を設定

@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * NPC
  */
@@ -9,13 +9,14 @@
 #include "Pch.h"
 #include "NPC.h"
 
+#include "NPCManager.h"
+#include "Scripts/Main/IsDerivedRegister.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
 #include "Scripts/Commons/Components/Transform.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
 #include "Scripts/Commons/Colliders/SphereCollider.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
-#include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
 // コンストラクタ
 NPC::NPC(const ComponentDesc& desc)
@@ -32,8 +33,18 @@ NPC::NPC(const ComponentDesc& desc)
 {
 }
 
+// 初期値を設定
+void NPC::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_name }, "Name");
+	serializer.AddParameter(Ref{ m_eventName }, "EventName");
+	serializer.AddParameter(Ref{ m_focusDistance }, "FocusDistance");
+	serializer.Load(json);
+}
+
 // 初期化処理
-void NPC::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void NPC::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_transformRef = GetOwner()->GetComponent<Transform>();
 	m_boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
@@ -45,11 +56,8 @@ void NPC::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> i
 	m_rotation.SetValue(m_baseRotation);
 	m_spinAngle.SetMovement(0.0f, 0.0f);
 
-	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_name }, "Name");
-	serializer.AddParameter(Ref{ m_eventName }, "EventName");
-	serializer.AddParameter(Ref{ m_focusDistance }, "FocusDistance");
-	serializer.Load(json);
+	// NPC 管理に追加
+	iGameObjectFinder->Find("NPCManager")->GetComponent<NPCManager>()->AddNPC(Ref{ *this });
 }
 
 // 更新処理

@@ -1,7 +1,7 @@
 /*
  * FileName:     MeshCollider.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * メッシュの当たり判定
  */
@@ -45,8 +45,10 @@ namespace Colliders
 		// デストラクタ
 		~MeshCollider();
 
+		// 初期値を設定
+		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 		// 初期化処理
-		void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 		// 色を設定
 		void SetColor(const Math::Color& color) { m_color = color; }
@@ -88,7 +90,7 @@ namespace Colliders
 		Ref<const Mesh> m_mesh;
 
 		// トランスフォームの参照
-		Ref<Transform> m_transformRef;
+		Ref<const Transform> m_transformRef;
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const Renderings::ICameraScreen>> m_iCameraScreenRefs;

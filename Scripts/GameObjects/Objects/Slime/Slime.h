@@ -1,7 +1,7 @@
 /*
  * FileName:     Slime.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/10
  *
  * スライム
  */
@@ -11,6 +11,11 @@
 #include "SlimeInternals.h"
 #include "Scripts/Commons/Components/Component.h"
 #include "Scripts/Commons/Systems/State.h"
+
+namespace Renderings
+{
+	class ICameraScreen;
+}
 
 // スライム
 class Slime : public Component
@@ -24,8 +29,10 @@ public:
 	// コンストラクタ
 	Slime(const ComponentDesc& desc);
 
+	// 初期値を設定
+	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
 	// 初期化処理
-	void Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
+	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
 	// 更新処理
 	void Update(float elapsedTime);
@@ -50,5 +57,8 @@ private:
 
 	// 状態
 	std::unique_ptr<Systems::State<SlimeInternals>> m_currentState;
+
+	// カメラ画面のインタフェースの参照
+	Ref<const Renderings::ICameraScreen> m_iCameraScreenRef;
 
 };

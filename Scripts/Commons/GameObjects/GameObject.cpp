@@ -20,6 +20,15 @@ GameObjects::GameObject::GameObject(Ref<IComponentManager> iComponentManager)
 {
 }
 
+// 初期化処理
+void GameObjects::GameObject::Initialize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
+	for (const auto& component : m_components)
+	{
+		component.first->Initalize(iGameObjectFinder);
+	}
+}
+
 // メッセージを受け取る
 void GameObjects::GameObject::AcceptMessage(const std::string& message) const
 {

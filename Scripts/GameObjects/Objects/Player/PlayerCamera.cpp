@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/10
  *
  * プレイヤーカメラ
  */
@@ -27,8 +27,13 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 {
 }
 
+// 初期値を設定
+void PlayerCamera::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+{
+}
+
 // 初期化処理
-void PlayerCamera::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void PlayerCamera::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	// カメラ画面を取得
 	m_cameraScreenRef = GetOwner()->GetComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>();

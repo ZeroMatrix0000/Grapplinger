@@ -1,7 +1,7 @@
 /*
  * FileName:     MeshCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * メッシュの当たり判定
  */
@@ -28,7 +28,7 @@ Colliders::MeshCollider::MeshCollider
 	, m_color{ DirectX::Colors::LightGreen }
 	, m_worldMesh{}
 	, m_mesh{ iResources->GetNullMesh() }
-	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
 	, m_iCameraScreenRefs{}
 	, m_iColliderRenderer{ iColliderRenderer }
 	, m_iResources{ iResources }
@@ -44,11 +44,9 @@ Colliders::MeshCollider::~MeshCollider()
 	m_iColliderRenderer->RemovePMeshCollider(Ref{ *this }.Const());
 }
 
-// 初期化処理
-void Colliders::MeshCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Colliders::MeshCollider::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_transformRef = GetOwner()->GetComponent<Transform>();
-
 	std::string meshName{};
 
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
@@ -61,6 +59,11 @@ void Colliders::MeshCollider::Initalize(const nlohmann::ordered_json& json, Ref<
 	{
 		SetMesh(meshName);
 	}
+}
+
+// 初期化処理
+void Colliders::MeshCollider::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // メッシュを設定
@@ -91,6 +94,12 @@ void Colliders::MeshCollider::RemoveICameraScreenRef(Ref<const Renderings::ICame
 // トランスフォームを適用
 void Colliders::MeshCollider::ApplyTransform()
 {
+	// トランスフォームを取得
+	if (m_transformRef == GetOwner()->GetNullComponent<Transform>().Const())
+	{
+		m_transformRef = GetOwner()->GetConstComponent<Transform>();
+	}
+
 	m_worldMesh = m_mesh.GetValue();
 	m_worldMesh.ApplyMatrix(m_transformRef->GetWorldMatrix());
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionCloseMessageWindow.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * メッセージウィンドウ閉アクション
  */
@@ -21,12 +21,17 @@ ActionCloseMessageWindow::ActionCloseMessageWindow(const ComponentDesc& desc)
 {
 }
 
-// 初期化処理
-void ActionCloseMessageWindow::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void ActionCloseMessageWindow::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(m_refMessageWindow.Nest(), "MessageWindow");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void ActionCloseMessageWindow::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // パラメータを設定

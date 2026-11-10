@@ -1,7 +1,7 @@
 /*
  * FileName:     BoxCollider.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/10
  *
  * 長方形の当たり判定
  */
@@ -22,7 +22,7 @@ Colliders::BoxCollider::BoxCollider(const ComponentDesc& desc, Ref<Renderings::I
 	, m_box{}
 	, m_worldBox{}
 	, m_color{ DirectX::Colors::LightGreen }
-	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
+	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
 	, m_iCameraScreenRefs{}
 	, m_iColliderRenderer{ iColliderRenderer }
 {
@@ -37,17 +37,20 @@ Colliders::BoxCollider::~BoxCollider()
 	m_iColliderRenderer->RemovePBoxCollider(Ref{ *this }.Const());
 }
 
-// 初期化処理
-void Colliders::BoxCollider::Initalize(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+// 初期値を設定
+void Colliders::BoxCollider::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_transformRef = GetOwner()->GetComponent<Transform>();
-
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
 	serializer.AddParameter(Ref{ m_box.position }, "Position");
 	serializer.AddParameter(Ref{ m_box.size }, "Size");
 	serializer.AddParameter(Ref{ m_color }, "Color");
 	serializer.AddParameter(Ref{ m_iCameraScreenRefs }, "CameraScreens");
 	serializer.Load(json);
+}
+
+// 初期化処理
+void Colliders::BoxCollider::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+{
 }
 
 // 映るカメラ画面の参照を追加
@@ -72,8 +75,14 @@ void Colliders::BoxCollider::RemoveICameraScreenRef(Ref<const Renderings::ICamer
 // トランスフォームを適用
 void Colliders::BoxCollider::ApplyTransform()
 {
+	// トランスフォームを取得
+	if (m_transformRef == GetOwner()->GetNullComponent<Transform>().Const())
+	{
+		m_transformRef = GetOwner()->GetConstComponent<Transform>();
+	}
+
 	// ワールド行列
-	Math::Matrix world = m_transformRef->GetWorldMatrix();
+	const Math::Matrix& world = m_transformRef->GetWorldMatrix();
 
 	m_worldBox.position = Math::Vector3::Transform(m_box.position, world);
 	m_worldBox.size = m_box.size * m_transformRef->GetScale();
