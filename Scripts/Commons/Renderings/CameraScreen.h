@@ -14,6 +14,8 @@
 
 namespace Renderings
 {
+	class IModel3DRenderer;
+
 	// カメラ画面
 	template<typename TCamera> requires IsSame
 	<
@@ -36,8 +38,8 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		CameraScreen(const ComponentDesc& desc)
-			: ICameraScreen{ desc }
+		CameraScreen(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer)
+			: ICameraScreen{ desc, iModelRenderer }
 			, m_camera{}
 			, m_viewAngle{}
 			, m_projectionDistance{ 100.0f }

@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-PlayerDefeatParticle::PlayerDefeatParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Renderings::Particle{ iModelRenderer, iResources }
+PlayerDefeatParticle::PlayerDefeatParticle(Ref<Systems::IResources> iResources)
+	: Renderings::Particle{ iResources }
 	, m_directions{}
 	, m_rotateDirections{}
 	, m_rotateVelocities{}

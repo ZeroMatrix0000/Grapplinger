@@ -31,7 +31,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
+		ParticleManager(const ComponentDesc& desc, Ref<Systems::IResources> iResources);
 
 		// 初期値を設定
 		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
@@ -52,7 +52,7 @@ namespace Renderings
 		{
 			// パーティクルを生成
 			auto& particle = m_particles.emplace_back();
-			particle = std::make_unique<TParticle>(m_iModelRendererRef, m_iResources);
+			particle = std::make_unique<TParticle>(m_iResources);
 			// カメラを設定
 			for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 			{
@@ -76,9 +76,6 @@ namespace Renderings
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
-
-		// モデル描画インタフェースの参照
-		Ref<IModel3DRenderer> m_iModelRendererRef;
 
 		// リソース管理の参照
 		Ref<Systems::IResources> m_iResources;

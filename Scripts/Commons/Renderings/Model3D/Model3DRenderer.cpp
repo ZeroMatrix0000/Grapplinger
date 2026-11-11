@@ -24,7 +24,7 @@ Renderings::Model3DRenderer::Model3DRenderer()
 	: IModel3DRenderer{}
 	, m_instanceBuffer{}
 	, m_inputLayout{}
-	, m_renderObjects{}
+	, m_iCameraScreenRefs{}
 	, m_pDevice{}
 	, m_pContext{}
 	, m_pCommonStates{}
@@ -83,8 +83,13 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 	// 定数バッファ
 	Ref pSConstantBufferRef = m_pPixelShader->GetConstantBufferRef();
 
-	for (const auto& [iCameraScreenRef, renderObjectsList] : m_renderObjects)
+	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
+		if (iCameraScreenRef == iCameraScreenRef->GetConstOwner()->GetNullComponent<ICameraScreen>().Const())
+		{
+			continue;
+		}
+
 		// 定数バッファを設定
 		vSConstantBufferRef->SetVariable("View", iCameraScreenRef->GetViewMatrix().Transpose());
 		vSConstantBufferRef->SetVariable("Projection", iCameraScreenRef->GetProjectionMatrix().Transpose());
@@ -94,6 +99,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 		pSConstantBufferRef->SetVariable("LightColor", Math::Vector3{ 0.5f, 0.5f, 0.5f });
 		pSConstantBufferRef->SetVariable("EyePosition", iCameraScreenRef->GetEyePosition());
 		m_pPixelShader->SetConstantBuffer(0, Ref{ *m_pContext });
+
+		// 描画オブジェクトリスト
+		const auto& renderObjectsList = iCameraScreenRef->GetRenderObjectsList(*this);
 
 		// モデルソースリスト
 		std::vector<Ref<const Model3DSource>> modelSources{};
@@ -107,10 +115,10 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				return a->GetDrawingOrder() < b->GetDrawingOrder();
 			});
 
-		for (const auto& modelSource : modelSources)
+		for (Ref modelSource : modelSources)
 		{
-			// 描画オブジェクトリストの参照
-			Ref<const RenderObjects> renderObjectsRef{ renderObjectsList.at(modelSource) };
+			// 描画オブジェクトリスト
+			const auto& renderObjectsRef = renderObjectsList.at(modelSource);
 
 			// ピクセルシェーダ
 			Ref pixelShader = modelSource->GetPixelShader();
@@ -133,9 +141,9 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 
 			// 行列リスト
 			std::vector<InputElement> inputElements{};
-			inputElements.reserve(renderObjectsRef->modelRefs.size() + renderObjectsRef->particleElementRefs.size());
+			inputElements.reserve(renderObjectsRef.modelRefs.size() + renderObjectsRef.particleElementRefs.size());
 
-			for (Ref modelRef : renderObjectsRef->modelRefs)
+			for (Ref modelRef : renderObjectsRef.modelRefs)
 			{
 				// モデルの所有者のトランスフォーム
 				Ref transform{ modelRef->GetConstOwner()->GetConstComponent<Transform>() };
@@ -181,7 +189,7 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				}
 			}
 
-			for (Ref elementRef : renderObjectsRef->particleElementRefs)
+			for (Ref elementRef : renderObjectsRef.particleElementRefs)
 			{
 				// 入力要素リストに追加
 				Ref<InputElement> inputElementRef{ inputElements.emplace_back() };
@@ -257,134 +265,16 @@ void Renderings::Model3DRenderer::SetVertexShader(Ref<const VertexShader> vertex
 	CreateInputLayout();
 }
 
-// モデルの参照を追加
-void Renderings::Model3DRenderer::AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef)
+// カメラ画面の参照を追加
+void Renderings::Model3DRenderer::AddICameraScreen(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	if (iCameraScreenRef == iCameraScreenRef->GetConstOwner()->GetNullComponent<ICameraScreen>().Const())
-	{
-		return;
-	}
-
-	// モデルソース
-	Ref modelSource = modelRef->GetModelSource();
-	if (!modelSource->IsInitialized())
-	{
-		return;
-	}
-
-	// カメラに対応した描画オブジェクトリストが見つからなければ生成
-	auto cameraIt = m_renderObjects.find(iCameraScreenRef);
-	if (cameraIt == m_renderObjects.end())
-	{
-		m_renderObjects.emplace(iCameraScreenRef, std::unordered_map<Ref<const Model3DSource>, RenderObjects>{});
-		cameraIt = m_renderObjects.find(iCameraScreenRef);
-	}
-
-	// モデルソースに対応した描画オブジェクトリストが見つからなければ生成
-	auto modelIt = cameraIt->second.find(modelSource);
-	if (modelIt == cameraIt->second.end())
-	{
-		cameraIt->second.emplace(modelSource, RenderObjects{});
-		modelIt = cameraIt->second.find(modelSource);
-	}
-
-	// モデルのポインタの追加
-	modelIt->second.modelRefs.push_back(modelRef);
+	m_iCameraScreenRefs.emplace(iCameraScreenRef);
 }
 
-// モデルの参照を削除
-void Renderings::Model3DRenderer::RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef)
+// カメラ画面の参照を削除
+void Renderings::Model3DRenderer::RemoveICameraScreen(Ref<const ICameraScreen> iCameraScreenRef)
 {
-	// モデルソース
-	Ref modelSource = modelRef->GetModelSource();
-	if (!modelSource->IsInitialized())
-	{
-		return;
-	}
-
-	// ポインタリスト
-	auto& modelRefs = m_renderObjects.at(iCameraScreenRef).at(modelSource).modelRefs;
-
-	auto it = std::ranges::find(modelRefs, modelRef);
-	if (it != modelRefs.end())
-	{
-		modelRefs.erase(it);
-	}
-
-	// 空の配列を削除
-	if (modelRefs.size() == 0 && m_renderObjects.at(iCameraScreenRef).at(modelSource).particleElementRefs.size() == 0)
-	{
-		m_renderObjects.at(iCameraScreenRef).erase(modelSource);
-		if (m_renderObjects.at(iCameraScreenRef).size() == 0)
-		{
-			m_renderObjects.erase(iCameraScreenRef);
-		}
-	}
-}
-
-// パーティクルの参照を追加
-void Renderings::Model3DRenderer::AddParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
-{
-	if (iCameraScreenRef == iCameraScreenRef->GetConstOwner()->GetNullComponent<ICameraScreen>().Const())
-	{
-		return;
-	}
-
-	// モデルソース
-	Ref modelSource = particleElementRef->modelSource;
-	if (!modelSource->IsInitialized())
-	{
-		return;
-	}
-
-	// カメラに対応した描画オブジェクトリストが見つからなければ生成
-	auto cameraIt = m_renderObjects.find(iCameraScreenRef);
-	if (cameraIt == m_renderObjects.end())
-	{
-		m_renderObjects.emplace(iCameraScreenRef, std::unordered_map<Ref<const Model3DSource>, RenderObjects>{});
-		cameraIt = m_renderObjects.find(iCameraScreenRef);
-	}
-
-	// モデルソースに対応した描画オブジェクトリストが見つからなければ生成
-	auto modelIt = cameraIt->second.find(modelSource);
-	if (modelIt == cameraIt->second.end())
-	{
-		cameraIt->second.emplace(modelSource, RenderObjects{});
-		modelIt = cameraIt->second.find(modelSource);
-	}
-
-	// モデルのポインタの追加
-	modelIt->second.particleElementRefs.push_back(particleElementRef);
-}
-
-// パーティクルの参照を削除
-void Renderings::Model3DRenderer::RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef)
-{
-	// モデルソース
-	Ref modelSource = particleElementRef->modelSource;
-	if (!modelSource->IsInitialized())
-	{
-		return;
-	}
-
-	// ポインタリスト
-	auto& particleElementRefs = m_renderObjects.at(iCameraScreenRef).at(modelSource).particleElementRefs;
-
-	auto it = std::ranges::find(particleElementRefs, particleElementRef);
-	if (it != particleElementRefs.end())
-	{
-		particleElementRefs.erase(it);
-	}
-
-	// 空の配列を削除
-	if (particleElementRefs.size() == 0 && m_renderObjects.at(iCameraScreenRef).at(modelSource).modelRefs.size() == 0)
-	{
-		m_renderObjects.at(iCameraScreenRef).erase(modelSource);
-		if (m_renderObjects.at(iCameraScreenRef).size() == 0)
-		{
-			m_renderObjects.erase(iCameraScreenRef);
-		}
-	}
+	m_iCameraScreenRefs.erase(iCameraScreenRef);
 }
 
 // 白画像を作成

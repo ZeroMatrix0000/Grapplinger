@@ -472,6 +472,9 @@
     <ClCompile Include="Scripts\GameObjects\Particles\PlayerDefeatParticle.cpp">
       <Filter>Scripts\GameObjects\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Commons\Renderings\ICameraScreen.cpp">
+      <Filter>Scripts\Commons\Renderings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />

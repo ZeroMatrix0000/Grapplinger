@@ -59,7 +59,7 @@ void TargetPoint::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 
 	for (Ref targetObjectRef : m_targetObjectRefs)
 	{
-		targetObjectRef->AddMethodWhenDestroy([&, targetObjectRef] { DeleteTarget(targetObjectRef); });
+		targetObjectRef->GetOwner()->AddMethodWhenDestroy([&, targetObjectRef] { DeleteTarget(targetObjectRef); });
 	}
 }
 

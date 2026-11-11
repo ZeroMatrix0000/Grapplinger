@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * 3Dモデル
  */
@@ -9,30 +9,27 @@
 #include "Pch.h"
 #include "Model3D.h"
 
-#include "IModel3DRenderer.h"
+#include "../ICameraScreen.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
 #include "Scripts/Commons/Systems/IResources.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 
-Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
+Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_color{ DirectX::Colors::White }
 	, m_modelSource{ iResources->GetNullModelSource() }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRenderer }
 	, m_iResources{ iResources }
 {
-}
-
-// デストラクタ
-Renderings::Model3D::~Model3D()
-{
-	// 描画者からモデルを削除
-	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
-	{
-		m_iModelRendererRef->RemoveModelRef(iCameraScreenRef, Ref{ *this }.Const());
-	}
+	// 破棄時に描画者からモデルを削除
+	GetOwner()->AddMethodWhenDestroy([&]
+		{
+			for (Ref iCameraScreenRef : m_iCameraScreenRefs)
+			{
+				iCameraScreenRef->RemoveModelRef(Ref{ *this }.Const());
+			}
+		});
 }
 
 // 初期値を設定
@@ -63,13 +60,13 @@ void Renderings::Model3D::SetModelSource(const std::string& modelSourceName)
 	// 描画者からモデルを削除
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_iModelRendererRef->RemoveModelRef(iCameraScreenRef, Ref{ *this }.Const());
+		iCameraScreenRef->RemoveModelRef(Ref{ *this }.Const());
 	}
 	m_modelSource = m_iResources->GetModelSource(modelSourceName);
 	// 描画者にモデルを追加
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_iModelRendererRef->AddModelRef(iCameraScreenRef, Ref{ *this }.Const());
+		iCameraScreenRef->AddModelRef(Ref{ *this }.Const());
 	}
 }
 
@@ -79,7 +76,7 @@ void Renderings::Model3D::AddICameraScreenRef(Ref<const ICameraScreen> iCameraSc
 	if (std::ranges::find(m_iCameraScreenRefs, iCameraScreenRef) == m_iCameraScreenRefs.end())
 	{
 		m_iCameraScreenRefs.push_back(iCameraScreenRef);
-		m_iModelRendererRef->AddModelRef(iCameraScreenRef, Ref{ *this }.Const());
+		iCameraScreenRef->AddModelRef(Ref{ *this }.Const());
 	}
 }
 
@@ -90,6 +87,6 @@ void Renderings::Model3D::RemoveICameraScreenRef(Ref<const ICameraScreen> iCamer
 	if (it != m_iCameraScreenRefs.end())
 	{
 		m_iCameraScreenRefs.erase(it);
-		m_iModelRendererRef->RemoveModelRef(iCameraScreenRef, Ref{ *this }.Const());
+		iCameraScreenRef->RemoveModelRef(Ref{ *this }.Const());
 	}
 }

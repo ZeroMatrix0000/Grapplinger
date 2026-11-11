@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-LandingParticle::LandingParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Particle{ iModelRenderer, iResources }
+LandingParticle::LandingParticle(Ref<Systems::IResources> iResources)
+	: Particle{ iResources }
 	, m_directions{}
 	, m_speed{}
 	, m_scale{}

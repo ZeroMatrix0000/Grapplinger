@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/11
  *
  * パーティクル
  */
@@ -64,9 +64,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Particle(Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
-		// デストラクタ
-		virtual ~Particle();
+		Particle(Ref<Systems::IResources> iResources);
 
 		// 初期化処理
 		virtual void Initalize(Ref<const Transform> transformRef) = 0;
@@ -101,7 +99,7 @@ namespace Renderings
 		Ref<UpdateElement> GetUpdateElementRef(size_t index) { return Ref{ m_updateElements.at(index) }; }
 
 		// 非アクティブ化
-		void Destroy() { m_isActive = false; }
+		void Destroy();
 
 
 	private:
@@ -119,9 +117,6 @@ namespace Renderings
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
-
-		// モデル描画インタフェースの参照
-		Ref<IModel3DRenderer> m_iModelRendererRef;
 
 		// リソース管理の参照
 		Ref<Systems::IResources> m_iResources;

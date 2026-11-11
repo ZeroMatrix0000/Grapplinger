@@ -15,12 +15,11 @@
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 
-Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
+Renderings::ParticleManager::ParticleManager(const ComponentDesc& desc, Ref<Systems::IResources> iResources)
 	: Component{ desc }
 	, m_particles{}
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>().Const() }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRenderer }
 	, m_iResources{ iResources }
 {
 }

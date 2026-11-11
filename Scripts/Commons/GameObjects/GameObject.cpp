@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObject.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/24
+ * Last Updated: 2026/11/11
  *
  * ゲームオブジェクト
  */
@@ -36,4 +36,19 @@ void GameObjects::GameObject::AcceptMessage(const std::string& message) const
 	{
 		component.first->AcceptMessage(message);
 	}
+}
+
+// ゲームオブジェクトを破棄
+void GameObjects::GameObject::Destroy() const
+{
+	for (const auto& Method : m_MethodsWhenDestroy)
+	{
+		Method();
+	}
+}
+
+// 破棄時の処理を追加
+void GameObjects::GameObject::AddMethodWhenDestroy(const std::function<void()>& Method)
+{
+	m_MethodsWhenDestroy.emplace_back(Method);
 }

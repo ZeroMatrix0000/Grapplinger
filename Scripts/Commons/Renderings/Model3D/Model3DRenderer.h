@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/11
  *
  * 3Dモデル描画
  */
@@ -51,30 +51,16 @@ namespace Renderings
 		// ピクセルシェーダを設定
 		void SetPixelShader(Ref<const PixelShader> pixelShader) { m_pPixelShader = pixelShader.Get(); }
 
-		// モデルの参照を追加
-		void AddModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) override;
-		// モデルの参照を削除
-		void RemoveModelRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Model3D> modelRef) override;
-
-		// パーティクルの参照を追加
-		void AddParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) override;
-		// パーティクルの参照を削除
-		void RemoveParticleRef(Ref<const ICameraScreen> iCameraScreenRef, Ref<const Particle::RenderElement> particleElementRef) override;
+		// カメラ画面の参照を追加
+		void AddICameraScreen(Ref<const ICameraScreen> iCameraScreenRef) override;
+		// カメラ画面の参照を削除
+		void RemoveICameraScreen(Ref<const ICameraScreen> iCameraScreenRef) override;
 
 
 	private:
 
 
 		/* 構造体 */
-
-		// 描画オブジェクト
-		struct RenderObjects
-		{
-			// モデルの参照リスト
-			std::vector<Ref<const Model3D>> modelRefs{};
-			// パーティクルの参照リスト
-			std::vector<Ref<const Particle::RenderElement>> particleElementRefs{};
-		};
 
 		// 入力要素
 		struct InputElement
@@ -115,8 +101,8 @@ namespace Renderings
 		// 白画像
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_whiteTexture;
 
-		// 描画オブジェクトリスト
-		std::unordered_map<Ref<const ICameraScreen>, std::unordered_map<Ref<const Model3DSource>, RenderObjects>> m_renderObjects;
+		// カメラリスト
+		std::unordered_set<Ref<const ICameraScreen>> m_iCameraScreenRefs;
 
 		// デバイスのポインタ
 		ID3D11Device5* m_pDevice;

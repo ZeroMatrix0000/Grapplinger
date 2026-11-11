@@ -154,6 +154,7 @@
     <ClCompile Include="Scripts\Commons\GameObjects\GameObjectManager.cpp" />
     <ClCompile Include="Scripts\Commons\Libraries\Random.cpp" />
     <ClCompile Include="Scripts\Commons\Renderings\ColliderRenderer.cpp" />
+    <ClCompile Include="Scripts\Commons\Renderings\ICameraScreen.cpp" />
     <ClCompile Include="Scripts\Commons\Renderings\Particle\Particle.cpp" />
     <ClCompile Include="Scripts\Commons\Renderings\Particle\ParticleManager.cpp" />
     <ClCompile Include="Scripts\Commons\Renderings\Particle\ParticleSample.cpp" />

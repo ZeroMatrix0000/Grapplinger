@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
 // コンストラクタ
-SlimeDefeatParticle::SlimeDefeatParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Renderings::Particle{ iModelRenderer, iResources }
+SlimeDefeatParticle::SlimeDefeatParticle(Ref<Systems::IResources> iResources)
+	: Renderings::Particle{ iResources }
 	, m_directions{}
 	, m_rotateDirections{}
 	, m_rotateVelocities{}

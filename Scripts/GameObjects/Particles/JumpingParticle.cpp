@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-JumpingParticle::JumpingParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Particle{ iModelRenderer, iResources }
+JumpingParticle::JumpingParticle(Ref<Systems::IResources> iResources)
+	: Particle{ iResources }
 	, m_directions{}
 	, m_speed{}
 	, m_scale{}

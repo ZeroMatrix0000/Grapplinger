@@ -90,6 +90,9 @@ private:
 	// スピン回転
 	Easing::Value<float> m_spinAngle;
 
+	// カメラ画面のインタフェースの参照
+	Ref<const Renderings::ICameraScreen> m_iCameraScreenRef;
+
 	// トランスフォームの参照
 	Ref<Transform> m_transformRef;
 	// 長方形の当たり判定の参照

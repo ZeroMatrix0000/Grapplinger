@@ -93,6 +93,12 @@ namespace GameObjects
 			return m_iComponentManager->GetNullComponent<TComponent>();
 		}
 
+		// ゲームオブジェクトを破棄
+		void Destroy() const;
+
+		// 破棄時の処理を追加
+		void AddMethodWhenDestroy(const std::function<void()>& Method);
+
 
 	private:
 
@@ -127,6 +133,9 @@ namespace GameObjects
 
 		// コンポーネント管理インタフェース
 		const Ref<IComponentManager> m_iComponentManager;
+
+		// 破棄時の処理
+		std::vector<std::function<void()>> m_MethodsWhenDestroy;
 
 	};
 }

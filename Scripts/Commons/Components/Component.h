@@ -1,7 +1,7 @@
 /*
  * FileName:     Component.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/06
+ * Last Updated: 2026/11/11
  *
  * コンポーネント
  */
@@ -55,9 +55,6 @@ namespace Components
 		// ゲームオブジェクトを破棄
 		void Destroy(Ref<GameObject> owner) const;
 
-		// 破棄時の処理を追加
-		void AddMethodWhenDestroy(const std::function<void()>& Method) const;
-
 
 	protected:
 
@@ -78,9 +75,6 @@ namespace Components
 
 		// ゲームオブジェクト生成インタフェース
 		const Ref<IGameObjectInstantiator> m_iGameObjectInstantiator;
-
-		// 破棄時の処理
-		mutable std::vector<std::function<void()>> m_MethodsWhenDestroy;
 
 	};
 }

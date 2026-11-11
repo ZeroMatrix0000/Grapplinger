@@ -1,7 +1,7 @@
 /*
  * FileName:     Component.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/06
+ * Last Updated: 2026/11/11
  *
  * コンポーネント
  */
@@ -10,6 +10,7 @@
 #include "Component.h"
 
 #include "ComponentDesc.h"
+#include "../GameObjects/GameObject.h"
 #include "../GameObjects/IGameObjectInstantiator.h"
 
 // コンストラクタ
@@ -34,16 +35,7 @@ Ref<GameObject> Components::Component::GetNullGameObject() const
 // ゲームオブジェクトを破棄
 void Components::Component::Destroy(Ref<GameObject> owner) const
 {
+	owner->Destroy();
+
 	m_iGameObjectInstantiator->Destroy(owner);
-
-	for (const auto& Method : m_MethodsWhenDestroy)
-	{
-		Method();
-	}
-}
-
-// 破棄時の処理を追加
-void Components::Component::AddMethodWhenDestroy(const std::function<void()>& Method) const
-{
-	m_MethodsWhenDestroy.emplace_back(Method);
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     Particle.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/11
  *
  * パーティクル
  */
@@ -9,6 +9,7 @@
 #include "Pch.h"
 #include "Particle.h"
 
+#include "../ICameraScreen.h"
 #include "../Model3D/IModel3DRenderer.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
@@ -16,27 +17,13 @@
 #include "Scripts/Commons/Systems/IResources.h"
 
 // コンストラクタ
-Renderings::Particle::Particle(Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
+Renderings::Particle::Particle(Ref<Systems::IResources> iResources)
 	: m_updateElements{}
 	, m_renderElements{}
 	, m_isActive{ true }
 	, m_iCameraScreenRefs{}
-	, m_iModelRendererRef{ iModelRenderer }
 	, m_iResources{ iResources }
 {
-}
-
-// デストラクタ
-Renderings::Particle::~Particle()
-{
-	// 描画者からパーティクルを削除
-	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
-	{
-		for (const auto& renderElement : m_renderElements)
-		{
-			m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
-		}
-	}
 }
 
 // ワールド行列を適用
@@ -62,13 +49,13 @@ void Renderings::Particle::SetModelSource(const std::string& modelSourceName, Re
 	// 描画者からパーティクルを削除
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, renderElementRef.Const());
+		iCameraScreenRef->RemoveParticleRef(renderElementRef.Const());
 	}
 	renderElementRef->modelSource = m_iResources->GetModelSource(modelSourceName);
 	// 描画者にパーティクルを追加
 	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
 	{
-		m_iModelRendererRef->AddParticleRef(iCameraScreenRef, renderElementRef.Const());
+		iCameraScreenRef->AddParticleRef(renderElementRef.Const());
 	}
 }
 
@@ -80,7 +67,7 @@ void Renderings::Particle::AddICameraScreenRef(Ref<const ICameraScreen> iCameraS
 		m_iCameraScreenRefs.push_back(iCameraScreenRef);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_iModelRendererRef->AddParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
+			iCameraScreenRef->AddParticleRef(Ref{ *renderElement }.Const());
 		}
 	}
 }
@@ -94,11 +81,10 @@ void Renderings::Particle::RemoveICameraScreenRef(Ref<const ICameraScreen> iCame
 		m_iCameraScreenRefs.erase(it);
 		for (const auto& renderElement : m_renderElements)
 		{
-			m_iModelRendererRef->RemoveParticleRef(iCameraScreenRef, Ref{ *renderElement }.Const());
+			iCameraScreenRef->RemoveParticleRef(Ref{ *renderElement }.Const());
 		}
 	}
 }
-
 // 要素を追加
 void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderElement** ppRenderElement)
 {
@@ -112,6 +98,21 @@ void Renderings::Particle::AddElement(UpdateElement** ppUpdateElement, RenderEle
 	if (ppRenderElement)
 	{
 		*ppRenderElement = renderElement.get();
+	}
+}
+
+// 破棄
+void Renderings::Particle::Destroy()
+{
+	m_isActive = false;
+
+	// 描画者からパーティクルを削除
+	for (Ref iCameraScreenRef : m_iCameraScreenRefs)
+	{
+		for (const auto& renderElement : m_renderElements)
+		{
+			iCameraScreenRef->RemoveParticleRef(Ref{ *renderElement }.Const());
+		}
 	}
 }
 

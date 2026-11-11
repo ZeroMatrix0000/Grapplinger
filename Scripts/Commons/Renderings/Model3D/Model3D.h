@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * 3Dモデル
  */
@@ -19,7 +19,6 @@ namespace Renderings
 {
 	class Model3DSource;
 	class ICameraScreen;
-	class IModel3DRenderer;
 
 	// 3Dモデル
 	class Model3D : public Component
@@ -31,9 +30,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Model3D(const ComponentDesc& desc, Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources);
-		// デストラクタ
-		~Model3D();
+		Model3D(const ComponentDesc& desc, Ref<Systems::IResources> iResources);
 
 		// 初期値を設定
 		void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
@@ -73,9 +70,6 @@ namespace Renderings
 
 		// 映るカメラ画面の参照リスト
 		std::vector<Ref<const ICameraScreen>> m_iCameraScreenRefs;
-
-		// モデル描画インタフェースの参照
-		Ref<IModel3DRenderer> m_iModelRendererRef;
 
 		// リソース管理の参照
 		Ref<Systems::IResources> m_iResources;

@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
  // コンストラクタ
-WindCutParticle::WindCutParticle(Ref<Renderings::IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Particle{ iModelRenderer, iResources }
+WindCutParticle::WindCutParticle(Ref<Systems::IResources> iResources)
+	: Particle{ iResources }
 	, m_position{}
 	, m_length{}
 	, m_pUpdateElement{}

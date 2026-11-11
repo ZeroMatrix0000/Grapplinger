@@ -94,7 +94,8 @@
 			},
 			"NPC": {
 				"Name": "<ruby=そうさほうほう>操作方法</ruby>",
-				"EventName": "Event_TalkHowTo"
+				"EventName": "Event_TalkHowTo",
+				"CameraScreen": "PlayerCamera"
 			}
 		}
 	},
@@ -121,10 +122,7 @@
 					"G": 0.6,
 					"B": 0.5,
 					"A": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				}
 			},
 			"BoxCollider": {
 				"Position": {
@@ -136,10 +134,7 @@
 					"X": 1.0,
 					"Y": 2.0,
 					"Z": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				}
 			},
 			"SphereCollider": {
 				"Position": {
@@ -147,14 +142,12 @@
 					"Y": 1.0,
 					"Z": 0.0
 				},
-				"Radius": 5.0,
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				"Radius": 5.0
 			},
 			"NPC": {
 				"Name": "ワイヤーについて",
-				"EventName": "Event_TalkAboutWire"
+				"EventName": "Event_TalkAboutWire",
+				"CameraScreen": "PlayerCamera"
 			}
 		}
 	},
@@ -181,10 +174,7 @@
 					"G": 0.5,
 					"B": 1.0,
 					"A": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				}
 			},
 			"BoxCollider": {
 				"Position": {
@@ -196,10 +186,7 @@
 					"X": 1.0,
 					"Y": 2.0,
 					"Z": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				}
 			},
 			"SphereCollider": {
 				"Position": {
@@ -207,14 +194,12 @@
 					"Y": 1.0,
 					"Z": 0.0
 				},
-				"Radius": 5.0,
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				"Radius": 5.0
 			},
 			"NPC": {
 				"Name": "テキストについて",
-				"EventName": "Event_TalkAboutText"
+				"EventName": "Event_TalkAboutText",
+				"CameraScreen": "PlayerCamera"
 			}
 		}
 	},

@@ -1,7 +1,7 @@
 /*
  * FileName:     ParticleSample.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/11
  *
  * パーティクルのサンプル
  */
@@ -12,8 +12,8 @@
 #include "Scripts/Commons/Components/Transform.h"
 
 // コンストラクタ
-Renderings::ParticleSample::ParticleSample(Ref<IModel3DRenderer> iModelRenderer, Ref<Systems::IResources> iResources)
-	: Particle{ iModelRenderer, iResources }
+Renderings::ParticleSample::ParticleSample(Ref<Systems::IResources> iResources)
+	: Particle{ iResources }
 	, m_velocities{}
 	, m_isActiveTimer{}
 {

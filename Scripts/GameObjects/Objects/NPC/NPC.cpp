@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * NPC
  */
@@ -16,6 +16,7 @@
 #include "Scripts/Commons/Components/Transform.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
 #include "Scripts/Commons/Colliders/SphereCollider.h"
+#include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 
 // コンストラクタ
@@ -27,6 +28,7 @@ NPC::NPC(const ComponentDesc& desc)
 	, m_baseRotation{}
 	, m_rotation{}
 	, m_spinAngle{}
+	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const() }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_boxColliderRef{ GetOwner()->GetNullComponent<Colliders::BoxCollider>() }
 	, m_sphereColliderRef{ GetOwner()->GetNullComponent<Colliders::SphereCollider>() }
@@ -40,6 +42,7 @@ void NPC::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectF
 	serializer.AddParameter(Ref{ m_name }, "Name");
 	serializer.AddParameter(Ref{ m_eventName }, "EventName");
 	serializer.AddParameter(Ref{ m_focusDistance }, "FocusDistance");
+	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
 	serializer.Load(json);
 }
 
@@ -55,6 +58,11 @@ void NPC::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_baseRotation = m_transformRef->GetRotation();
 	m_rotation.SetValue(m_baseRotation);
 	m_spinAngle.SetMovement(0.0f, 0.0f);
+
+	// カメラを追加
+	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(m_iCameraScreenRef);
+	m_boxColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
+	m_sphereColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
 
 	// NPC 管理に追加
 	iGameObjectFinder->Find("NPCManager")->GetComponent<NPCManager>()->AddNPC(Ref{ *this });

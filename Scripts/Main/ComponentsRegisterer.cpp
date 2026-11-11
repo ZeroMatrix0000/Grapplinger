@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/05
+ * Last Updated: 2026/11/11
  *
  * コンポーネント登録者
  */
@@ -81,9 +81,9 @@ void ComponentsRegisterer::RegisterComponents
 			return std::make_unique<Colliders::MeshCollider>(desc, iColliderRenderer, iResources);
 		});
 	// 3Dモデル
-	componentManager->RegisterCreate<Renderings::Model3D>([iModelRenderer, iResources](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::Model3D>([iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::Model3D>(desc, iModelRenderer, iResources);
+			return std::make_unique<Renderings::Model3D>(desc, iResources);
 		});
 	// 画像
 	componentManager->RegisterCreate<Renderings::Image>([iImageRenderer, iResources](const ComponentDesc& desc)
@@ -96,14 +96,30 @@ void ComponentsRegisterer::RegisterComponents
 			return std::make_unique<Renderings::Text>(desc, iTextRenderer);
 		});
 	// パーティクル管理
-	componentManager->RegisterCreate<Renderings::ParticleManager>([iModelRenderer, iResources](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::ParticleManager>([iResources](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::ParticleManager>(desc, iModelRenderer, iResources);
+			return std::make_unique<Renderings::ParticleManager>(desc, iResources);
 		});
 	// カメラ
-	componentManager->RegisterCreate<Renderings::ICameraScreen>([](const ComponentDesc& desc)
+	componentManager->RegisterCreate<Renderings::ICameraScreen>([iModelRenderer](const ComponentDesc& desc)
 		{
-			return std::make_unique<Renderings::CameraScreen<Camera::QuaternionCamera>>(desc);
+			return std::make_unique<Renderings::CameraScreen<Camera::QuaternionCamera>>(desc, iModelRenderer);
+		});
+	componentManager->RegisterCreate<Renderings::CameraScreen<Camera::QuaternionCamera>>([iModelRenderer](const ComponentDesc& desc)
+		{
+			return std::make_unique<Renderings::CameraScreen<Camera::QuaternionCamera>>(desc, iModelRenderer);
+		});
+	componentManager->RegisterCreate<Renderings::CameraScreen<Camera::QuaternionTargetCamera>>([iModelRenderer](const ComponentDesc& desc)
+		{
+			return std::make_unique<Renderings::CameraScreen<Camera::QuaternionTargetCamera>>(desc, iModelRenderer);
+		});
+	componentManager->RegisterCreate<Renderings::CameraScreen<Camera::EulerCamera>>([iModelRenderer](const ComponentDesc& desc)
+		{
+			return std::make_unique<Renderings::CameraScreen<Camera::EulerCamera>>(desc, iModelRenderer);
+		});
+	componentManager->RegisterCreate<Renderings::CameraScreen<Camera::EulerTargetCamera>>([iModelRenderer](const ComponentDesc& desc)
+		{
+			return std::make_unique<Renderings::CameraScreen<Camera::EulerTargetCamera>>(desc, iModelRenderer);
 		});
 	// サンプルシーン
 	componentManager->RegisterCreate<SampleScene>([context](const ComponentDesc& desc)
@@ -143,10 +159,10 @@ void ComponentsRegisterer::RegisterComponents
 	// 文字
 	REGISTER_GAMEOBJECT_MANAGER_ONLY(Renderings::ParticleManager, "ParticleManager");
 	// カメラ画面
-	REGISTER(Renderings::CameraScreen<Camera::QuaternionCamera>, "QuaternionCameraScreen");
-	REGISTER(Renderings::CameraScreen<Camera::QuaternionTargetCamera>, "QuaternionTargetCameraScreen");
-	REGISTER(Renderings::CameraScreen<Camera::EulerCamera>, "EulerCameraScreen");
-	REGISTER(Renderings::CameraScreen<Camera::EulerTargetCamera>, "EulerTargetCameraScreen");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(Renderings::CameraScreen<Camera::QuaternionCamera>, "QuaternionCameraScreen");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(Renderings::CameraScreen<Camera::QuaternionTargetCamera>, "QuaternionTargetCameraScreen");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(Renderings::CameraScreen<Camera::EulerCamera>, "EulerCameraScreen");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(Renderings::CameraScreen<Camera::EulerTargetCamera>, "EulerTargetCameraScreen");
 	// キャンバス
 	REGISTER(Renderings::Canvas, "Canvas");
 	// シーン
