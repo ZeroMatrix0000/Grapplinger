@@ -318,13 +318,6 @@
 				"BrightInterval": 0.1,
 				"Player": "Player",
 				"CameraScreen": "PlayerCamera",
-				"TargetObjects": [
-					"NPC操作方法",
-					"NPCワイヤーについて",
-					"NPCテキストについて",
-					"SlimeTest",
-					"SlimeTest2"
-				],
 				"Grounds": [
 					"Ground"
 				]
@@ -393,10 +386,6 @@
 		"Name": "SlimeManager",
 		"Components": {
 			"SlimeManager": {
-				"SlimeList": [
-					"SlimeTest",
-					"SlimeTest2"
-				],
 				"CameraScreen": "PlayerCamera"
 			},
 			"ParticleManager": {},

@@ -1,7 +1,7 @@
 /*
  * FileName:     SceneTransitionData.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/01
+ * Last Updated: 2026/11/11
  *
  * シーン遷移情報
  */
@@ -9,6 +9,8 @@
 #pragma once
 
 // シーン遷移情報
-class SceneTransitionData
+struct SceneTransitionData
 {
+	// 中間地点の番号
+	int checkPointNumber{};
 };

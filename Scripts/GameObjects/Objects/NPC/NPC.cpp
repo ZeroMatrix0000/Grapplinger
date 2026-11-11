@@ -9,7 +9,6 @@
 #include "Pch.h"
 #include "NPC.h"
 
-#include "NPCManager.h"
 #include "Scripts/Main/IsDerivedRegister.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/GameObjects/IGameObjectFinder.h"
@@ -65,7 +64,9 @@ void NPC::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_sphereColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
 
 	// NPC 管理に追加
-	iGameObjectFinder->Find("NPCManager")->GetComponent<NPCManager>()->AddNPC(Ref{ *this });
+	iGameObjectFinder->Find("NPCManager")->AcceptMessage("AddNPC", Ref{ *this });
+	// ターゲット管理に追加
+	iGameObjectFinder->Find("TargetPoint")->AcceptMessage("AddTargetObject", m_sphereColliderRef);
 }
 
 // 更新処理

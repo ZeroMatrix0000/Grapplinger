@@ -1,7 +1,7 @@
 /*
  * FileName:     SampleScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/11
  *
  * サンプルシーン
  */
@@ -109,12 +109,12 @@ void SampleScene::Finalize()
 }
 
 // メッセージを受け取る
-void SampleScene::AcceptMessage(const std::string& message)
+void SampleScene::AcceptMessage(const std::string& message, const std::any& value)
 {
 	if (message == "WindowSizeChanged")
 	{
 		// 出力サイズ
-		const Math::Vector2& outputSize = GetContext()->GetIWindowController()->GetOutputSize();
+		const Math::Vector2& outputSize = std::any_cast<const Math::Vector2&>(value);
 		// プロジェクション行列を設定
 		m_cameraScreenRef->SetProjectionMatrix(outputSize);
 		// キャンバスのサイズを設定

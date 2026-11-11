@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * スライム管理
  */
@@ -21,7 +21,7 @@
 // コンストラクタ
 SlimeManager::SlimeManager(const ComponentDesc& desc)
 	: Component{ desc }
-	, m_slimeRefList{}
+	, m_slimeRefs{}
 	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const() }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
 	, m_particleManagerRef{ GetOwner()->GetNullComponent<Renderings::ParticleManager>() }
@@ -32,7 +32,6 @@ SlimeManager::SlimeManager(const ComponentDesc& desc)
 void SlimeManager::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
-	serializer.AddParameter(Ref{ m_slimeRefList }, "SlimeList");
 	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
 	serializer.Load(json);
 }
@@ -51,7 +50,7 @@ void SlimeManager::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 void SlimeManager::Update(float elapsedTime)
 {
 	// スライムごとに更新
-	for (Ref slimeRef : m_slimeRefList)
+	for (Ref slimeRef : m_slimeRefs)
 	{
 		slimeRef->Update(elapsedTime);
 	}
@@ -66,10 +65,10 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 	// プレイヤーの直方体
 	const Math::Box& playerBox = playerRef->GetBox();
 
-	for (int i = 0; i < m_slimeRefList.size(); i++)
+	for (int i = 0; i < m_slimeRefs.size(); i++)
 	{
 		// 参照
-		Ref slimeRef = m_slimeRefList.at(i);
+		Ref slimeRef = m_slimeRefs.at(i);
 		// スライムの直方体
 		const Math::Box& slimeBox = slimeRef->GetBox();
 
@@ -92,12 +91,12 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 				// パーティクルを再生
 				m_transformRef->SetPosition(slimeBox.position);
 				m_particleManagerRef->Play<SlimeDefeatParticle>();
-				m_slimeRefList.erase(m_slimeRefList.begin() + i);
+				m_slimeRefs.erase(m_slimeRefs.begin() + i);
 				Destroy(slimeRef->GetOwner());
 				i--;
 			}
 			// プレイヤーの敗北
-			else if(!playerRef->IsState<PlayerStateDefeat>())
+			else if (!playerRef->IsState<PlayerStateDefeat>())
 			{
 				playerRef->Defeat();
 			}
@@ -109,9 +108,19 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 std::vector<Math::Box> SlimeManager::GetBoxes() const
 {
 	std::vector<Math::Box> boxes{};
-	for (Ref slimeRef : m_slimeRefList)
+	for (Ref slimeRef : m_slimeRefs)
 	{
 		boxes.push_back(slimeRef->GetBox());
 	}
 	return boxes;
+}
+
+// メッセージを受け取る
+void SlimeManager::AcceptMessage(const std::string& message, const std::any& value)
+{
+	if (message == "AddSlime")
+	{
+		Ref slimeRef = std::any_cast<Ref<Slime>>(value);
+		m_slimeRefs.push_back(slimeRef);
+	}
 }

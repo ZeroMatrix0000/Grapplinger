@@ -78,7 +78,7 @@ namespace Scenes
 		// ウィンドウサイズ変更時の処理
 		void OnWindowSizeChanged(const Math::Vector2& outputSize)
 		{
-			m_currentScene->AcceptMessage("WindowSizeChanged");
+			m_currentScene->AcceptMessage("WindowSizeChanged", outputSize);
 			m_animation.SetCanvasSize(outputSize);
 		}
 

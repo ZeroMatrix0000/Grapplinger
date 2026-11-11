@@ -1,7 +1,7 @@
 /*
  * FileName:     Slime.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * スライム
  */
@@ -48,6 +48,11 @@ void Slime::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	GetOwner()->GetComponent<Renderings::Model3D>()->AddICameraScreenRef(m_iCameraScreenRef);
 	m_internals.boxColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
 	m_internals.sphereColliderRef->AddICameraScreenRef(m_iCameraScreenRef);
+
+	// スライム管理に追加
+	iGameObjectFinder->Find("SlimeManager")->AcceptMessage("AddSlime", Ref{ *this });
+	// ターゲット管理に追加
+	iGameObjectFinder->Find("TargetPoint")->AcceptMessage("AddTargetObject", m_internals.sphereColliderRef);
 }
 
 // 更新処理

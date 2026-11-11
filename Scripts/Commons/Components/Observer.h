@@ -1,7 +1,7 @@
 /*
  * FileName:     Observer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/14
+ * Last Updated: 2026/11/11
  *
  * メッセージを受け取るクラス
  */
@@ -23,7 +23,7 @@ namespace Components
 		virtual ~Observer() = default;
 
 		// メッセージを受け取る
-		virtual void AcceptMessage(const std::string& message) {}
+		virtual void AcceptMessage(const std::string& message, const std::any& value) {}
 
 	};
 }

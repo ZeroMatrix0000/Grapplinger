@@ -30,11 +30,11 @@ void GameObjects::GameObject::Initialize(Ref<IGameObjectFinder> iGameObjectFinde
 }
 
 // メッセージを受け取る
-void GameObjects::GameObject::AcceptMessage(const std::string& message) const
+void GameObjects::GameObject::AcceptMessage(const std::string& message, const std::any& value) const
 {
 	for (const auto& component : m_components)
 	{
-		component.first->AcceptMessage(message);
+		component.first->AcceptMessage(message, value);
 	}
 }
 

@@ -64,8 +64,8 @@ public:
 	// カーソルが合っているNPCを取得
 	const NPC* GetPFocusedNPC() const { return m_pFocusedNPC; }
 
-	// NPC を追加
-	void AddNPC(Ref<NPC> nPCRef);
+	// メッセージを受け取る
+	void AcceptMessage(const std::string& message, const std::any& value) override;
 
 
 private:

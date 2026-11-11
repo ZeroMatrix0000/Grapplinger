@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * ターゲット照準
  */
@@ -74,6 +74,9 @@ public:
 
 	// ターゲット情報を取得
 	const Info& GetTargetInfo();
+
+	// メッセージを受け取る
+	void AcceptMessage(const std::string& message, const std::any& value) override;
 
 
 private:

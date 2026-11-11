@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/05
+ * Last Updated: 2026/11/11
  *
  * 継承関係の登録
  */
@@ -15,7 +15,7 @@ namespace Scenes
 	template<typename TTransitionData, typename TContext>
 	class Scene;
 }
-class SceneTransitionData;
+struct SceneTransitionData;
 class GameContext;
 typedef Scenes::Scene<SceneTransitionData, GameContext> Scene;
 

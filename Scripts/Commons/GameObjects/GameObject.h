@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObject.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * ゲームオブジェクト
  */
@@ -39,7 +39,7 @@ namespace GameObjects
 		const std::string& GetName() const { return m_name; }
 
 		// メッセージを受け取る
-		void AcceptMessage(const std::string& message) const;
+		void AcceptMessage(const std::string& message, const std::any& value) const;
 
 		// コンポーネントを取得
 		template<typename TComponent> requires IsDerived<TComponent, Component>

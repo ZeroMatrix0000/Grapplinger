@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/11
  *
  * ゲームプレイシーン
  */
@@ -17,7 +17,7 @@ namespace Systems
 	template<typename TInternals>
 	class State;
 }
-class SceneTransitionData;
+struct SceneTransitionData;
 class GameContext;
 
 // ゲームプレイシーン
@@ -43,7 +43,7 @@ public:
 	void Finalize() override;
 
 	// メッセージを受け取る
-	void AcceptMessage(const std::string& message) override;
+	void AcceptMessage(const std::string& message, const std::any& value) override;
 
 
 private:

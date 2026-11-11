@@ -88,6 +88,13 @@ void Player::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 // 更新処理
 void Player::Update(float elapsedTime, const Math::Vector3& move, bool isDash, bool isJump)
 {
+	// 座標表示
+	if (false)
+	{
+		Math::Vector3 position = m_internals.transformRef->GetPosition();
+		OutputDebugStringW(Utility::FormatWString(L"%f, %f, %f\n", position.x, position.y, position.z).c_str());
+	}
+
 	// 入力を受け取る
 	m_internals.MOVE = move;
 	m_internals.IS_DASH = isDash;

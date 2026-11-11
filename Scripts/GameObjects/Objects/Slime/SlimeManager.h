@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * スライム管理
  */
@@ -48,6 +48,9 @@ public:
 	// 当たり判定を取得
 	std::vector<Math::Box> GetBoxes() const;
 
+	// メッセージを受け取る
+	void AcceptMessage(const std::string& message, const std::any& value) override;
+
 
 private:
 
@@ -55,7 +58,7 @@ private:
 	/* メンバ変数 */
 
 	// スライムの参照リスト
-	std::vector<Ref<Slime>> m_slimeRefList;
+	std::vector<Ref<Slime>> m_slimeRefs;
 
 	// カメラ画面のインタフェースの参照
 	Ref<const Renderings::ICameraScreen> m_iCameraScreenRef;

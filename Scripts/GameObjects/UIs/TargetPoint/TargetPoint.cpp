@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * ターゲット照準
  */
@@ -46,7 +46,6 @@ void TargetPoint::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGam
 	serializer.AddParameter(Ref{ m_brightInterval }, "BrightInterval");
 	serializer.AddParameter(m_playerRef.Nest(), "Player");
 	serializer.AddParameter(m_iCameraScreenRef.Nest(), "CameraScreen");
-	serializer.AddParameter(Ref{ m_targetObjectRefs }, "TargetObjects");
 	serializer.AddParameter(Ref{ m_groundsRef }, "Grounds");
 	serializer.Load(json);
 }
@@ -56,11 +55,6 @@ void TargetPoint::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	m_imageRef = GetOwner()->GetComponent<Renderings::Image>();
 	m_transformRef = GetOwner()->GetComponent<RectTransform>();
-
-	for (Ref targetObjectRef : m_targetObjectRefs)
-	{
-		targetObjectRef->GetOwner()->AddMethodWhenDestroy([&, targetObjectRef] { DeleteTarget(targetObjectRef); });
-	}
 }
 
 // 更新処理
@@ -228,6 +222,17 @@ const TargetPoint::Info& TargetPoint::GetTargetInfo()
 	}
 
 	return m_info;
+}
+
+// メッセージを受け取る
+void TargetPoint::AcceptMessage(const std::string& message, const std::any& value)
+{
+	if (message == "AddTargetObject")
+	{
+		Ref targetObjectRef = std::any_cast<Ref<Colliders::SphereCollider>>(value);
+		targetObjectRef->GetOwner()->AddMethodWhenDestroy([&, targetObjectRef] { DeleteTarget(targetObjectRef); });
+		m_targetObjectRefs.push_back(targetObjectRef);
+	}
 }
 
 // ターゲットを削除

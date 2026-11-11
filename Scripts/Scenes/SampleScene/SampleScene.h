@@ -1,7 +1,7 @@
 /*
  * FileName:     SampleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/11
  *
  * サンプルシーン
  */
@@ -16,7 +16,7 @@ namespace Renderings
 	class Canvas;
 	class ParticleManager;
 }
-class SceneTransitionData;
+struct SceneTransitionData;
 class GameContext;
 class DebugCamera;
 
@@ -43,7 +43,7 @@ public:
 	void Finalize() override;
 
 	// メッセージを受け取る
-	void AcceptMessage(const std::string& message) override;
+	void AcceptMessage(const std::string& message, const std::any& value) override;
 
 
 private:

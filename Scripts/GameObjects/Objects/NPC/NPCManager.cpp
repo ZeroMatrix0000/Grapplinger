@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * NPC管理
  */
@@ -171,12 +171,16 @@ std::vector<Math::Box> NPCManager::GetBoxes() const
 }
 
 // NPC を追加
-void NPCManager::AddNPC(Ref<NPC> nPCRef)
+void NPCManager::AcceptMessage(const std::string& message, const std::any& value)
 {
-	m_nPCRefs.push_back(nPCRef);
-	Ref interactCursorRef = Instantiate("Prefab_InteractCursor")->GetComponent<InteractCursor>();
-	m_interactCursorRefs.push_back(interactCursorRef);
-	interactCursorRef->SetName(nPCRef->GetName());
-	// キャンバスを設定
-	interactCursorRef->SetCanvasRef(m_canvasRef);
+	if (message == "AddNPC")
+	{
+		Ref nPCRef = std::any_cast<Ref<NPC>>(value);
+		m_nPCRefs.push_back(nPCRef);
+		Ref interactCursorRef = Instantiate("Prefab_InteractCursor")->GetComponent<InteractCursor>();
+		m_interactCursorRefs.push_back(interactCursorRef);
+		interactCursorRef->SetName(nPCRef->GetName());
+		// キャンバスを設定
+		interactCursorRef->SetCanvasRef(m_canvasRef);
+	}
 }
