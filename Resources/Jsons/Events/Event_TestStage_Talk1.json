@@ -1,0 +1,60 @@
+[
+	{
+		"ActionType": "OpenMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "このゲームは 3D のアクションゲームだよ。",
+			"Character": "NPC1"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "<color=#00BBFF>WASD キー</color> もしくは <color=#00BBFF><ruby=やじるし>矢印</ruby>キー</color> で<ruby=いどう>移動</ruby>\n<color=#00BBFF>Space キー</color> でジャンプができるよ。"
+		}
+	},
+	{
+		"ActionType": "BeginEasingCamera",
+		"Params": {
+			"Value": {
+				"Position": {
+					"X": -56.0,
+					"Y": 32.0,
+					"Z": -50.0
+				},
+				"Rotation": {
+					"X": -30.0,
+					"Y": 45.0,
+					"Z": 0.0
+				},
+				"Distance": 20.0
+			},
+			"Time": 2.0,
+			"Type": "Quart",
+			"InOut": "InOut"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "まぁとりあえず、まずはあそこを<ruby=めざ>目指</ruby>してみてよ。"
+		}
+	},
+	{
+		"ActionType": "CloseMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "WaitUntilEasingCamera"
+	},
+	{
+		"ActionType": "EndEasingCamera"
+	}
+]

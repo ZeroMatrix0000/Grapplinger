@@ -475,6 +475,15 @@
     <ClCompile Include="Scripts\Commons\Renderings\ICameraScreen.cpp">
       <Filter>Scripts\Commons\Renderings</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -934,6 +943,15 @@
     <ClInclude Include="Scripts\GameObjects\Particles\PlayerDefeatParticle.h">
       <Filter>Scripts\GameObjects\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.h">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.h">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.h">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -1020,6 +1038,9 @@
     </None>
     <None Include="Resources\Jsons\Prefabs\Prefab_Slime.json">
       <Filter>Jsons\Prefabs</Filter>
+    </None>
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json">
+      <Filter>Jsons\Events</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

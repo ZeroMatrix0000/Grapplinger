@@ -26,6 +26,9 @@ class Action;
 class ActionOpenMessageWindow;
 class ActionCloseMessageWindow;
 class ActionSetMessageWindowText;
+class ActionBeginEasingCamera;
+class ActionEndEasingCamera;
+class ActionWaitUntilEasingCamera;
 class ActionManager;
 class DebugCamera;
 class Player;
@@ -76,6 +79,9 @@ IS_DERIVED_REGISTER(Action, Component)
 IS_DERIVED_REGISTER(ActionOpenMessageWindow, Component)
 IS_DERIVED_REGISTER(ActionCloseMessageWindow, Component)
 IS_DERIVED_REGISTER(ActionSetMessageWindowText, Component)
+IS_DERIVED_REGISTER(ActionBeginEasingCamera, Component)
+IS_DERIVED_REGISTER(ActionEndEasingCamera, Component)
+IS_DERIVED_REGISTER(ActionWaitUntilEasingCamera, Component)
 IS_DERIVED_REGISTER(ActionManager, Component)
 IS_DERIVED_REGISTER(DebugCamera, Component)
 IS_DERIVED_REGISTER(Player, Component)

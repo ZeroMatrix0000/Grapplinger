@@ -243,10 +243,13 @@
     <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\State\DebugCameraStateMove.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\State\DebugCameraStateRotate.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\Action.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionCloseMessageWindow.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionManager.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionOpenMessageWindow.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetMessageWindowText.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlayScene.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInitializer.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.cpp" />
@@ -264,6 +267,7 @@
     <None Include="Resources\Jsons\Events\Event_TalkAboutWire.json" />
     <None Include="Resources\Jsons\Events\Event_TalkHowTo.json" />
     <None Include="Resources\Jsons\Events\Event_TalkTestColor.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_BlackBeltImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursor.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_MessageWindowBackGround.json" />
@@ -378,11 +382,14 @@
     <ClInclude Include="Scripts\Main\IsDerivedRegister.h" />
     <ClInclude Include="Scripts\Main\ResourcesInitializer.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\Action.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionCloseMessageWindow.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionManager.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionOpenMessageWindow.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\Actions.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetMessageWindowText.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\GamePlayScene.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInitializer.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.h" />

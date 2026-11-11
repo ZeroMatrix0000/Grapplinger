@@ -39,166 +39,93 @@
 		}
 	},
 	{
-		"Name": "NPC操作方法",
+		"Name": "NPC",
 		"Prefab": "Prefab_NPC",
 		"Components": {
 			"Transform": {
 				"Position": {
-					"X": -5.0,
+					"X": 10.0,
 					"Y": 0.0,
-					"Z": 0.0
+					"Z": -5.0
 				},
 				"Rotation": {
 					"X": 0.0,
-					"Y": -90.0,
+					"Y": -45.0,
 					"Z": 0.0
 				}
 			},
-			"Model3D": {
-				"ModelSourceName": "NPC",
-				"Color": {
-					"R": 0.5,
-					"G": 1.0,
-					"B": 0.7,
-					"A": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
-			},
-			"BoxCollider": {
+			"NPC": {
+				"Name": "NPC1",
+				"EventName": "Event_TestStage_Talk1",
+				"CameraScreen": "PlayerCamera"
+			}
+		}
+	},
+	{
+		"Name": "NPC",
+		"Prefab": "Prefab_NPC",
+		"Components": {
+			"Transform": {
 				"Position": {
+					"X": 50.0,
+					"Y": 6.0,
+					"Z": -8.0
+				},
+				"Rotation": {
 					"X": 0.0,
-					"Y": 1.0,
+					"Y": -45.0,
 					"Z": 0.0
-				},
-				"Size": {
-					"X": 1.0,
-					"Y": 2.0,
-					"Z": 1.0
-				},
-				"CameraScreens": [
-					"PlayerCamera"
-				]
-			},
-			"SphereCollider": {
-				"Position": {
-					"X": 0.0,
-					"Y": 1.0,
-					"Z": 0.0
-				},
-				"Radius": 5.0,
-				"CameraScreens": [
-					"PlayerCamera"
-				]
+				}
 			},
 			"NPC": {
-				"Name": "<ruby=そうさほうほう>操作方法</ruby>",
+				"Name": "NPC2",
 				"EventName": "Event_TalkHowTo",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
 	},
 	{
-		"Name": "NPCワイヤーについて",
+		"Name": "NPC",
 		"Prefab": "Prefab_NPC",
 		"Components": {
 			"Transform": {
 				"Position": {
-					"X": 5.0,
-					"Y": 0.0,
-					"Z": 0.0
+					"X": 37.0,
+					"Y": 9.0,
+					"Z": -56.0
 				},
 				"Rotation": {
 					"X": 0.0,
-					"Y": -90.0,
+					"Y": 45.0,
 					"Z": 0.0
 				}
-			},
-			"Model3D": {
-				"ModelSourceName": "NPC",
-				"Color": {
-					"R": 1.0,
-					"G": 0.6,
-					"B": 0.5,
-					"A": 1.0
-				}
-			},
-			"BoxCollider": {
-				"Position": {
-					"X": 0.0,
-					"Y": 1.0,
-					"Z": 0.0
-				},
-				"Size": {
-					"X": 1.0,
-					"Y": 2.0,
-					"Z": 1.0
-				}
-			},
-			"SphereCollider": {
-				"Position": {
-					"X": 0.0,
-					"Y": 1.0,
-					"Z": 0.0
-				},
-				"Radius": 5.0
 			},
 			"NPC": {
-				"Name": "ワイヤーについて",
-				"EventName": "Event_TalkAboutWire",
+				"Name": "NPC3",
+				"EventName": "Event_TalkHowTo",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
 	},
 	{
-		"Name": "NPCテキストについて",
+		"Name": "NPC",
 		"Prefab": "Prefab_NPC",
 		"Components": {
 			"Transform": {
 				"Position": {
-					"X": 0.0,
-					"Y": 0.0,
-					"Z": -5.0
+					"X": -16.0,
+					"Y": 31.5,
+					"Z": -46.0
 				},
 				"Rotation": {
 					"X": 0.0,
-					"Y": 90.0,
+					"Y": 135.0,
 					"Z": 0.0
 				}
-			},
-			"Model3D": {
-				"ModelSourceName": "NPC",
-				"Color": {
-					"R": 0.8,
-					"G": 0.5,
-					"B": 1.0,
-					"A": 1.0
-				}
-			},
-			"BoxCollider": {
-				"Position": {
-					"X": 0.0,
-					"Y": 1.0,
-					"Z": 0.0
-				},
-				"Size": {
-					"X": 1.0,
-					"Y": 2.0,
-					"Z": 1.0
-				}
-			},
-			"SphereCollider": {
-				"Position": {
-					"X": 0.0,
-					"Y": 1.0,
-					"Z": 0.0
-				},
-				"Radius": 5.0
 			},
 			"NPC": {
-				"Name": "テキストについて",
-				"EventName": "Event_TalkAboutText",
+				"Name": "NPC4",
+				"EventName": "Event_TalkHowTo",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
@@ -337,51 +264,60 @@
 			},
 			"ActionSetMessageWindowText": {
 				"MessageWindow": "MessageWindow"
-			}
-		}
-	},
-	{
-		"Name": "SlimeTest",
-		"Prefab": "Prefab_Slime",
-		"Components": {
-			"Transform": {
-				"Position": {
-					"X": -7.0,
-					"Y": 0.0,
-					"Z": 7.0
-				},
-				"Rotation": {
-					"X": 0.0,
-					"Y": -45.0,
-					"Z": 0.0
-				}
 			},
-			"Slime": {
-				"CameraScreen": "PlayerCamera"
-			}
-		}
-	},
-	{
-		"Name": "SlimeTest2",
-		"Prefab": "Prefab_Slime",
-		"Components": {
-			"Transform": {
-				"Position": {
-					"X": 7.0,
-					"Y": 0.0,
-					"Z": 7.0
-				},
-				"Rotation": {
-					"X": 0.0,
-					"Y": 45.0,
-					"Z": 0.0
-				}
+			"ActionBeginEasingCamera": {
+				"PlayerCamera": "PlayerCamera"
 			},
-			"Slime": {
-				"CameraScreen": "PlayerCamera"
+			"ActionEndEasingCamera": {
+				"PlayerCamera": "PlayerCamera"
+			},
+			"ActionWaitUntilEasingCamera": {
+				"PlayerCamera": "PlayerCamera"
 			}
 		}
 	},
+	//{
+	//	"Name": "SlimeTest",
+	//	"Prefab": "Prefab_Slime",
+	//	"Components": {
+	//		"Transform": {
+	//			"Position": {
+	//				"X": -7.0,
+	//				"Y": 0.0,
+	//				"Z": 7.0
+	//			},
+	//			"Rotation": {
+	//				"X": 0.0,
+	//				"Y": -45.0,
+	//				"Z": 0.0
+	//			}
+	//		},
+	//		"Slime": {
+	//			"CameraScreen": "PlayerCamera"
+	//		}
+	//	}
+	//},
+	//{
+	//	"Name": "SlimeTest2",
+	//	"Prefab": "Prefab_Slime",
+	//	"Components": {
+	//		"Transform": {
+	//			"Position": {
+	//				"X": 7.0,
+	//				"Y": 0.0,
+	//				"Z": 7.0
+	//			},
+	//			"Rotation": {
+	//				"X": 0.0,
+	//				"Y": 45.0,
+	//				"Z": 0.0
+	//			}
+	//		},
+	//		"Slime": {
+	//			"CameraScreen": "PlayerCamera"
+	//		}
+	//	}
+	//},
 	{
 		"Name": "SlimeManager",
 		"Components": {

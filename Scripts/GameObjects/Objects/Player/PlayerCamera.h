@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * プレイヤーカメラ
  */
@@ -47,6 +47,13 @@ public:
 	// カメラを固定
 	void FixEyePosition();
 
+	// イージング開始
+	void BeginEasing(const Camera::EulerTargetCamera& value, float time, Easing::Type type, Easing::InOut inOut);
+	// イージング終了
+	void EndEasing();
+	// イージング中かどうか
+	bool IsEasing() const { return m_easingCamera.IsMoving(); }
+
 
 private:
 
@@ -71,6 +78,11 @@ private:
 
 	// カメラ
 	Spring<Camera::EulerTargetCamera> m_camera;
+
+	// イージング中か
+	bool m_isEasing;
+	// イージングカメラ
+	Easing::Value<Camera::EulerTargetCamera> m_easingCamera;
 
 	// カメラ画面の参照
 	Ref<Renderings::CameraScreen<Camera::EulerTargetCamera>> m_cameraScreenRef;

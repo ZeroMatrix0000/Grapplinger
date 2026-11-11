@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/11
  *
  * プレイヤーカメラ
  */
@@ -23,6 +23,8 @@ PlayerCamera::PlayerCamera(const ComponentDesc& desc)
 	, m_isFixed{}
 	, m_eyePosition{}
 	, m_camera{}
+	, m_isEasing{}
+	, m_easingCamera{}
 	, m_cameraScreenRef{ GetOwner()->GetNullComponent<Renderings::CameraScreen<Camera::EulerTargetCamera>>() }
 {
 }
@@ -47,6 +49,7 @@ void PlayerCamera::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_maxDistance = camera.distance;
 
 	m_isFixed = false;
+	m_isEasing = false;
 
 	m_camera.SetValue(camera);
 }
@@ -54,16 +57,29 @@ void PlayerCamera::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 // 更新処理
 void PlayerCamera::Update(float elapsedTime)
 {
-	// カメラを更新
-	//m_camera.SetValue(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance });
-	m_camera.SetTarget(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance }, 250.0f, 30.0f);
-	m_camera.Tick(elapsedTime);
-	m_cameraScreenRef->SetCamera(m_camera.GetCurrent());
+	if (m_isEasing)
+	{
+		m_easingCamera.Tick(elapsedTime);
+		m_cameraScreenRef->SetCamera(m_easingCamera.GetMovement());
+	}
+	else
+	{
+		// カメラを更新
+		//m_camera.SetValue(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance });
+		m_camera.SetTarget(Camera::EulerTargetCamera{ m_target, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }, m_distance }, 250.0f, 30.0f);
+		m_camera.Tick(elapsedTime);
+		m_cameraScreenRef->SetCamera(m_camera.GetCurrent());
+	}
 }
 
 // 回転
 void PlayerCamera::Rotate(const Math::Vector2& rotate)
 {
+	if (m_isEasing)
+	{
+		return;
+	}
+
 	// 回転量
 	m_rotationYDeg -= rotate.x;
 	m_rotationXDeg -= rotate.y;
@@ -72,7 +88,7 @@ void PlayerCamera::Rotate(const Math::Vector2& rotate)
 // メッシュによる座標補正
 void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosition)
 {
-	if (m_isFixed)
+	if (m_isFixed || m_isEasing)
 	{
 		return;
 	}
@@ -102,7 +118,7 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 // 直方体による座標補正
 void PlayerCamera::BoxCorrect(const Math::Box& box, const Math::Vector3& centerPosition)
 {
-	if (m_isFixed)
+	if (m_isFixed || m_isEasing)
 	{
 		return;
 	}
@@ -152,4 +168,17 @@ void PlayerCamera::FixEyePosition()
 	m_isFixed = true;
 	m_eyePosition = m_camera.GetCurrent().GetEyePosition();
 	m_rotationXDeg.Initialize(m_rotationXDeg, -180.0f, 180.0f);
+}
+
+// イージングスタート
+void PlayerCamera::BeginEasing(const Camera::EulerTargetCamera& value, float time, Easing::Type type, Easing::InOut inOut)
+{
+	m_isEasing = true;
+	m_easingCamera.SetMovement(m_cameraScreenRef->GetCamera(), value, time, type, inOut);
+}
+
+// イージング終了
+void PlayerCamera::EndEasing()
+{
+	m_isEasing = false;
 }

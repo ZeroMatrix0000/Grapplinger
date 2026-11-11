@@ -105,6 +105,18 @@ void ActionManager::InitializeCurrentAction()
 		{
 			m_currentActionRef = GetOwner()->GetComponent<ActionSetMessageWindowText>().GetValue();
 		}
+		else if (it.value() == "BeginEasingCamera")
+		{
+			m_currentActionRef = GetOwner()->GetComponent<ActionBeginEasingCamera>().GetValue();
+		}
+		else if (it.value() == "EndEasingCamera")
+		{
+			m_currentActionRef = GetOwner()->GetComponent<ActionEndEasingCamera>().GetValue();
+		}
+		else if (it.value() == "WaitUntilEasingCamera")
+		{
+			m_currentActionRef = GetOwner()->GetComponent<ActionWaitUntilEasingCamera>().GetValue();
+		}
 		else
 		{
 			m_currentActionRef = GetOwner()->GetNullComponent<Action>();

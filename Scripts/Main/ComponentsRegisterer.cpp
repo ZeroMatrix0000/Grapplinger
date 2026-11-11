@@ -174,6 +174,9 @@ void ComponentsRegisterer::RegisterComponents
 	REGISTER(ActionOpenMessageWindow, "ActionOpenMessageWindow");
 	REGISTER(ActionCloseMessageWindow, "ActionCloseMessageWindow");
 	REGISTER(ActionSetMessageWindowText, "ActionSetMessageWindowText");
+	REGISTER(ActionBeginEasingCamera, "ActionBeginEasingCamera");
+	REGISTER(ActionEndEasingCamera, "ActionEndEasingCamera");
+	REGISTER(ActionWaitUntilEasingCamera, "ActionWaitUntilEasingCamera");
 	REGISTER_GAMEOBJECT_MANAGER_ONLY(ActionManager, "ActionManager");
 	// デバッグ用カメラ
 	REGISTER(DebugCamera, "DebugCamera");
