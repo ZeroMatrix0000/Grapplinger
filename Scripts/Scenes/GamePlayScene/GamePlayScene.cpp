@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/12
  *
  * ゲームプレイシーン
  */
@@ -39,7 +39,7 @@ GamePlayScene::GamePlayScene(const ComponentDesc& desc, Ref<const GameContext> c
 }
 
 // 初期化処理
-void GamePlayScene::Initialize(const SceneTransitionData& data)
+void GamePlayScene::Initialize()
 {
 	// 初期化
 	m_Initializer(Ref{ m_internals });

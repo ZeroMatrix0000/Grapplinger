@@ -487,6 +487,12 @@
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.cpp">
       <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPoint.cpp">
+      <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.cpp">
+      <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -955,6 +961,12 @@
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.h">
       <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPoint.h">
+      <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.h">
+      <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -1048,7 +1060,9 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json">
       <Filter>Jsons\Events</Filter>
     </None>
-    <None Include=".gitignore" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json">
+      <Filter>Jsons\Prefabs</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShaders\Test2.hlsl">

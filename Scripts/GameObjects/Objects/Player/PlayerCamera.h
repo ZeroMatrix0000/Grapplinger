@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/12
  *
  * プレイヤーカメラ
  */
@@ -35,8 +35,6 @@ public:
 	void Rotate(const Math::Vector2& rotate);
 	// メッシュによる座標補正
 	void MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosition);
-	// 直方体による座標補正
-	void BoxCorrect(const Math::Box& box, const Math::Vector3& centerPosition);
 
 	// ターゲットの位置を変更
 	void SetTarget(const Math::Vector3& target);

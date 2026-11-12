@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/12
  *
  * 継承関係の登録
  */
@@ -12,12 +12,12 @@
 
 namespace Scenes
 {
-	template<typename TTransitionData, typename TContext>
+	template<typename TContext>
 	class Scene;
 }
 struct SceneTransitionData;
 class GameContext;
-typedef Scenes::Scene<SceneTransitionData, GameContext> Scene;
+typedef Scenes::Scene<GameContext> Scene;
 
 class SampleScene;
 class TitleScene;
@@ -39,6 +39,8 @@ class NPC;
 class NPCManager;
 class Slime;
 class SlimeManager;
+class CheckPoint;
+class CheckPointManager;
 class SelectMenu;
 class InteractCursor;
 class Z2Talk;
@@ -92,6 +94,8 @@ IS_DERIVED_REGISTER(NPC, Component)
 IS_DERIVED_REGISTER(NPCManager, Component)
 IS_DERIVED_REGISTER(Slime, Component)
 IS_DERIVED_REGISTER(SlimeManager, Component)
+IS_DERIVED_REGISTER(CheckPoint, Component)
+IS_DERIVED_REGISTER(CheckPointManager, Component)
 IS_DERIVED_REGISTER(SelectMenu, Component)
 IS_DERIVED_REGISTER(InteractCursor, Component)
 IS_DERIVED_REGISTER(Z2Talk, Component)

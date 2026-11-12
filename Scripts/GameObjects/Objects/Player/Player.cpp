@@ -245,6 +245,13 @@ void Player::DeathFloorCheck(const Math::Box& deathFloor)
 	}
 }
 
+// 座標を設定
+void Player::SetPosition(const Math::Vector3& position)
+{
+	m_internals.transformRef->SetPosition(position);
+	m_internals.boxColliderRef->ApplyTransform();
+}
+
 // 中心座標を取得
 const Math::Vector3& Player::GetPosition() const
 {

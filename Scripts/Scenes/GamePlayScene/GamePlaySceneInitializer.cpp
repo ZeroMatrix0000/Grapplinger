@@ -15,6 +15,7 @@
 #include "Scripts/GameObjects/Objects/Player/PlayerCamera.h"
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
 #include "Scripts/GameObjects/Objects/Slime/SlimeManager.h"
+#include "Scripts/GameObjects/Objects/CheckPoint/CheckPointManager.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -24,6 +25,7 @@
 #include "Scripts/Commons/GameObjects/IGameObjectManager.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
+#include "Scripts/Commons/Scenes/ISceneManager.h"
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
@@ -47,8 +49,16 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	iGameObjectManager->SetGameObjectsRef(internalsRef->gameObjectsRef);
 	iGameObjectManager->Load("Scene_GamePlay");
 
+	// チェックポイントを取得
+	internalsRef->checkPointManagerRef = iGameObjectManager->Find("CheckPointManager")->GetComponent<CheckPointManager>();
+	const Math::Vector3& checkPointPosition = internalsRef->checkPointManagerRef->GetPosition
+	(
+		internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef()->checkPointNumber
+	);
+
 	// プレイヤーを取得
 	internalsRef->playerRef = iGameObjectManager->Find("Player")->GetComponent<Player>();
+	internalsRef->playerRef->SetPosition(checkPointPosition);
 	internalsRef->playerRef->UpdateModel();
 
 	// プレイヤーカメラを取得

@@ -202,6 +202,8 @@
     <ClCompile Include="Scripts\Commons\Systems\Resources.cpp" />
     <ClCompile Include="Scripts\Commons\Systems\Timer.cpp" />
     <ClCompile Include="Scripts\Commons\Systems\WindowController.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPoint.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\DebugCamera\DebugCameraInternals.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\NPC\NPC.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\NPC\NPCManager.cpp" />
@@ -259,11 +261,12 @@
     <ClCompile Include="Scripts\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenu.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeManager.cpp" />
+    <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPoint.h" />
+    <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateDefeat.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFreeze.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeManager.h" />
-    <None Include=".gitignore" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutWire.json" />
     <None Include="Resources\Jsons\Events\Event_TalkHowTo.json" />
@@ -271,6 +274,7 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_BlackBeltImage.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursor.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_MessageWindowBackGround.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_MessageWindowCharacter.json" />

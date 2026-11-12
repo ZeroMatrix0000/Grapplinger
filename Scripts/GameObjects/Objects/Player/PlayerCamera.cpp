@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/12
  *
  * プレイヤーカメラ
  */
@@ -96,6 +96,21 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 	// レイの方向
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::UnitZ, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }.CreateQuaternion());
 
+	// 中心の差分
+	Math::Vector3 centerPositionDisplacement = centerPosition - m_target;
+	centerPositionDisplacement.y = 0;
+	// 最短距離
+	float minDistance;
+	if (centerPositionDisplacement.LengthSquared() < Math::EPSILON)
+	{
+		minDistance = 0;
+	}
+	else
+	{
+		minDistance = Math::Clamp(centerPositionDisplacement.Length() / centerPositionDisplacement.Dot(direction), 0.0f, m_maxDistance);
+	}
+
+
 	// 方向指定最短距離
 	float angledDistance = Math::INFTY;
 
@@ -106,34 +121,13 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 
 		float newDistance = Math::Geometry::AngledDistance(m_target, triangle, direction);
 
-		if (newDistance > 0.0f && direction.Dot(triangle.GetNormal()) < 0.0f)
+		if (newDistance > minDistance && direction.Dot(triangle.GetNormal()) < 0.0f)
 		{
 			angledDistance = Math::Min(angledDistance, newDistance);
 		}
 	}
 
 	m_distance = Math::Min(angledDistance, m_maxDistance);
-}
-
-// 直方体による座標補正
-void PlayerCamera::BoxCorrect(const Math::Box& box, const Math::Vector3& centerPosition)
-{
-	if (m_isFixed || m_isEasing)
-	{
-		return;
-	}
-
-	// レイの方向
-	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::UnitZ, Math::Euler{ m_rotationXDeg, m_rotationYDeg, 0.0f }.CreateQuaternion());
-
-	// 方向指定最短距離
-	float angledDistance = Math::Geometry::AngledDistance(m_target, box, direction);
-	if (angledDistance <= 0.0f)
-	{
-		angledDistance = Math::INFTY;
-	}
-
-	m_distance = Math::Min(angledDistance, m_distance);
 }
 
 // ターゲットの位置を変更

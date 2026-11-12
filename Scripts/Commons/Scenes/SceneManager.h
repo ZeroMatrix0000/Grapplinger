@@ -19,7 +19,7 @@ namespace Scenes
 	class SceneManager : public ISceneManager<TTransitionData, TContext>
 	{
 
-		typedef Scene<TTransitionData, TContext> Scene;
+		typedef Scene<TContext> Scene;
 
 
 	public:
@@ -59,7 +59,7 @@ namespace Scenes
 				m_currentScene = std::move(m_nextScene);
 				m_nextScene = nullptr;
 				// 次のシーンの初期化
-				m_currentScene->Initialize(m_data);
+				m_currentScene->Initialize();
 
 				// アニメーションの設定
 				m_animation.SetAnimation(false);
@@ -91,15 +91,18 @@ namespace Scenes
 
 		// はじめのシーンを設定
 		template<typename TScene> requires IsDerived<TScene, Scene>
-		void SetFirstScene(const TTransitionData& data = TTransitionData{})
+		void SetFirstScene()
 		{
 			// シーンの初期化
 			m_currentScene = m_CreateComponentList.at(typeid(Ref<TScene>))();
-			m_currentScene->Initialize(data);
+			m_currentScene->Initialize();
 		}
 
 		// シーン切り替え中かどうか
 		bool IsChanging() const override { return m_animation.IsChanging(); }
+
+		// 遷移データの参照を取得
+		Ref<TTransitionData> GetTransitionDataRef() override { return Ref{ m_data }; }
 
 
 	private:
@@ -108,10 +111,9 @@ namespace Scenes
 		/* メンバ関数 */
 
 		// 次のシーンを設定
-		void SetNextScene(const std::type_index& index, const TTransitionData& data) override
+		void SetNextScene(const std::type_index& index) override
 		{
 			m_nextScene = m_CreateComponentList.at(index)();
-			m_data = data;
 			// アニメーションの設定
 			m_animation.SetAnimation(true);
 		}

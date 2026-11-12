@@ -17,6 +17,7 @@
 #include "Scripts/GameObjects/Objects/Player/States/PlayerStates.h"
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
 #include "Scripts/GameObjects/Objects/Slime/SlimeManager.h"
+#include "Scripts/GameObjects/Objects/CheckPoint/CheckPointManager.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -153,6 +154,10 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + internalsRef->nPCManagerRef->GetNPCCount() + 1));
 	}
 	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + internalsRef->nPCManagerRef->GetNPCCount() + slimeBoxes.size()));
+
+	// チェックポイントの計算
+	Ref dataRef = internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef();
+	dataRef->checkPointNumber = Math::Max(dataRef->checkPointNumber, internalsRef->checkPointManagerRef->Check(internalsRef->playerRef->GetBox()));
 }
 
 // 終了処理

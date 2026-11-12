@@ -16,15 +16,14 @@ namespace Renderings
 	class Canvas;
 	class ParticleManager;
 }
-struct SceneTransitionData;
 class GameContext;
 class DebugCamera;
 
 // サンプルシーン
-class SampleScene : public Scenes::Scene<SceneTransitionData, GameContext>
+class SampleScene : public Scenes::Scene<GameContext>
 {
 
-	typedef Scene<SceneTransitionData, GameContext> Scene;
+	typedef Scene<GameContext> Scene;
 
 
 public:
@@ -36,7 +35,7 @@ public:
 	SampleScene(const ComponentDesc& desc, Ref<const GameContext> context);
 
 	// 初期化処理
-	void Initialize(const SceneTransitionData& data) override;
+	void Initialize() override;
 	// 更新処理
 	void Update(float elapsedTime) override;
 	// 終了処理

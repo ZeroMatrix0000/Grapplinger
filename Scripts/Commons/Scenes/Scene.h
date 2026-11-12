@@ -13,7 +13,7 @@
 namespace Scenes
 {
 	// シーン
-	template<typename TTransitionData, typename TContext>
+	template<typename TContext>
 	class Scene : public Component
 	{
 
@@ -35,7 +35,7 @@ namespace Scenes
 		// 初期化処理
 		void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override {}
 		// 初期化処理
-		virtual void Initialize(const TTransitionData& data) = 0;
+		virtual void Initialize() = 0;
 		// 更新処理
 		virtual void Update(float elapsedTime) = 0;
 		// 終了処理

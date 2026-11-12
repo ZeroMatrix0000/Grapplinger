@@ -42,7 +42,7 @@ TitleScene::TitleScene(const ComponentDesc& desc, Ref<const GameContext> context
 }
 
 // 初期化処理
-void TitleScene::Initialize(const SceneTransitionData& data)
+void TitleScene::Initialize()
 {
 	// コンテキスト
 	const auto& gameContext = GetContext();

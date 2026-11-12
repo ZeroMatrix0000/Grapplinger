@@ -349,5 +349,61 @@
 				]
 			}
 		}
+	},
+	{
+		"Name": "CheckPoint",
+		"Prefab": "Prefab_CheckPoint",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": 0.0,
+					"Y": 0.0,
+					"Z": 0.0
+				}
+			},
+			"CheckPoint": {
+				"Order": 0
+			}
+		}
+	},
+	{
+		"Name": "CheckPoint",
+		"Prefab": "Prefab_CheckPoint",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": 45.0,
+					"Y": 6.0,
+					"Z": 0.0
+				}
+			},
+			"CheckPoint": {
+				"Order": 1
+			}
+		}
+	},
+	{
+		"Name": "CheckPoint",
+		"Prefab": "Prefab_CheckPoint",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": 45.0,
+					"Y": 9.0,
+					"Z": -51.0
+				}
+			},
+			"CheckPoint": {
+				"Order": 2
+			}
+		}
+	},
+	{
+		"Name": "CheckPointManager",
+		"Components": {
+			"CheckPointManager": {
+				"CameraScreen": "PlayerCamera"
+			}
+		}
 	}
 ]

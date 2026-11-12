@@ -49,6 +49,9 @@ public:
 	// 落下判定床チェック
 	void DeathFloorCheck(const Math::Box& deathFloor);
 
+	// 座標を設定
+	void SetPosition(const Math::Vector3& position);
+
 	// 回転を設定
 	void SetRotation(const Math::Quaternion& rotation) { m_internals.rotation.SetTarget(rotation); }
 

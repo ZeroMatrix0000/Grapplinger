@@ -35,7 +35,7 @@ SampleScene::SampleScene(const ComponentDesc& desc, Ref<const GameContext> conte
 }
 
 // 初期化処理
-void SampleScene::Initialize(const SceneTransitionData& data)
+void SampleScene::Initialize()
 {
 	// コンテキスト
 	Ref gameContext = GetContext();

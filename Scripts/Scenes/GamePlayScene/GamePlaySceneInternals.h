@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/05
+ * Last Updated: 2026/11/12
  *
  * ゲームプレイシーンの内部データ
  */
@@ -31,6 +31,7 @@ class Player;
 class PlayerCamera;
 class NPCManager;
 class SlimeManager;
+class CheckPointManager;
 class Z2Talk;
 class BlackBelt;
 class MessageWindow;
@@ -75,6 +76,9 @@ struct GamePlaySceneInternals
 
 	// 落下判定床
 	Ref<Colliders::BoxCollider> deathFloorRef;
+
+	// チェックポイント管理
+	Ref<CheckPointManager> checkPointManagerRef;
 
 	// レティクル
 	Ref<Renderings::Image> reticleRef;

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/12
  *
  * ゲームプレイシーン
  */
@@ -21,10 +21,10 @@ struct SceneTransitionData;
 class GameContext;
 
 // ゲームプレイシーン
-class GamePlayScene : public Scenes::Scene<SceneTransitionData, GameContext>
+class GamePlayScene : public Scenes::Scene<GameContext>
 {
 
-	typedef Scene<SceneTransitionData, GameContext> Scene;
+	typedef Scene<GameContext> Scene;
 
 
 public:
@@ -36,7 +36,7 @@ public:
 	GamePlayScene(const ComponentDesc& desc, Ref<const GameContext> context);
 
 	// 初期化処理
-	void Initialize(const SceneTransitionData& data) override;
+	void Initialize() override;
 	// 更新処理
 	void Update(float elapsedTime) override;
 	// 終了処理
