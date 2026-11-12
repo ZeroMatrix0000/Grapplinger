@@ -142,6 +142,9 @@
     <Filter Include="Scripts\GameObjects\Objects\Slime\States">
       <UniqueIdentifier>{593f1bd2-dbe7-44a4-8b38-ea829ac6e493}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\GameObjects\Objects\CheckPoint">
+      <UniqueIdentifier>{bc8b654c-dde9-423a-83aa-c89e465f828b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Main\WinMain.cpp">
@@ -1040,6 +1043,9 @@
       <Filter>Jsons\Prefabs</Filter>
     </None>
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json">
+      <Filter>Jsons\Events</Filter>
+    </None>
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json">
       <Filter>Jsons\Events</Filter>
     </None>
   </ItemGroup>

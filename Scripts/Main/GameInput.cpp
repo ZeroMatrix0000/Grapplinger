@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/12
  *
  * ゲームの入力
  */
@@ -81,7 +81,7 @@ bool GameInput::GetPlayerDash() const
 		return false;
 	}
 
-	return m_input->GetKey(KeyName::LeftShift);
+	return m_input->GetKey(KeyName::LeftShift) || m_input->GetKey(KeyName::RightShift);
 }
 
 // プレイヤーのジャンプ入力を取得

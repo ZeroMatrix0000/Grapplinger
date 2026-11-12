@@ -1,0 +1,28 @@
+[
+	{
+		"ActionType": "OpenMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "<color=#00BBFF>Shift キー</color> を<ruby=お>押</ruby>しながら<ruby=いどう>移動</ruby>すると\nダッシュできるよ。",
+			"Character": "NPC2"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Character": "NPC2",
+			"Text": "ダッシュしながらジャンプすれば、\n<ruby=とお>遠</ruby>くの<ruby=あしば>足場</ruby>に<ruby=と>飛</ruby>び<ruby=うつ>移</ruby>ることができるよ。"
+		}
+	},
+	{
+		"ActionType": "CloseMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	}
+]

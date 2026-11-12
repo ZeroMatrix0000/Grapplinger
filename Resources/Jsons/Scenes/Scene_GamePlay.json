@@ -79,7 +79,7 @@
 			},
 			"NPC": {
 				"Name": "NPC2",
-				"EventName": "Event_TalkHowTo",
+				"EventName": "Event_TestStage_Talk2",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
