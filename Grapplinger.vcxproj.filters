@@ -1048,6 +1048,7 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json">
       <Filter>Jsons\Events</Filter>
     </None>
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShaders\Test2.hlsl">

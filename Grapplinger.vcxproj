@@ -263,6 +263,7 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Player\States\PlayerStateFreeze.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\SlimeManager.h" />
+    <None Include=".gitignore" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutWire.json" />
     <None Include="Resources\Jsons\Events\Event_TalkHowTo.json" />
