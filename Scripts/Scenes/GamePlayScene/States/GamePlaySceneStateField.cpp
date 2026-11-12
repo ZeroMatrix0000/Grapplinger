@@ -155,9 +155,13 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	}
 	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + internalsRef->nPCManagerRef->GetNPCCount() + slimeBoxes.size()));
 
-	// チェックポイントの計算
-	Ref dataRef = internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef();
-	dataRef->checkPointNumber = Math::Max(dataRef->checkPointNumber, internalsRef->checkPointManagerRef->Check(internalsRef->playerRef->GetBox()));
+	// シーン遷移中でないなら
+	if (!internalsRef->gameContextRef->GetISceneManager()->IsChanging())
+	{
+		// チェックポイントの計算
+		Ref dataRef = internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef();
+		dataRef->checkPointNumber = Math::Max(dataRef->checkPointNumber, internalsRef->checkPointManagerRef->Check(internalsRef->playerRef->GetBox()));
+	}
 }
 
 // 終了処理

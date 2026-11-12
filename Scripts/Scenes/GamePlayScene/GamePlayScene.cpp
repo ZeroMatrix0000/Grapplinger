@@ -64,6 +64,8 @@ void GamePlayScene::Update(float elapsedTime)
 		GetContext()->GetISceneManager()->SetNextScene<GamePlayScene>();
 		// 入力を無効化
 		GetContext()->GetIGameInput()->SetActive(false);
+		// チェックポイントをリセット
+		GetContext()->GetISceneManager()->GetTransitionDataRef()->checkPointNumber = 0;
 		return;
 	}
 
