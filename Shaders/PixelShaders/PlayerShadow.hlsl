@@ -71,8 +71,13 @@ float4 main(PSInput input) : SV_Target
 	// テクスチャ色
 	float4 textureColor = Texture.Sample(Sampler, input.texCoord);
 	
+	float b = step(0.95f, frac(input.worldPosition.x));
+	b = max(b, step(0.95f, frac(input.worldPosition.y)));
+	b = max(b, step(0.95f, frac(input.worldPosition.z)));
+	input.color.rgb *= (1 - b / 2.0f);
+	
 	// 環境光色
-	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor.rgb * input.color.rgb;
+	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor * input.color.rgb;
 	
 	// 法線
 	float3 normal = normalize(input.normal);

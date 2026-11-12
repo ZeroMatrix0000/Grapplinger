@@ -120,6 +120,13 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 			// 描画オブジェクトリスト
 			const auto& renderObjectsRef = renderObjectsList.at(modelSource);
 
+			// 頂点シェーダ
+			Ref vertexShader = modelSource->GetVertexShader();
+			if (vertexShader->IsInitialized())
+			{
+				// ピクセルシェーダを設定
+				m_pContext->VSSetShader(vertexShader->GetD3DShaderRef().Get(), nullptr, 0);
+			}
 			// ピクセルシェーダ
 			Ref pixelShader = modelSource->GetPixelShader();
 			if (pixelShader->IsInitialized())
@@ -240,6 +247,11 @@ void Renderings::Model3DRenderer::Render(bool isInstance)
 				}
 			}
 
+			// 頂点シェーダを元に戻す
+			if (vertexShader->IsInitialized())
+			{
+				m_pContext->VSSetShader(m_pVertexShader->GetD3DShaderRef().Get(), nullptr, 0);
+			}
 			// ピクセルシェーダを元に戻す
 			if (pixelShader->IsInitialized())
 			{

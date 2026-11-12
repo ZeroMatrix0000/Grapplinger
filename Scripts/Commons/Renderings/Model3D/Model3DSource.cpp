@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DSource.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/12
  *
  * 3Dモデルのソース
  */
@@ -12,11 +12,12 @@
 #include "InstancingEffectFactory.h"
 
 // コンストラクタ
-Renderings::Model3DSource::Model3DSource(Ref<const PixelShader> pixelShader)
+Renderings::Model3DSource::Model3DSource(Ref<const VertexShader> vertexShader, Ref<const PixelShader> pixelShader)
 	: m_model{}
 	, m_partInfos{}
 	, m_depthStencilState{}
 	, m_drawingOrder{}
+	, m_vertexShader{ vertexShader }
 	, m_pixelShader{ pixelShader }
 {
 }
@@ -50,9 +51,9 @@ void Renderings::Model3DSource::SetDepthStencilState(const D3D11_DEPTH_STENCIL_D
 }
 
 // 生成
-Renderings::Model3DSource Renderings::Model3DSource::Create(Ref<const PixelShader> pixelShader, const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef)
+Renderings::Model3DSource Renderings::Model3DSource::Create(Ref<const VertexShader> vertexShader, Ref<const PixelShader> pixelShader, const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef)
 {
-	Model3DSource model{ pixelShader };
+	Model3DSource model{ vertexShader, pixelShader };
 	model.Initialize(filePath, deviceRef, fxRef);
 	return model;
 }

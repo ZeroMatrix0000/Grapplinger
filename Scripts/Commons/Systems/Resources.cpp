@@ -19,7 +19,7 @@ Systems::Resources::Resources()
 	, m_meshes{}
 	, m_vertexShaders{}
 	, m_pixelShaders{}
-	, m_nullModelSource{ Ref{ m_nullPixelShader }.Const() }
+	, m_nullModelSource{ Ref{ m_nullVertexShader }.Const(), Ref{ m_nullPixelShader }.Const() }
 	, m_nullImageSource{}
 	, m_nullJson{}
 	, m_nullMesh{}
@@ -53,6 +53,7 @@ void Systems::Resources::LoadModelSources(const std::wstring& directoryPath, Ref
 			{
 				m_modelSources.emplace(entry.path().stem().string(), Renderings::Model3DSource::Create
 				(
+					Ref{ m_nullVertexShader }.Const(),
 					Ref{ m_nullPixelShader }.Const(),
 					entry.path().wstring(),
 					deviceRef,

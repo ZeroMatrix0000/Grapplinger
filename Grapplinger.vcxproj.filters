@@ -1098,5 +1098,8 @@
     <FxCompile Include="Shaders\PixelShaders\UnlitBasic.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\VertexShaders\GroundGrid.hlsl">
+      <Filter>Shaders\VertexShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

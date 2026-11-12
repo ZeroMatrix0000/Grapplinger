@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3DSource.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/12
  *
  * 3Dモデルのソース
  */
@@ -11,6 +11,7 @@
 namespace Renderings
 {
 	class InstancingEffectFactory;
+	class VertexShader;
 	class PixelShader;
 
 	// 3Dモデルのソース
@@ -39,7 +40,7 @@ namespace Renderings
 		/* メンバ関数 */
 
 		// コンストラクタ
-		Model3DSource(Ref<const PixelShader> pixelShader);
+		Model3DSource(Ref<const VertexShader> vertexShader, Ref<const PixelShader> pixelShader);
 
 		// 初期化処理
 		void Initialize(const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef);
@@ -58,6 +59,8 @@ namespace Renderings
 		// 描画順を設定
 		void SetDrawingOrder(int drawingOrder) { m_drawingOrder = drawingOrder; }
 
+		// 頂点シェーダを設定
+		void SetVertexShader(Ref<const VertexShader> vertexShader) { m_vertexShader = vertexShader; }
 		// ピクセルシェーダを設定
 		void SetPixelShader(Ref<const PixelShader> pixelShader) { m_pixelShader = pixelShader; }
 
@@ -75,6 +78,8 @@ namespace Renderings
 		// 描画順を取得
 		int GetDrawingOrder() const { return m_drawingOrder; }
 
+		// 頂点シェーダのポインタを取得
+		Ref<const VertexShader> GetVertexShader() const { return m_vertexShader; }
 		// ピクセルシェーダのポインタを取得
 		Ref<const PixelShader> GetPixelShader() const { return m_pixelShader; }
 
@@ -84,7 +89,7 @@ namespace Renderings
 		/* 静的関数 */
 
 		// 生成
-		static Model3DSource Create(Ref<const PixelShader> pixelShader, const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef);
+		static Model3DSource Create(Ref<const VertexShader> vertexShader, Ref<const PixelShader> pixelShader, const std::wstring& filePath, Ref<ID3D11Device5> deviceRef, Ref<InstancingEffectFactory> fxRef);
 
 
 	private:
@@ -103,6 +108,8 @@ namespace Renderings
 		// 描画順
 		int m_drawingOrder;
 
+		// 頂点シェーダ
+		Ref<const VertexShader> m_vertexShader;
 		// ピクセルシェーダ
 		Ref<const PixelShader> m_pixelShader;
 
