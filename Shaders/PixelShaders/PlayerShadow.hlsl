@@ -71,16 +71,17 @@ float4 main(PSInput input) : SV_Target
 	// テクスチャ色
 	float4 textureColor = Texture.Sample(Sampler, input.texCoord);
 	
-	float b = step(0.95f, frac(input.worldPosition.x));
-	b = max(b, step(0.95f, frac(input.worldPosition.y)));
-	b = max(b, step(0.95f, frac(input.worldPosition.z)));
+	// 法線
+	float3 normal = normalize(input.normal);
+	
+	float b = step(0.95f, frac(input.worldPosition.x) * step(abs(dot(normal, float3(1.0f, 0.0f, 0.0f))), 0.9f));
+	b = max(b, step(0.95f, frac(input.worldPosition.y) * step(abs(dot(normal, float3(0.0f, 1.0f, 0.0f))), 0.9f)));
+	b = max(b, step(0.95f, frac(input.worldPosition.z) * step(abs(dot(normal, float3(0.0f, 0.0f, 1.0f))), 0.9f)));
 	input.color.rgb *= (1 - b / 2.0f);
 	
 	// 環境光色
 	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor * input.color.rgb;
 	
-	// 法線
-	float3 normal = normalize(input.normal);
 	// 光の方向
 	float3 lightDirection = normalize(-LightDirection);
 	// 拡散反射の強さ
