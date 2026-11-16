@@ -154,7 +154,7 @@ void Game::Update()
 		else if (m_renderer.GetRenderMode() == Renderings::Renderer::RenderMode::Model)
 		{
 			m_resources.GetEditableModelSource("NewGrounds")->SetPixelShader(m_resources.GetPixelShader("PlayerShadow"));
-			m_resources.GetEditableModelSource("TestStage")->SetPixelShader(m_resources.GetPixelShader("PlayerShadow"));
+			m_resources.GetEditableModelSource("TestStage")->SetPixelShader(m_resources.GetPixelShader("PlayerShadowAndGrid"));
 		}
 	}
 

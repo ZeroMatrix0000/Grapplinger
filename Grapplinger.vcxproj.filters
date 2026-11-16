@@ -1117,5 +1117,11 @@
     <FxCompile Include="Shaders\VertexShaders\GroundGrid.hlsl">
       <Filter>Shaders\VertexShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\PlayerShadowAndGrid.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\PlayerShadowAndNormal.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

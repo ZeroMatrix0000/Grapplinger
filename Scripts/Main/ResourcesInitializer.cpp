@@ -106,7 +106,7 @@ void ResourcesInitializer::InitializeResources
 
 	// シェーダを適用
 	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(resources->GetPixelShader("PlayerShadow"));
-	resources->GetEditableModelSource("TestStage")->SetPixelShader(resources->GetPixelShader("PlayerShadow"));
+	resources->GetEditableModelSource("TestStage")->SetPixelShader(resources->GetPixelShader("PlayerShadowAndGrid"));
 	resources->GetEditableModelSource("PlayerSilhouette")->SetPixelShader(resources->GetPixelShader("PlayerSilhouette"));
 
 	// 描画順を設定

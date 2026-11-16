@@ -74,11 +74,6 @@ float4 main(PSInput input) : SV_Target
 	// 法線
 	float3 normal = normalize(input.normal);
 	
-	float b = step(0.95f, frac(input.worldPosition.x) * step(abs(dot(normal, float3(1.0f, 0.0f, 0.0f))), 0.9f));
-	b = max(b, step(0.95f, frac(input.worldPosition.y) * step(abs(dot(normal, float3(0.0f, 1.0f, 0.0f))), 0.9f)));
-	b = max(b, step(0.95f, frac(input.worldPosition.z) * step(abs(dot(normal, float3(0.0f, 0.0f, 1.0f))), 0.9f)));
-	input.color.rgb *= (1 - b / 2.0f);
-	
 	// 環境光色
 	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor * input.color.rgb;
 	
