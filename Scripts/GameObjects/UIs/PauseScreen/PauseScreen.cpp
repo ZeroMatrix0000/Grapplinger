@@ -12,6 +12,7 @@
 #include "Scripts/Commons/Components/RectTransform.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
+#include "Scripts/Commons/Renderings/Text/Text.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
@@ -25,6 +26,7 @@ PauseScreen::PauseScreen(const ComponentDesc& desc)
 	, m_backGround{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_sideBelt{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_sideBeltImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
+	, m_title{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>() }
 {
 }
@@ -53,6 +55,12 @@ void PauseScreen::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_sideBeltWidth = m_sideBelt->GetRect().size.x;
 	m_sideBeltPosition.SetMovement(Math::Vector2{ -m_sideBeltWidth, 0.0f }, 0.0f);
 	m_sideBelt->SetPosition(Math::Vector2{ -m_sideBeltWidth, 0.0f });
+
+	// タイトルを作成
+	obj = Instantiate("Prefab_PauseScreenTitle");
+	m_title = obj->GetComponent<RectTransform>();
+	obj->GetComponent<Renderings::Text>()->SetCanvasRef(m_canvasRef.Const());
+	m_title->SetPosition(Math::Vector2{ -m_sideBeltWidth, 0.0f });
 }
 
 // 更新処理
@@ -60,6 +68,7 @@ void PauseScreen::Update(float elapsedTime)
 {
 	m_sideBeltPosition.Tick(elapsedTime);
 	m_sideBelt->SetPosition(m_sideBeltPosition.GetMovement());
+	m_title->SetPosition(m_sideBeltPosition.GetMovement());
 
 	Ref bufferRef = m_sideBeltImage->GetPixelShader()->GetConstantBufferRef();
 	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
@@ -70,7 +79,6 @@ void PauseScreen::Update(float elapsedTime)
 void PauseScreen::SetCanvasSize(const Math::Vector2& outputSize)
 {
 	m_backGround->SetSize(m_canvasRef->GetSize());
-	m_sideBelt->SetSize(Math::Vector2{ m_sideBeltWidth, m_canvasRef->GetSize().y });
 }
 
 // ポーズする

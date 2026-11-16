@@ -1,0 +1,24 @@
+{
+	"RectTransform": {
+		"Size": {
+			"X": 300.0,
+			"Y": 850.0
+		},
+		"Pivot": "MiddleLeft",
+		"Anchor": "MiddleLeft"
+	},
+	"Text": {
+		"Str": "ポーズ",
+		"FontName": "GenEi POPle Pw",
+		"FontSize": 72.0,
+		"OutlineWidth": 4.0,
+		"OutlineColor": {
+			"R": 0.3,
+			"G": 0.0,
+			"B": 0.1,
+			"A": 1.0
+		},
+		"TextAlignment": "DWRITE_TEXT_ALIGNMENT_CENTER",
+		"OrderInLayer": 1010
+	}
+}

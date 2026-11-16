@@ -116,8 +116,8 @@ float4 main(PSInput input) : SV_Target
 	// 法線
 	float3 normal = normalize(input.normal);
 	
-	float3 p = PerlinNoise(input.worldPosition * 4.0f);
-	normal = normalize(p / 2.0f + normal);
+	float3 p = PerlinNoise(input.worldPosition * 16.0f);
+	normal = normalize(p + normal);
 	
 	// 環境光色
 	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor * input.color.rgb;

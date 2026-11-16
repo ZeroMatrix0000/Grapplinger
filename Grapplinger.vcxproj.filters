@@ -499,7 +499,9 @@
     <ClCompile Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.cpp">
       <Filter>Scripts\GameObjects\UIs\PauseScreen</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -1077,6 +1079,9 @@
       <Filter>Jsons\Prefabs</Filter>
     </None>
     <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json">
+      <Filter>Jsons\Prefabs</Filter>
+    </None>
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
   </ItemGroup>

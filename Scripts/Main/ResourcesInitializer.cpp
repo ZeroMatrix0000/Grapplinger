@@ -1,7 +1,7 @@
 /*
  * FileName:     ResourcesInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/09
+ * Last Updated: 2026/11/16
  *
  * リソース初期化
  */

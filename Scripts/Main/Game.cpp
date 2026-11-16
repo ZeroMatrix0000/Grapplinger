@@ -181,7 +181,12 @@ void Game::Render()
 	m_renderer.Render();
 
 	// 画面の表示
+	// デバッグビルドなら同期なし
+#if defined(_DEBUG)
 	m_deviceResources.Present(false);
+#else
+	m_deviceResources.Present(true);
+#endif
 }
 
 // 終了処理

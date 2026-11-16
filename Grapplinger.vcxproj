@@ -285,6 +285,7 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorText.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_Player.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerModel.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerSilhouette.json" />

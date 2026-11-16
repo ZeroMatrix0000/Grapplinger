@@ -63,10 +63,14 @@ private:
 
 	// 背景
 	Ref<RectTransform> m_backGround;
+	
 	// 左帯
 	Ref<RectTransform> m_sideBelt;
 	// 左帯の画像
 	Ref<Renderings::Image> m_sideBeltImage;
+
+	// タイトル
+	Ref<RectTransform> m_title;
 
 	// キャンバスのインタフェースの参照
 	Ref<Renderings::Canvas> m_canvasRef;
