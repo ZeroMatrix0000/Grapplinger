@@ -1,7 +1,7 @@
 /*
  * FileName:     IGameInput.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/16
  *
  * ゲーム入力のインタフェース
  */
@@ -40,6 +40,9 @@ public:
 
 	// テキスト送り入力
 	virtual bool GetTextScroll() const = 0;
+
+	// ポーズ入力
+	virtual bool GetPause() const = 0;
 
 	// アクティブ化・非アクティブ化
 	virtual void SetActive(bool isActive) = 0;

@@ -405,5 +405,31 @@
 				"CameraScreen": "PlayerCamera"
 			}
 		}
+	},
+	{
+		"Name": "PauseScreen",
+		"Components": {
+			"PauseScreen": {
+				"BackGround": "PauseScreenBackGround",
+				"Canvas": "Canvas"
+			}
+		}
+	},
+	{
+		"Name": "PauseScreenBackGround",
+		"Components": {
+			"RectTransform": {},
+			"Image": {
+				"ImageSourceName": "Box",
+				"Color": {
+					"R": 0.3,
+					"G": 0.0,
+					"B": 0.1,
+					"A": 0.5
+				},
+				"OrderInLayer": 1000,
+				"Canvas": "Canvas"
+			}
+		}
 	}
 ]

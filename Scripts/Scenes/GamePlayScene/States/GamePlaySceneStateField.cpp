@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/16
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -22,6 +22,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
+#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
@@ -85,6 +86,13 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 		}
 	}
 
+	// ポーズ画面を開く
+	if (iGameInput->GetPause())
+	{
+		SetNextState(std::make_unique<GamePlaySceneStatePause>());
+		return;
+	}
+
 	// 糸伸ばし入力で糸を伸ばす
 	if (iGameInput->GetPlayerExpandWire() && internalsRef->playerRef->CanExpandWire())
 	{
@@ -144,6 +152,9 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// ターゲットの更新
 	internalsRef->targetPointRef->Update(elapsedTime);
+
+	// ポーズ画面の更新
+	internalsRef->pauseScreenRef->Update(elapsedTime);
 
 	// シェーダにオブジェクトの座標を設定
 	Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();

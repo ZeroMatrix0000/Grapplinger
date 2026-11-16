@@ -145,6 +145,9 @@
     <Filter Include="Scripts\GameObjects\Objects\CheckPoint">
       <UniqueIdentifier>{bc8b654c-dde9-423a-83aa-c89e465f828b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\GameObjects\UIs\PauseScreen">
+      <UniqueIdentifier>{2c969d8c-c232-4d88-bbed-c222183671f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Main\WinMain.cpp">
@@ -493,6 +496,10 @@
     <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.cpp">
       <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.cpp">
+      <Filter>Scripts\GameObjects\UIs\PauseScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -967,6 +974,12 @@
     <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.h">
       <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.h">
+      <Filter>Scripts\GameObjects\UIs\PauseScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.h">
+      <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -1061,6 +1074,9 @@
       <Filter>Jsons\Events</Filter>
     </None>
     <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json">
+      <Filter>Jsons\Prefabs</Filter>
+    </None>
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
   </ItemGroup>

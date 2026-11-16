@@ -232,6 +232,7 @@
     <ClCompile Include="Scripts\GameObjects\UIs\BlackBelt\BlackBelt.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\InteractCursor\InteractCursor.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\MessageWindow\MessageWindow.cpp" />
+    <ClCompile Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\TargetPoint\TargetPoint.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\Z2Talk\Z2Talk.cpp" />
     <ClCompile Include="Scripts\Main\ComponentsRegisterer.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateEvent.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateField.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.cpp" />
     <ClCompile Include="Scripts\Scenes\SampleScene\SampleScene.cpp" />
     <ClCompile Include="Scripts\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenu.cpp" />
@@ -282,6 +284,7 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_NPC.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorText.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_Player.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerModel.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerSilhouette.json" />
@@ -379,6 +382,7 @@
     <ClInclude Include="Scripts\GameObjects\UIs\BlackBelt\BlackBelt.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\InteractCursor\InteractCursor.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\MessageWindow\MessageWindow.h" />
+    <ClInclude Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenuParams.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\TargetPoint\TargetPoint.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\Z2Talk\Z2Talk.h" />
@@ -401,6 +405,7 @@
     <ClInclude Include="Scripts\Scenes\GamePlayScene\GamePlaySceneInternals.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateEvent.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateField.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStates.h" />
     <ClInclude Include="Scripts\Scenes\TitleScene\TitleScene.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenu.h" />

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.hpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/16
  *
  * ゲームプレイシーンの内部データ
  */
@@ -33,6 +33,7 @@ GamePlaySceneInternals::GamePlaySceneInternals
 	, blackBeltRef{ owner->GetNullComponent<BlackBelt>() }
 	, messageWindowRef{ owner->GetNullComponent<MessageWindow>() }
 	, targetPointRef{ owner->GetNullComponent<TargetPoint>() }
+	, pauseScreenRef{ owner->GetNullComponent<PauseScreen>() }
 	, iCameraScreenRef{ owner->GetNullComponent<Renderings::ICameraScreen>() }
 	, canvasRef{ owner->GetNullComponent<Renderings::Canvas>() }
 	, actionManagerRef{ owner->GetNullComponent<ActionManager>() }

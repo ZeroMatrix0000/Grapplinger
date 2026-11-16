@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/04
+ * Last Updated: 2026/11/16
  *
  * ゲームの入力
  */
@@ -38,6 +38,9 @@ public:
 
 	// テキスト送り入力
 	bool GetTextScroll() const override;
+
+	// ポーズ入力
+	bool GetPause() const override;
 
 	// アクティブ化・非アクティブ化
 	void SetActive(bool isActive) override { m_isActive = isActive; }

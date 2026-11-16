@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/16
  *
  * ゲームプレイシーン
  */
@@ -19,6 +19,7 @@
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
+#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
 #include "Scripts/Commons/Scenes/ISceneManager.h"
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
@@ -117,6 +118,7 @@ void GamePlayScene::AcceptMessage(const std::string& message, const std::any& va
 		m_internals.nPCManagerRef->SetCursor(m_internals.iCameraScreenRef.Const());
 		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.Const());
 		m_internals.blackBeltRef->SetWidth(m_internals.canvasRef->GetSize().x);
+		m_internals.pauseScreenRef->SetCanvasSize(outputSize);
 	}
 }
 

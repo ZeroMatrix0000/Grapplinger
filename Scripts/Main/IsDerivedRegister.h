@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/16
  *
  * 継承関係の登録
  */
@@ -47,6 +47,7 @@ class Z2Talk;
 class BlackBelt;
 class MessageWindow;
 class TargetPoint;
+class PauseScreen;
 
 class PlayerState;
 class PlayerStateOnGround;
@@ -102,6 +103,7 @@ IS_DERIVED_REGISTER(Z2Talk, Component)
 IS_DERIVED_REGISTER(BlackBelt, Component)
 IS_DERIVED_REGISTER(MessageWindow, Component)
 IS_DERIVED_REGISTER(TargetPoint, Component)
+IS_DERIVED_REGISTER(PauseScreen, Component)
 
 IS_DERIVED_REGISTER(SampleScene, Scene)
 IS_DERIVED_REGISTER(TitleScene, Scene)

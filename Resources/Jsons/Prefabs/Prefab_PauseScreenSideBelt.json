@@ -1,0 +1,21 @@
+{
+	"RectTransform": {
+		"Size": {
+			"X": 500.0,
+			"Y": 900.0
+		},
+		"Pivot": "MiddleLeft",
+		"Anchor": "MiddleLeft"
+	},
+	"Image": {
+		"ImageSourceName": "Box",
+		"PixelShaderName": "TitleLogo2",
+		"Color": {
+			"R": 1.0,
+			"G": 0.5,
+			"B": 0.7,
+			"A": 1.0
+		},
+		"OrderInLayer": 1001
+	}
+}

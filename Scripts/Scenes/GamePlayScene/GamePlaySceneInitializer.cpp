@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/02
+ * Last Updated: 2026/11/16
  *
  * ゲームプレイシーンの初期化関数
  */
@@ -20,6 +20,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
+#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
 #include "Scripts/Scenes/GamePlayScene/Actions/ActionManager.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Commons/GameObjects/IGameObjectManager.h"
@@ -61,14 +62,6 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->playerRef->SetPosition(checkPointPosition);
 	internalsRef->playerRef->UpdateModel();
 
-	// プレイヤーカメラを取得
-	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");
-	internalsRef->iCameraScreenRef = camera->GetComponent<Renderings::ICameraScreen>();
-	internalsRef->playerCameraRef = camera->GetComponent<PlayerCamera>();
-	internalsRef->playerCameraRef->SetPosition(internalsRef->playerRef->GetCameraTarget());
-	internalsRef->iCameraScreenRef->UpdateViewMatrix();
-	internalsRef->iCameraScreenRef->SetProjectionMatrix(outputSize);
-
 	// キャンバスを取得
 	internalsRef->canvasRef = iGameObjectManager->Find("Canvas")->GetComponent<Renderings::Canvas>();
 	internalsRef->canvasRef->SetSize(outputSize);
@@ -102,6 +95,18 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 
 	// ターゲット照準を取得
 	internalsRef->targetPointRef = iGameObjectManager->Find("TargetPoint")->GetComponent<TargetPoint>();
+
+	// ポーズ画面を取得
+	internalsRef->pauseScreenRef = iGameObjectManager->Find("PauseScreen")->GetComponent<PauseScreen>();
+	internalsRef->pauseScreenRef->SetCanvasSize(outputSize);
+
+	// プレイヤーカメラを取得
+	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");
+	internalsRef->iCameraScreenRef = camera->GetComponent<Renderings::ICameraScreen>();
+	internalsRef->playerCameraRef = camera->GetComponent<PlayerCamera>();
+	internalsRef->playerCameraRef->SetPosition(internalsRef->playerRef->GetCameraTarget());
+	internalsRef->iCameraScreenRef->UpdateViewMatrix();
+	internalsRef->iCameraScreenRef->SetProjectionMatrix(outputSize);
 
 	// アクション管理を取得
 	internalsRef->actionManagerRef = iGameObjectManager->Find("ActionManager")->GetComponent<ActionManager>();
