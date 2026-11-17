@@ -172,6 +172,10 @@ LRESULT CALLBACK WndProcW
 		// ゲームの描画
 		s_game->Render();
 		break;
+	case WM_PAINT:
+		// ゲームの描画
+		s_game->Render();
+		break;
 	// ウィンドウの背景削除
 	case WM_ERASEBKGND:
 		return 0;
