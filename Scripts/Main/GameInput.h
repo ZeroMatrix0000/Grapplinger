@@ -1,7 +1,7 @@
 /*
  * FileName:     GameInput.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/17
  *
  * ゲームの入力
  */
@@ -41,6 +41,15 @@ public:
 
 	// ポーズ入力
 	bool GetPause() const override;
+
+	// メニュー上入力
+	bool GetMenuAbove() const override;
+	// メニュー下入力
+	bool GetMenuBelow() const override;
+	// メニュー決定入力
+	bool GetMenuDecide() const override;
+	// メニュー戻る入力
+	bool GetMenuBack() const override;
 
 	// アクティブ化・非アクティブ化
 	void SetActive(bool isActive) override { m_isActive = isActive; }

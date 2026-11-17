@@ -272,9 +272,11 @@
     <None Include="Resources\Jsons\Events\Event_TalkAboutText.json" />
     <None Include="Resources\Jsons\Events\Event_TalkAboutWire.json" />
     <None Include="Resources\Jsons\Events\Event_TalkHowTo.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk3.json" />
     <None Include="Resources\Jsons\Events\Event_TalkTestColor.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_BlackBeltImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursor.json" />
@@ -284,6 +286,8 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_NPC.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorText.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenu.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenuBar.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_Player.json" />

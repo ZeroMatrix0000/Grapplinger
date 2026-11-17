@@ -102,7 +102,7 @@
 			},
 			"NPC": {
 				"Name": "NPC3",
-				"EventName": "Event_TalkHowTo",
+				"EventName": "Event_TestStage_Talk3",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
@@ -125,7 +125,7 @@
 			},
 			"NPC": {
 				"Name": "NPC4",
-				"EventName": "Event_TalkHowTo",
+				"EventName": "Event_TestStage_Talk4",
 				"CameraScreen": "PlayerCamera"
 			}
 		}
@@ -240,6 +240,8 @@
 				"Canvas": "Canvas"
 			},
 			"TargetPoint": {
+				//"TargetDistance": 200.0,
+				//"RayLength": 400.0,
 				"TargetDistance": 20.0,
 				"RayLength": 50.0,
 				"BrightInterval": 0.1,
@@ -276,48 +278,48 @@
 			}
 		}
 	},
-	//{
-	//	"Name": "SlimeTest",
-	//	"Prefab": "Prefab_Slime",
-	//	"Components": {
-	//		"Transform": {
-	//			"Position": {
-	//				"X": -7.0,
-	//				"Y": 0.0,
-	//				"Z": 7.0
-	//			},
-	//			"Rotation": {
-	//				"X": 0.0,
-	//				"Y": -45.0,
-	//				"Z": 0.0
-	//			}
-	//		},
-	//		"Slime": {
-	//			"CameraScreen": "PlayerCamera"
-	//		}
-	//	}
-	//},
-	//{
-	//	"Name": "SlimeTest2",
-	//	"Prefab": "Prefab_Slime",
-	//	"Components": {
-	//		"Transform": {
-	//			"Position": {
-	//				"X": 7.0,
-	//				"Y": 0.0,
-	//				"Z": 7.0
-	//			},
-	//			"Rotation": {
-	//				"X": 0.0,
-	//				"Y": 45.0,
-	//				"Z": 0.0
-	//			}
-	//		},
-	//		"Slime": {
-	//			"CameraScreen": "PlayerCamera"
-	//		}
-	//	}
-	//},
+	{
+		"Name": "SlimeTest",
+		"Prefab": "Prefab_Slime",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": -36.0,
+					"Y": 31.5,
+					"Z": -46.0
+				},
+				"Rotation": {
+					"X": 0.0,
+					"Y": 135.0,
+					"Z": 0.0
+				}
+			},
+			"Slime": {
+				"CameraScreen": "PlayerCamera"
+			}
+		}
+	},
+	{
+		"Name": "SlimeTest2",
+		"Prefab": "Prefab_Slime",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": -36.0,
+					"Y": 31.5,
+					"Z": -56.0
+				},
+				"Rotation": {
+					"X": 0.0,
+					"Y": 45.0,
+					"Z": 0.0
+				}
+			},
+			"Slime": {
+				"CameraScreen": "PlayerCamera"
+			}
+		}
+	},
 	{
 		"Name": "SlimeManager",
 		"Components": {
@@ -399,6 +401,22 @@
 		}
 	},
 	{
+		"Name": "CheckPoint",
+		"Prefab": "Prefab_CheckPoint",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": -21.0,
+					"Y": 31.5,
+					"Z": -51.0
+				}
+			},
+			"CheckPoint": {
+				"Order": 3
+			}
+		}
+	},
+	{
 		"Name": "CheckPointManager",
 		"Components": {
 			"CheckPointManager": {
@@ -410,6 +428,16 @@
 		"Name": "PauseScreen",
 		"Components": {
 			"PauseScreen": {
+				"MenuInterval": 150.0,
+				"MenuBasePosition": {
+					"X": 0.0,
+					"Y": -50.0
+				},
+				"MenuBarBaseSize": {
+					"X": 500.0,
+					"Y": 100.0
+				},
+				"MenuBaseFontSize": 48.0,
 				"BackGround": "PauseScreenBackGround",
 				"Canvas": "Canvas"
 			}

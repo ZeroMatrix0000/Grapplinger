@@ -59,16 +59,16 @@ void GamePlayScene::Update(float elapsedTime)
 		GetContext()->GetIGameInput()->SetActive(true);
 	}
 
-	// F5でシーン移動
-	if (GetContext()->GetIInput()->GetKeyDown(KeyName::F5) && GetContext()->GetIGameInput()->GetIsActive())
-	{
-		GetContext()->GetISceneManager()->SetNextScene<GamePlayScene>();
-		// 入力を無効化
-		GetContext()->GetIGameInput()->SetActive(false);
-		// チェックポイントをリセット
-		GetContext()->GetISceneManager()->GetTransitionDataRef()->checkPointNumber = 0;
-		return;
-	}
+	//// F5でシーン移動
+	//if (GetContext()->GetIInput()->GetKeyDown(KeyName::F5) && GetContext()->GetIGameInput()->GetIsActive())
+	//{
+	//	GetContext()->GetISceneManager()->SetNextScene<GamePlayScene>();
+	//	// 入力を無効化
+	//	GetContext()->GetIGameInput()->SetActive(false);
+	//	// チェックポイントをリセット
+	//	GetContext()->GetISceneManager()->GetTransitionDataRef()->checkPointNumber = 0;
+	//	return;
+	//}
 
 	// 次の状態に遷移
 	std::unique_ptr<Systems::State<GamePlaySceneInternals>> nextState{ m_currentState->MoveNextState() };
@@ -98,8 +98,6 @@ void GamePlayScene::Update(float elapsedTime)
 // 終了処理
 void GamePlayScene::Finalize()
 {
-	// マウスをループ解除
-	GetContext()->GetIInput()->SetMousePositionLoop(true);
 }
 
 // メッセージを受け取る

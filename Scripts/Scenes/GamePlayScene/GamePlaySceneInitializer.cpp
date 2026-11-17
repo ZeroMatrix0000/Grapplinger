@@ -23,6 +23,7 @@
 #include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
 #include "Scripts/Scenes/GamePlayScene/Actions/ActionManager.h"
 #include "Scripts/Main/GameContext.h"
+#include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/GameObjects/IGameObjectManager.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
@@ -99,6 +100,24 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	// ポーズ画面を取得
 	internalsRef->pauseScreenRef = iGameObjectManager->Find("PauseScreen")->GetComponent<PauseScreen>();
 	internalsRef->pauseScreenRef->SetCanvasSize(outputSize);
+	internalsRef->pauseScreenRef->AddMenu(L"　ゲームを<ruby=つづ>続</ruby>ける", [internalsRef]
+		{
+			internalsRef->pauseScreenRef->Pause(false);
+		});
+	internalsRef->pauseScreenRef->AddMenu(L"　やり<ruby=なお>直</ruby>す", [internalsRef]
+		{
+			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<GamePlayScene>();
+			// 入力を無効化
+			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
+		});
+	internalsRef->pauseScreenRef->AddMenu(L"　タイトルに<ruby=もど>戻</ruby>る", [internalsRef]
+		{
+			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<TitleScene>();
+			// 入力を無効化
+			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
+			// チェックポイントをリセット
+			internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef()->checkPointNumber = 0;
+		});
 
 	// プレイヤーカメラを取得
 	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");

@@ -50,7 +50,7 @@ Math::Vector3 GameInput::GetPlayerMove() const
 	}
 
 	// 極小値ならゼロに
-	if (direction.Length() < Math::EPSILON)
+	if (direction.LengthSquared() < Math::EPSILON)
 	{
 		return Math::Vector3::Zero;
 	}
@@ -131,5 +131,54 @@ bool GameInput::GetTextScroll() const
 // ポーズ入力
 bool GameInput::GetPause() const
 {
+	if (!m_isActive)
+	{
+		return false;
+	}
+
 	return m_input->GetKeyDown(KeyName::Escape);
+}
+
+// メニュー上入力
+bool GameInput::GetMenuAbove() const
+{
+	if (!m_isActive)
+	{
+		return false;
+	}
+
+	return m_input->GetKeyDown(KeyName::W) || m_input->GetKeyDown(KeyName::Up);
+}
+
+// メニュー下入力
+bool GameInput::GetMenuBelow() const
+{
+	if (!m_isActive)
+	{
+		return false;
+	}
+
+	return m_input->GetKeyDown(KeyName::S) || m_input->GetKeyDown(KeyName::Down);
+}
+
+// メニュー決定入力
+bool GameInput::GetMenuDecide() const
+{
+	if (!m_isActive)
+	{
+		return false;
+	}
+
+	return m_input->GetKeyDown(KeyName::Z) || m_input->GetKeyDown(KeyName::Space);
+}
+
+// メニュー戻る入力
+bool GameInput::GetMenuBack() const
+{
+	if (!m_isActive)
+	{
+		return false;
+	}
+
+	return m_input->GetKeyDown(KeyName::X) || m_input->GetKeyDown(KeyName::Escape);
 }

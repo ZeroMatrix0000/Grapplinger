@@ -1,0 +1,23 @@
+{
+	"RectTransform": {
+		"Size": {
+			"X": 500.0,
+			"Y": 100.0
+		},
+		"Pivot": "MiddleLeft",
+		"Anchor": "MiddleLeft"
+	},
+	"Text": {
+		"FontName": "GenEi POPle Pw",
+		"OutlineWidth": 2.0,
+		"OutlineColor": {
+			"R": 0.3,
+			"G": 0.0,
+			"B": 0.1,
+			"A": 1.0
+		},
+		"ParagraphAlignment": "DWRITE_PARAGRAPH_ALIGNMENT_CENTER",
+		"OrderInLayer": 1010,
+		"IsDecoration": true
+	}
+}

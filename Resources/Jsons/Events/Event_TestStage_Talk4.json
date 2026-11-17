@@ -1,0 +1,21 @@
+[
+	{
+		"ActionType": "OpenMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "<ruby=あと>後</ruby>で<ruby=さ>差</ruby>し<ruby=か>替</ruby>え",
+			"Character": "NPC4"
+		}
+	},
+	{
+		"ActionType": "CloseMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	}
+]

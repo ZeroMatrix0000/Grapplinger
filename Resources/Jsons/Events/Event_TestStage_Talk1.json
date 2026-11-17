@@ -15,7 +15,7 @@
 	{
 		"ActionType": "SetMessageWindowText",
 		"Params": {
-			"Text": "<color=#00BBFF>WASD キー</color> もしくは <color=#00BBFF><ruby=やじるし>矢印</ruby>キー</color> で<ruby=いどう>移動</ruby>\n<color=#00BBFF>Space キー</color> でジャンプができるよ。"
+			"Text": "<color=#FF6699>WASD キー</color> もしくは <color=#FF6699><ruby=やじるし>矢印</ruby>キー</color> で<ruby=いどう>移動</ruby>\n<color=#FF6699>Space キー</color> でジャンプができるよ。"
 		}
 	},
 	{

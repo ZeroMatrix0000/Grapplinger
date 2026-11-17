@@ -1,7 +1,7 @@
 /*
  * FileName:     PauseScreen.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/17
  *
  * ポーズ画面
  */
@@ -17,6 +17,7 @@ namespace Components
 namespace Renderings
 {
 	class Image;
+	class Text;
 	class Canvas;
 }
 
@@ -45,6 +46,18 @@ public:
 
 	// ポーズする
 	void Pause(bool isPause);
+	// ポーズ中かどうか
+	bool IsPausing() const { return m_isPausing; }
+
+	// メニューの追加
+	void AddMenu(const std::wstring& str, const std::function<void()>& onDecide);
+
+	// 上選択
+	void SelectAbove();
+	// 下選択
+	void SelectBelow();
+	// 決定
+	void Decide();
 
 
 private:
@@ -52,14 +65,22 @@ private:
 
 	/* メンバ変数 */
 
+	// メニューの間隔
+	float m_menuInterval;
+	// メニューの初期位置
+	Math::Vector2 m_menuBasePosition;
+	// メニューバーの初期サイズ
+	Math::Vector2 m_menuBarBaseSize;
+	// メニューの初期フォントサイズ
+	float m_menuBaseFontSize;
+
 	// ポーズ中かどうか
 	bool m_isPausing;
+	// 選択番号
+	int m_selectNumber;
 
-	// 左帯の太さ
-	float m_sideBeltWidth;
-
-	// 左帯の位置
-	Easing::Value<Math::Vector2> m_sideBeltPosition;
+	// キャンバスのインタフェースの参照
+	Ref<Renderings::Canvas> m_canvasRef;
 
 	// 背景
 	Ref<RectTransform> m_backGround;
@@ -68,11 +89,29 @@ private:
 	Ref<RectTransform> m_sideBelt;
 	// 左帯の画像
 	Ref<Renderings::Image> m_sideBeltImage;
+	// 左帯の太さ
+	float m_sideBeltWidth;
+	// 左帯の位置
+	Easing::Value<Math::Vector2> m_sideBeltPosition;
 
 	// タイトル
 	Ref<RectTransform> m_title;
 
-	// キャンバスのインタフェースの参照
-	Ref<Renderings::Canvas> m_canvasRef;
+	// メニューリスト
+	std::vector<Ref<RectTransform>> m_menuList;
+	// メニューの基準位置リスト
+	std::vector<Math::Vector2> m_menuBasePositionList;
+	// メニューバーリスト
+	std::vector<Ref<RectTransform>> m_menuBarList;
+	// メニューバーの大きさリスト
+	std::vector<Easing::Value<Math::Vector2>> m_menuBarSizeList;
+	// メニューバーの基準位置リスト
+	std::vector<Math::Vector2> m_menuBarBasePositionList;
+	// メニューテキストリスト
+	std::vector<Ref<Renderings::Text>> m_menuTextList;
+	// メニューフォントサイズリスト
+	std::vector<Easing::Value<float>> m_menuFontSizeList;
+	// 決定時の処理
+	std::vector<std::function<void()>> m_menuOnDecideList;
 
 };

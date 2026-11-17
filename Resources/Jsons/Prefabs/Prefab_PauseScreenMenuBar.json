@@ -1,0 +1,20 @@
+{
+	"RectTransform": {
+		"Size": {
+			"X": 500.0,
+			"Y": 100.0
+		},
+		"Pivot": "MiddleLeft",
+		"Anchor": "MiddleLeft"
+	},
+	"Image": {
+		"ImageSourceName": "Box",
+		"Color": {
+			"R": 1.0,
+			"G": 1.0,
+			"B": 1.0,
+			"A": 0.5
+		},
+		"OrderInLayer": 1002
+	}
+}

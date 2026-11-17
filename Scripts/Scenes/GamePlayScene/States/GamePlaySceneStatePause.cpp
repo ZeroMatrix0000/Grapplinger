@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStatePause.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/17
  *
  * ゲームプレイシーンのポーズ状態
  */
@@ -44,15 +44,37 @@ void GamePlaySceneStatePause::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// ゲーム入力
 	Ref iGameInput = internalsRef->gameContextRef->GetIGameInput();
 
-	// ポーズ画面を開く
-	if (iGameInput->GetPause())
+	// ポーズ画面を閉じる
+	if (iGameInput->GetMenuBack())
 	{
 		SetNextState(std::make_unique<GamePlaySceneStateField>());
 		return;
 	}
 
+	// 上選択
+	if (iGameInput->GetMenuAbove())
+	{
+		internalsRef->pauseScreenRef->SelectAbove();
+	}
+	// 下選択
+	if (iGameInput->GetMenuBelow())
+	{
+		internalsRef->pauseScreenRef->SelectBelow();
+	}
+	// 決定
+	if (iGameInput->GetMenuDecide())
+	{
+		internalsRef->pauseScreenRef->Decide();
+	}
+
 	// ポーズ画面の更新
 	internalsRef->pauseScreenRef->Update(elapsedTime);
+
+	// ポーズ中でないなら終了
+	if (!internalsRef->pauseScreenRef->IsPausing())
+	{
+		SetNextState(std::make_unique<GamePlaySceneStateField>());
+	}
 }
 
 // 終了処理

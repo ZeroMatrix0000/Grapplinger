@@ -1,7 +1,7 @@
 /*
  * FileName:     IGameInput.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/17
  *
  * ゲーム入力のインタフェース
  */
@@ -43,6 +43,15 @@ public:
 
 	// ポーズ入力
 	virtual bool GetPause() const = 0;
+
+	// メニュー上入力
+	virtual bool GetMenuAbove() const = 0;
+	// メニュー下入力
+	virtual bool GetMenuBelow() const = 0;
+	// メニュー決定入力
+	virtual bool GetMenuDecide() const = 0;
+	// メニュー戻る入力
+	virtual bool GetMenuBack() const = 0;
 
 	// アクティブ化・非アクティブ化
 	virtual void SetActive(bool isActive) = 0;

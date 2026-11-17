@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/17
  * 
  *
  * プレイヤー
@@ -89,7 +89,7 @@ void Player::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 void Player::Update(float elapsedTime, const Math::Vector3& move, bool isDash, bool isJump)
 {
 	// 座標表示
-	if (true)
+	if constexpr (false)
 	{
 		Math::Vector3 position = m_internals.transformRef->GetPosition();
 		OutputDebugStringW(Utility::FormatWString(L"%f, %f, %f\n", position.x, position.y, position.z).c_str());
@@ -188,7 +188,7 @@ void Player::MeshCorrect(const Mesh& mesh)
 		float newDistance = Math::Geometry::AngledDistance(box, floor, newDirection);
 
 		// 最短距離を更新
-		if (newDistance < distance)
+		if (newDistance < distance && newDistance > -1.5f)
 		{
 			distance = newDistance;
 			direction = newDirection;

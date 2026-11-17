@@ -1084,6 +1084,18 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk3.json">
+      <Filter>Jsons\Events</Filter>
+    </None>
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4.json">
+      <Filter>Jsons\Events</Filter>
+    </None>
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenu.json">
+      <Filter>Jsons\Prefabs</Filter>
+    </None>
+    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenuBar.json">
+      <Filter>Jsons\Prefabs</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShaders\Test2.hlsl">

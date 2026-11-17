@@ -48,48 +48,6 @@ cbuffer Shadow : register(b2)
 	float ShadowRadius[100];
 }
 
-float3 Random3(float3 pos)
-{
-	pos = float3
-	(
-		dot(pos, float3(12.1f, 31.7f, 24.6f)),
-		dot(pos, float3(26.5f, 18.3f, 82.4f)),
-		dot(pos, float3(31.3f, 20.6f, 60.3f))
-	);
-	return -1.0f + 2.0f * frac(sin(pos) * 48.53f);
-}
-
-float3 PerlinNoise(float3 pos)
-{
-	float3 p = floor(pos);
-	float3 f = frac(pos);
-	float3 u = f * f * (3.0 - 2.0 * f);
-	float3 v000 = Random3(p + float3(0, 0, 0));
-	float3 v001 = Random3(p + float3(0, 0, 1));
-	float3 v010 = Random3(p + float3(0, 1, 0));
-	float3 v011 = Random3(p + float3(0, 1, 1));
-	float3 v100 = Random3(p + float3(1, 0, 0));
-	float3 v101 = Random3(p + float3(1, 0, 1));
-	float3 v110 = Random3(p + float3(1, 1, 0));
-	float3 v111 = Random3(p + float3(1, 1, 1));
-	return lerp
-	(
-		lerp
-		(
-			lerp(cross(v000, f - float3(0, 0, 0)), cross(v001, f - float3(0, 0, 1)), u.z),
-			lerp(cross(v010, f - float3(0, 1, 0)), cross(v011, f - float3(0, 1, 1)), u.z),
-			u.y
-		),
-		lerp
-		(
-			lerp(cross(v100, f - float3(1, 0, 0)), cross(v101, f - float3(1, 0, 1)), u.z),
-			lerp(cross(v110, f - float3(1, 1, 0)), cross(v111, f - float3(1, 1, 1)), u.z),
-			u.y
-		),
-		u.x
-	);
-}
-
 float Shadow(float3 worldPosition, float3 normal)
 {
 	// 影の濃さ
@@ -115,9 +73,13 @@ float4 main(PSInput input) : SV_Target
 	
 	// 法線
 	float3 normal = normalize(input.normal);
+	float3 oldNormal = normal;
 	
-	float3 p = PerlinNoise(input.worldPosition * 16.0f);
-	normal = normalize(p + normal);
+	float3 diff = frac(input.worldPosition) - 0.5f;
+	diff = step(0.45f, abs(diff)) * sign(diff);
+	diff -= normal * dot(normal, diff);
+	
+	normal = normalize(diff + normal);
 	
 	// 環境光色
 	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor * input.color.rgb;
@@ -143,7 +105,7 @@ float4 main(PSInput input) : SV_Target
 	float3 color = ambientColor + diffuseColor + specularColor + EmissiveColor;
 	
 	// 影の濃さ
-	float shadow = Shadow(input.worldPosition, normal);
+	float shadow = Shadow(input.worldPosition, oldNormal);
 	
 	return float4(color * (1.0f - shadow), textureColor.a);
 }
