@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/18
  *
  * ターゲット照準
  */
@@ -178,13 +178,13 @@ void TargetPoint::Update(float elapsedTime)
 
 	distanceMin = Math::Geometry::AngledDistance(eyePosition, Math::Sphere{ playerPosition, m_targetDistance }, eyeDirection).second;
 	m_info.position = eyePosition + eyeDirection * distanceMin;
-	m_transformRef->SetPosition(Math::Vector2{ -10.0f, -10.0f });
+	Hide();
 }
 
-// ターゲットを表示
-void TargetPoint::Appear(bool isAppear)
+// ターゲットを隠す
+void TargetPoint::Hide()
 {
-	m_imageRef->SetColor(isAppear ? DirectX::Colors::Red : DirectX::Colors::Transparent);
+	m_transformRef->SetPosition(Math::Vector2{ -10.0f, -10.0f });
 }
 
 // ターゲット情報を取得

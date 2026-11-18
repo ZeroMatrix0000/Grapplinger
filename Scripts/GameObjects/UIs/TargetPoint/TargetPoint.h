@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/18
  *
  * ターゲット照準
  */
@@ -69,8 +69,8 @@ public:
 	// 更新処理
 	void Update(float elapsedTime);
 
-	// ターゲットを表示
-	void Appear(bool isAppear);
+	// ターゲットを隠す
+	void Hide();
 
 	// ターゲット情報を取得
 	const Info& GetTargetInfo();

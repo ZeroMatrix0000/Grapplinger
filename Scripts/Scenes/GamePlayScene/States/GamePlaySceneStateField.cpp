@@ -46,8 +46,6 @@ void GamePlaySceneStateField::Enter(Ref<GamePlaySceneInternals> internalsRef)
 
 	// レティクルを表示
 	internalsRef->reticleRef->SetColor(DirectX::Colors::White);
-	// ターゲット照準を表示
-	internalsRef->targetPointRef->Appear(true);
 }
 
 // 更新処理
@@ -151,7 +149,14 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	internalsRef->messageWindowRef->Update(elapsedTime);
 
 	// ターゲットの更新
-	internalsRef->targetPointRef->Update(elapsedTime);
+	if (internalsRef->playerRef->CanExpandWire())
+	{
+		internalsRef->targetPointRef->Update(elapsedTime);
+	}
+	else
+	{
+		internalsRef->targetPointRef->Hide();
+	}
 
 	// ポーズ画面の更新
 	internalsRef->pauseScreenRef->Update(elapsedTime);

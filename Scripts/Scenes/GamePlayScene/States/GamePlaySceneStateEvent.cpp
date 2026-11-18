@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateEvent.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/18
  *
  * ゲームプレイシーンのイベント状態
  */
@@ -46,7 +46,7 @@ void GamePlaySceneStateEvent::Enter(Ref<GamePlaySceneInternals> internalsRef)
 	internalsRef->blackBeltRef->Appear(true);
 
 	// ターゲット照準を非表示
-	internalsRef->targetPointRef->Appear(false);
+	internalsRef->targetPointRef->Hide();
 }
 
 // 更新処理

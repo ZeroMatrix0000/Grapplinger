@@ -25,9 +25,9 @@ void WindCutParticle::Initalize(Ref<const Transform> transformRef)
 {
 	Math::Quaternion rotation = transformRef->GetRotation() * Math::Euler
 	{
-		Random::GetFloatRange(-10.0f, 10.0f),
-		Random::GetFloatRange(-10.0f, 10.0f),
-		Random::GetFloatRange(-10.0f, 10.0f)
+		Random::GetFloatRange(-5.0f, 5.0f),
+		Random::GetFloatRange(-5.0f, 5.0f),
+		Random::GetFloatRange(-5.0f, 5.0f)
 	}.CreateQuaternion();
 
 	Math::Vector3 direction = Math::Vector3::Transform(Math::Vector3::Backward, rotation);

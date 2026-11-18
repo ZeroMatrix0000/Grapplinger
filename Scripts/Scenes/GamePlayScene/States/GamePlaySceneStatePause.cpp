@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStatePause.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/17
+ * Last Updated: 2026/11/18
  *
  * ゲームプレイシーンのポーズ状態
  */
@@ -29,7 +29,7 @@ void GamePlaySceneStatePause::Enter(Ref<GamePlaySceneInternals> internalsRef)
 	// レティクルを非表示
 	internalsRef->reticleRef->SetColor(DirectX::Colors::Transparent);
 	// ターゲット照準を非表示
-	internalsRef->targetPointRef->Appear(false);
+	internalsRef->targetPointRef->Hide();
 	// ポーズ画面を開く
 	internalsRef->pauseScreenRef->Pause(true);
 
