@@ -240,10 +240,10 @@
 				"Canvas": "Canvas"
 			},
 			"TargetPoint": {
-				"TargetDistance": 200.0,
-				"RayLength": 400.0,
-				//"TargetDistance": 20.0,
-				//"RayLength": 50.0,
+				//"TargetDistance": 200.0,
+				//"RayLength": 400.0,
+				"TargetDistance": 20.0,
+				"RayLength": 50.0,
 				"BrightInterval": 0.1,
 				"Player": "Player",
 				"CameraScreen": "PlayerCamera",

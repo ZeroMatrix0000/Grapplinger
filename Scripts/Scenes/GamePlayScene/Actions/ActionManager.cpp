@@ -61,14 +61,14 @@ void ActionManager::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 		return;
 	}
 
+	// アクションを更新
+	m_currentActionRef->Update(elapsedTime, iGameInput);
+
 	// 次のアクションに移動
 	if (m_currentActionRef->IsNext())
 	{
 		NextAction();
 	}
-
-	// アクションを更新
-	m_currentActionRef->Update(elapsedTime, iGameInput);
 }
 
 // アクション切り替え

@@ -1,12 +1,5 @@
 [
 	{
-		"ActionType": "SetFlag",
-		"Params": {
-			"FlagName": "IsTalk2NPC4",
-			"Value": true
-		}
-	},
-	{
 		"ActionType": "OpenMessageWindow",
 		"Params": {
 			"IsWait": true
