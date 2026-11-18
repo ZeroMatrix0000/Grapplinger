@@ -16,7 +16,8 @@
 					},
 					"Distance": 15.0
 				},
-				"ViewAngle": 45.0
+				"ViewAngle": 45.0,
+				"ProjectionDistance": 1000.0
 			},
 			"DebugCamera": {
 			}

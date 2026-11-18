@@ -1,7 +1,7 @@
 /*
  * FileName:     Game.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/09
+ * Last Updated: 2026/11/18
  *
  * ゲーム
  */
@@ -148,12 +148,10 @@ void Game::Update()
 		m_renderer.ChangeRenderMode();
 		if (m_renderer.GetRenderMode() == Renderings::Renderer::RenderMode::Both)
 		{
-			m_resources.GetEditableModelSource("NewGrounds")->SetPixelShader(m_resources.GetPixelShader("GroundDebug"));
 			m_resources.GetEditableModelSource("TestStage")->SetPixelShader(m_resources.GetPixelShader("GroundDebug"));
 		}
 		else if (m_renderer.GetRenderMode() == Renderings::Renderer::RenderMode::Model)
 		{
-			m_resources.GetEditableModelSource("NewGrounds")->SetPixelShader(m_resources.GetPixelShader("PlayerShadow"));
 			m_resources.GetEditableModelSource("TestStage")->SetPixelShader(m_resources.GetPixelShader("PlayerShadowAndNormal"));
 		}
 	}

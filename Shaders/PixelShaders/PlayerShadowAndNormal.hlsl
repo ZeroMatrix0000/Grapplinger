@@ -76,8 +76,12 @@ float4 main(PSInput input) : SV_Target
 	float3 oldNormal = normal;
 	
 	float3 diff = frac(input.worldPosition) - 0.5f;
+	diff.r *= step(abs(dot(normal, float3(1.0f, 0.0f, 0.0f))), 0.9f);
+	diff.g *= step(abs(dot(normal, float3(0.0f, 1.0f, 0.0f))), 0.9f);
+	diff.b *= step(abs(dot(normal, float3(0.0f, 0.0f, 1.0f))), 0.9f);
+	float diffMax = max(max(abs(diff.r), abs(diff.g)), abs(diff.b));
+	diff *= step(diffMax, abs(diff));
 	diff = step(0.45f, abs(diff)) * sign(diff);
-	diff -= normal * dot(normal, diff);
 	
 	normal = normalize(diff + normal);
 	
@@ -103,6 +107,7 @@ float4 main(PSInput input) : SV_Target
 	
 	// 描画色
 	float3 color = ambientColor + diffuseColor + specularColor + EmissiveColor;
+	//float3 color = normal / 2.0f + 0.5f;
 	
 	// 影の濃さ
 	float shadow = Shadow(input.worldPosition, oldNormal);

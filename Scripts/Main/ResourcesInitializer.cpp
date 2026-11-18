@@ -105,7 +105,7 @@ void ResourcesInitializer::InitializeResources
 	resources->LoadPixelShaders(L"Resources\\Shaders\\PixelShaders", deviceRef);
 
 	// シェーダを適用
-	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(resources->GetPixelShader("PlayerShadow"));
+	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(resources->GetPixelShader("PlayerShadowAndNormal"));
 	resources->GetEditableModelSource("TestStage")->SetPixelShader(resources->GetPixelShader("PlayerShadowAndNormal"));
 	resources->GetEditableModelSource("PlayerSilhouette")->SetPixelShader(resources->GetPixelShader("PlayerSilhouette"));
 
