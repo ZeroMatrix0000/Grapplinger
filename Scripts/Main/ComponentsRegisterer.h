@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/18
  *
  * コンポーネント登録者
  */
@@ -26,6 +26,7 @@ namespace Renderings
 namespace Systems
 {
 	class IResources;
+	class IFlagManager;
 }
 class GameContext;
 
@@ -42,6 +43,7 @@ namespace ComponentsRegisterer
 		Ref<Renderings::ITextRenderer>     iTextRenderer,
 		Ref<Renderings::IColliderRenderer> iColliderRenderer,
 		Ref<Systems::IResources>           iResources,
+		Ref<Systems::IFlagManager>         iFlagManager,
 		Ref<const GameContext>             context
 	);
 }

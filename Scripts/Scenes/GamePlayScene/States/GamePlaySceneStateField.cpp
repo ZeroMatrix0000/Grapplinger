@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/18
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -32,6 +32,7 @@
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 #include "Scripts/Commons/Scenes/ISceneManager.h"
+#include "Scripts/Commons/Systems/IFlagManager.h"
 
 // コンストラクタ
 GamePlaySceneStateField::GamePlaySceneStateField()
@@ -175,8 +176,8 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	if (!internalsRef->gameContextRef->GetISceneManager()->IsChanging())
 	{
 		// チェックポイントの計算
-		Ref dataRef = internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef();
-		dataRef->checkPointNumber = Math::Max(dataRef->checkPointNumber, internalsRef->checkPointManagerRef->Check(internalsRef->playerRef->GetBox()));
+		Ref ref = internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<int>("CheckPointNumber");
+		ref.GetValue() = Math::Max(ref.GetValue(), internalsRef->checkPointManagerRef->Check(internalsRef->playerRef->GetBox()));
 	}
 }
 

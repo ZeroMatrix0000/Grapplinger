@@ -1,7 +1,7 @@
 /*
  * FileName:     GameContext.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/18
  *
  * ゲームコンテキスト
  */
@@ -15,6 +15,7 @@ namespace Systems
 {
 	class IWindowController;
 	class IInput;
+	class IFlagManager;
 }
 namespace GameObjects
 {
@@ -26,7 +27,7 @@ namespace Components
 }
 namespace Scenes
 {
-	template<typename TTransitionData, typename TContext>
+	template<typename TContext>
 	class ISceneManager;
 }
 class IGameInput;
@@ -35,7 +36,7 @@ class IGameInput;
 class GameContext : public Systems::OnlyOne
 {
 
-	typedef Scenes::ISceneManager<SceneTransitionData, GameContext> ISceneManager;
+	typedef Scenes::ISceneManager<GameContext> ISceneManager;
 
 
 public:
@@ -51,6 +52,7 @@ public:
 	(
 		Ref<Systems::IWindowController> iWindowController,
 		Ref<Systems::IInput>            iInput,
+		Ref<Systems::IFlagManager>      iFlagManager,
 		Ref<IComponentManager>          iComponentManager,
 		Ref<IGameObjectManager>         iGameObjectManager,
 		Ref<ISceneManager>              iSceneManager,
@@ -61,6 +63,8 @@ public:
 	Ref<Systems::IWindowController> GetIWindowController() const { return Ref{ *m_pIWindowController }; }
 	// 入力管理インタフェースを取得
 	Ref<Systems::IInput> GetIInput() const { return Ref{ *m_pIInput }; }
+	// フラグ管理インタフェースを取得
+	Ref<Systems::IFlagManager> GetIFlagManager() const { return Ref{ *m_pIFlagManager }; }
 
 	// コンポーネント工場を取得
 	Ref<IComponentManager> GetIComponentManager() const { return Ref{ *m_pIComponentManager }; }
@@ -83,6 +87,8 @@ private:
 	Systems::IWindowController* m_pIWindowController;
 	// 入力管理インタフェースのポインタ
 	Systems::IInput* m_pIInput;
+	// フラグ管理インタフェースのポインタ
+	Systems::IFlagManager* m_pIFlagManager;
 
 	// コンポーネント管理インタフェースのポインタ
 	IComponentManager* m_pIComponentManager;

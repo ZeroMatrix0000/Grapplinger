@@ -1,0 +1,62 @@
+[
+	{
+		"ActionType": "SetFlag",
+		"Params": {
+			"FlagName": "IsTalk2NPC4",
+			"Value": true
+		}
+	},
+	{
+		"ActionType": "OpenMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "BeginEasingCamera",
+		"Params": {
+			"Value": {
+				"Position": {
+					"X": -36.0,
+					"Y": 32.0,
+					"Z": -51.0
+				},
+				"Rotation": {
+					"X": -45.0,
+					"Y": 90.0,
+					"Z": 0.0
+				},
+				"Distance": 20.0
+			},
+			"Time": 1.5,
+			"Type": "Quart",
+			"InOut": "InOut"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "あの<ruby=みどりいろ>緑色</ruby>の<ruby=てき>敵</ruby>は<color=#FF6699>スライム</color>だよ。\nぶつかるとやられちゃうよ。",
+			"Character": "NPC4"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "ワイヤーで<ruby=つか>掴</ruby>んで<ruby=たいあ>体当</ruby>たりするとやっつけられるよ。",
+			"Character": "NPC4"
+		}
+	},
+	{
+		"ActionType": "CloseMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "WaitUntilEasingCamera"
+	},
+	{
+		"ActionType": "EndEasingCamera"
+	}
+]

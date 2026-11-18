@@ -26,6 +26,7 @@ Game::Game()
 	, m_timer{}
 	, m_windowController{}
 	, m_input{}
+	, m_flagManager{}
 	, m_errorMessage{}
 	, m_componentManager{ Ref<IGameObjectInstantiator>{ m_gameObjectManager } }
 	, m_gameObjectManager{ Ref<IComponentManager>{ m_componentManager }, Ref<Systems::IResources>{ m_resources } }
@@ -92,6 +93,10 @@ void Game::Initialize(const HWND& hWindow)
 	m_windowController.Initialize(hWindow);
 	// 入力の初期化
 	m_input.Initialize(hWindow);
+	// フラグ管理の初期化
+	m_flagManager.AddFlag("CheckPointNumber", 0);
+	m_flagManager.AddFlag("IsDefeatSlimes", false);
+	m_flagManager.AddFlag("IsTalk2NPC4", false);
 
 	// コンポーネントの登録
 	ComponentsRegisterer::RegisterComponents
@@ -103,6 +108,7 @@ void Game::Initialize(const HWND& hWindow)
 		m_renderer.GetTextRenderer().Cast<Renderings::ITextRenderer>(),
 		m_renderer.GetColliderRenderer().Cast<Renderings::IColliderRenderer>(),
 		Ref<Systems::IResources>{ m_resources },
+		Ref<Systems::IFlagManager>{ m_flagManager },
 		Ref{ m_context }.Const()
 	);
 
@@ -117,12 +123,14 @@ void Game::Initialize(const HWND& hWindow)
 	(
 		Ref<Systems::IWindowController>{ m_windowController },
 		Ref<Systems::IInput>{ m_input },
+		Ref<Systems::IFlagManager>{ m_flagManager },
 		Ref<IComponentManager>{ m_componentManager },
 		Ref<IGameObjectManager>{ m_gameObjectManager },
-		Ref<Scenes::ISceneManager<SceneTransitionData, GameContext>>{ m_sceneManager },
+		Ref<Scenes::ISceneManager<GameContext>>{ m_sceneManager },
 		Ref<IGameInput>{ m_gameInput }
 	);
 
+	// 最初のシーンを設定
 	// 最初のシーンを設定
 	//m_sceneManager.SetFirstScene<SampleScene>();
 	m_sceneManager.SetFirstScene<TitleScene>();

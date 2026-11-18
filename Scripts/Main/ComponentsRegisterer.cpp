@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/18
  *
  * コンポーネント登録者
  */
@@ -65,6 +65,7 @@ void ComponentsRegisterer::RegisterComponents
 	Ref<Renderings::ITextRenderer>     iTextRenderer,
 	Ref<Renderings::IColliderRenderer> iColliderRenderer,
 	Ref<Systems::IResources>           iResources,
+	Ref<Systems::IFlagManager>         iFlagManager,
 	Ref<const GameContext>             context
 )
 {
@@ -144,6 +145,14 @@ void ComponentsRegisterer::RegisterComponents
 		{
 			return std::make_unique<ActionManager>(desc, iResources);
 		});
+	componentManager->RegisterCreate<ActionEventBranch>([iFlagManager](const ComponentDesc& desc)
+		{
+			return std::make_unique<ActionEventBranch>(desc, iFlagManager);
+		});
+	componentManager->RegisterCreate<ActionSetFlag>([iFlagManager](const ComponentDesc& desc)
+		{
+			return std::make_unique<ActionSetFlag>(desc, iFlagManager);
+		});
 
 	// トランスフォーム
 	REGISTER(Transform, "Transform");
@@ -180,6 +189,8 @@ void ComponentsRegisterer::RegisterComponents
 	REGISTER(ActionBeginEasingCamera, "ActionBeginEasingCamera");
 	REGISTER(ActionEndEasingCamera, "ActionEndEasingCamera");
 	REGISTER(ActionWaitUntilEasingCamera, "ActionWaitUntilEasingCamera");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(ActionEventBranch, "ActionEventBranch");
+	REGISTER_GAMEOBJECT_MANAGER_ONLY(ActionSetFlag, "ActionSetFlag");
 	REGISTER_GAMEOBJECT_MANAGER_ONLY(ActionManager, "ActionManager");
 	// デバッグ用カメラ
 	REGISTER(DebugCamera, "DebugCamera");

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/18
  *
  * アクション管理
  */
@@ -40,34 +40,35 @@ void ActionManager::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 // 更新処理
 void ActionManager::Update(float elapsedTime, Ref<const IGameInput> iGameInput)
 {
+	// 次のイベントが設定されていれば読み込む
+	if (!m_nextEventName.empty())
+	{
+		m_event = m_iResources->GetJson(m_nextEventName);
+		m_nextEventName.clear();
+
+		m_eventCount = m_event->size();
+		m_eventIndex = 0;
+
+		if (!IsCompleted())
+		{
+			InitializeCurrentAction();
+		}
+	}
+
 	// アクションがなければ何もしない
 	if (IsCompleted())
 	{
 		return;
 	}
 
-	// アクションを更新
-	m_currentActionRef->Update(elapsedTime, iGameInput);
-
 	// 次のアクションに移動
 	if (m_currentActionRef->IsNext())
 	{
 		NextAction();
 	}
-}
 
-// イベントを設定
-void ActionManager::LoadEvent(const std::string& eventName)
-{
-	m_event = m_iResources->GetJson(eventName);
-
-	m_eventCount = m_event->size();
-	m_eventIndex = 0;
-
-	if (!IsCompleted())
-	{
-		InitializeCurrentAction();
-	}
+	// アクションを更新
+	m_currentActionRef->Update(elapsedTime, iGameInput);
 }
 
 // アクション切り替え
@@ -116,6 +117,14 @@ void ActionManager::InitializeCurrentAction()
 		else if (it.value() == "WaitUntilEasingCamera")
 		{
 			m_currentActionRef = GetOwner()->GetComponent<ActionWaitUntilEasingCamera>().GetValue();
+		}
+		else if (it.value() == "EventBranch")
+		{
+			m_currentActionRef = GetOwner()->GetComponent<ActionEventBranch>().GetValue();
+		}
+		else if (it.value() == "SetFlag")
+		{
+			m_currentActionRef = GetOwner()->GetComponent<ActionSetFlag>().GetValue();
 		}
 		else
 		{

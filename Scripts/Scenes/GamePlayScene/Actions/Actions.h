@@ -7,3 +7,5 @@
 #include "ActionBeginEasingCamera.h"
 #include "ActionEndEasingCamera.h"
 #include "ActionWaitUntilEasingCamera.h"
+#include "ActionEventBranch.h"
+#include "ActionSetFlag.h"

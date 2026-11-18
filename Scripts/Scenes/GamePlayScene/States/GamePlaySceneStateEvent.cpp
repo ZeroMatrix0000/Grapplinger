@@ -34,7 +34,7 @@ GamePlaySceneStateEvent::GamePlaySceneStateEvent()
 void GamePlaySceneStateEvent::Enter(Ref<GamePlaySceneInternals> internalsRef)
 {
 	// イベントを設定
-	internalsRef->actionManagerRef->LoadEvent(internalsRef->nPCManagerRef->GetPFocusedNPC()->GetEventName());
+	internalsRef->actionManagerRef->SetNextEvent(internalsRef->nPCManagerRef->GetPFocusedNPC()->GetEventName());
 
 	// レティクルを非表示
 	internalsRef->reticleRef->SetColor(DirectX::Colors::Transparent);

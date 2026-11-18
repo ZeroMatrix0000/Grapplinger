@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/18
  *
  * スライム管理
  */
@@ -39,6 +39,9 @@ public:
 	// 初期化処理
 	void Initalize(Ref<IGameObjectFinder> iGameObjectFinder) override;
 
+	// スライムを全員倒したかどうかの参照を設定
+	void SetIsDefeatSlimesRef(Ref<bool> ref) { m_pIsDefeatSlimes = ref.Get(); }
+
 	// 更新処理
 	void Update(float elapsedTime);
 
@@ -56,6 +59,9 @@ private:
 
 
 	/* メンバ変数 */
+
+	// スライムを全員倒したかどうかのポインタ
+	bool* m_pIsDefeatSlimes;
 
 	// スライムの参照リスト
 	std::vector<Ref<Slime>> m_slimeRefs;

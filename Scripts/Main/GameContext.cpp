@@ -1,7 +1,7 @@
 /*
  * FileName:     GameContext.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/18
  *
  * ゲームコンテキスト
  */
@@ -14,6 +14,7 @@ GameContext::GameContext()
 	: OnlyOne{ typeid(GameContext) }
 	, m_pIWindowController{}
 	, m_pIInput{}
+	, m_pIFlagManager{}
 	, m_pIComponentManager{}
 	, m_pIGameObjectManager{}
 	, m_pISceneManager{}
@@ -26,6 +27,7 @@ void GameContext::Initialize
 (
 	Ref<Systems::IWindowController> iWindowController,
 	Ref<Systems::IInput>            iInput,
+	Ref<Systems::IFlagManager>      iFlagManager,
 	Ref<IComponentManager>          iComponentManager,
 	Ref<IGameObjectManager>         iGameObjectManager,
 	Ref<ISceneManager>              iSceneManager,
@@ -34,6 +36,7 @@ void GameContext::Initialize
 {
 	m_pIWindowController  = iWindowController.Get();
 	m_pIInput             = iInput.Get();
+	m_pIFlagManager       = iFlagManager.Get();
 	m_pIComponentManager  = iComponentManager.Get();
 	m_pIGameObjectManager = iGameObjectManager.Get();
 	m_pISceneManager      = iSceneManager.Get();

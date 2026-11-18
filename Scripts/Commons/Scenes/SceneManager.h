@@ -1,7 +1,7 @@
 /*
  * FileName:     SceneManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/18
  *
  * シーン管理
  */
@@ -15,8 +15,8 @@
 namespace Scenes
 {
 	// シーン管理
-	template<typename TTransitionData, typename TContext>
-	class SceneManager : public ISceneManager<TTransitionData, TContext>
+	template<typename TContext>
+	class SceneManager : public ISceneManager<TContext>
 	{
 
 		typedef Scene<TContext> Scene;
@@ -29,11 +29,10 @@ namespace Scenes
 
 		// コンストラクタ
 		SceneManager(Ref<const TContext> refContext)
-			: ISceneManager<TTransitionData, TContext>{}
+			: ISceneManager<TContext>{}
 			, m_currentScene{}
 			, m_nextScene{}
 			, m_CreateComponentList{}
-			, m_data{}
 			, m_animation{}
 			, m_refContext{ refContext }
 		{
@@ -101,9 +100,6 @@ namespace Scenes
 		// シーン切り替え中かどうか
 		bool IsChanging() const override { return m_animation.IsChanging(); }
 
-		// 遷移データの参照を取得
-		Ref<TTransitionData> GetTransitionDataRef() override { return Ref{ m_data }; }
-
 
 	private:
 
@@ -128,9 +124,6 @@ namespace Scenes
 
 		// コンポーネント作成関数
 		std::unordered_map<std::type_index, std::function<std::unique_ptr<Scene>()>> m_CreateComponentList;
-
-		// シーン遷移データ
-		TTransitionData m_data;
 
 		// シーン切り替えアニメーション
 		SceneTransitionAnimation m_animation;

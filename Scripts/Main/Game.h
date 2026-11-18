@@ -1,7 +1,7 @@
 /*
  * FileName:     Game.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/12
+ * Last Updated: 2026/11/18
  *
  * ゲーム
  */
@@ -17,6 +17,7 @@
 #include "Scripts/Commons/Systems/WindowController.h"
 #include "Scripts/Commons/Systems/Input.h"
 #include "Scripts/Commons/Systems/Timer.h"
+#include "Scripts/Commons/Systems/FlagManager.h"
 #include "Scripts/Commons/Systems/ErrorMessage.h"
 #include "Scripts/Commons/GameObjects/GameObjectManager.h"
 #include "Scripts/Commons/Components/ComponentManager.h"
@@ -25,7 +26,7 @@
 #include "GameInput.h"
 #include "GameContext.h"
 
-// ゲーム
+ // ゲーム
 class Game : public Systems::OnlyOne
 {
 
@@ -84,6 +85,8 @@ private:
 	Systems::WindowController m_windowController;
 	// 入力管理
 	Systems::Input m_input;
+	// フラグ管理
+	Systems::FlagManager m_flagManager;
 
 	// エラーメッセージ
 	Systems::ErrorMessage m_errorMessage;
@@ -94,7 +97,7 @@ private:
 	GameObjectManager m_gameObjectManager;
 
 	// シーン管理
-	Scenes::SceneManager<SceneTransitionData, GameContext> m_sceneManager;
+	Scenes::SceneManager<GameContext> m_sceneManager;
 
 	// ゲーム入力
 	GameInput m_gameInput;

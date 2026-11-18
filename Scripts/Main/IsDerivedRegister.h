@@ -1,7 +1,7 @@
 /*
  * FileName:     IsDerivedRegister.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/18
  *
  * 継承関係の登録
  */
@@ -29,6 +29,8 @@ class ActionSetMessageWindowText;
 class ActionBeginEasingCamera;
 class ActionEndEasingCamera;
 class ActionWaitUntilEasingCamera;
+class ActionEventBranch;
+class ActionSetFlag;
 class ActionManager;
 class DebugCamera;
 class Player;
@@ -85,6 +87,8 @@ IS_DERIVED_REGISTER(ActionSetMessageWindowText, Component)
 IS_DERIVED_REGISTER(ActionBeginEasingCamera, Component)
 IS_DERIVED_REGISTER(ActionEndEasingCamera, Component)
 IS_DERIVED_REGISTER(ActionWaitUntilEasingCamera, Component)
+IS_DERIVED_REGISTER(ActionEventBranch, Component)
+IS_DERIVED_REGISTER(ActionSetFlag, Component)
 IS_DERIVED_REGISTER(ActionManager, Component)
 IS_DERIVED_REGISTER(DebugCamera, Component)
 IS_DERIVED_REGISTER(Player, Component)

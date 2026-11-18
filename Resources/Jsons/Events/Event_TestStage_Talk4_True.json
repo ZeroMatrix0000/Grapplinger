@@ -1,0 +1,10 @@
+[
+	{
+		"ActionType": "EventBranch",
+		"Params": {
+			"FlagName": "IsTalk2NPC4",
+			"FalseEvent": "Event_TestStage_Talk4_TrueFalse",
+			"TrueEvent": "Event_TestStage_Talk4_TrueTrue"
+		}
+	}
+]

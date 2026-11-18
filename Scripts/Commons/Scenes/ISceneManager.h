@@ -1,7 +1,7 @@
 /*
  * FileName:     ISceneManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/18
  * 
  * シーン管理のインタフェース
  */
@@ -16,7 +16,7 @@ namespace Scenes
 	class Scene;
 
 	// シーン管理のインタフェース
-	template<typename TTransitionData, typename TContext>
+	template<typename TContext>
 	class ISceneManager : public Systems::OnlyOne
 	{
 
@@ -45,9 +45,6 @@ namespace Scenes
 
 		// シーン切り替え中かどうか
 		virtual bool IsChanging() const = 0;
-
-		// 遷移データの参照を取得
-		virtual Ref<TTransitionData> GetTransitionDataRef() = 0;
 
 
 	private:

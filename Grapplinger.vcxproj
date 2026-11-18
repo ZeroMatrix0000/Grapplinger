@@ -238,6 +238,7 @@
     <ClCompile Include="Scripts\Main\ComponentsRegisterer.cpp" />
     <ClCompile Include="Scripts\Main\Game.cpp" />
     <ClCompile Include="Scripts\Main\GameContext.cpp" />
+    <ClCompile Include="Scripts\Commons\Systems\FlagManager.cpp" />
     <ClCompile Include="Scripts\Main\GameInput.cpp" />
     <ClCompile Include="Scripts\Main\ResourcesInitializer.cpp" />
     <ClCompile Include="Scripts\Main\WinMain.cpp" />
@@ -249,8 +250,10 @@
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionCloseMessageWindow.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionEventBranch.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionManager.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionOpenMessageWindow.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetMessageWindowText.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.cpp" />
     <ClCompile Include="Scripts\Scenes\GamePlayScene\GamePlayScene.cpp" />
@@ -277,6 +280,10 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk1.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk2.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_False.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_True.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_TrueFalse.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_TrueTrue.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_BlackBeltImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursor.json" />
@@ -392,7 +399,9 @@
     <ClInclude Include="Scripts\GameObjects\UIs\TargetPoint\TargetPoint.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\Z2Talk\Z2Talk.h" />
     <ClInclude Include="Scripts\Main\ComponentsRegisterer.h" />
+    <ClInclude Include="Scripts\Commons\Systems\FlagManager.h" />
     <ClInclude Include="Scripts\Main\GameInput.h" />
+    <ClInclude Include="Scripts\Commons\Systems\IFlagManager.h" />
     <ClInclude Include="Scripts\Main\IGameInput.h" />
     <ClInclude Include="Scripts\Main\IsDerivedRegister.h" />
     <ClInclude Include="Scripts\Main\ResourcesInitializer.h" />
@@ -400,9 +409,11 @@
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionBeginEasingCamera.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionCloseMessageWindow.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionEndEasingCamera.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionEventBranch.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionManager.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionOpenMessageWindow.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\Actions.h" />
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetMessageWindowText.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionWaitUntilEasingCamera.h" />
     <ClInclude Include="Scripts\Scenes\GamePlayScene\GamePlayScene.h" />

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/18
  *
  * アクション管理
  */
@@ -37,8 +37,8 @@ public:
 	// 更新処理
 	void Update(float elapsedTime, Ref<const IGameInput> iGameInput);
 
-	// イベントを設定
-	void LoadEvent(const std::string& eventName);
+	// 次のイベントを設定
+	void SetNextEvent(const std::string& eventName) { m_nextEventName = eventName; }
 
 	// 全てのアクションを終了したかどうか
 	bool IsCompleted() const { return m_eventIndex == m_eventCount; }
@@ -65,6 +65,8 @@ private:
 
 	// イベントの参照
 	Ref<const nlohmann::ordered_json> m_event;
+	// 次のイベント名
+	std::string m_nextEventName;
 
 	// 現在のアクションの参照
 	Ref<Action> m_currentActionRef;

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/18
  *
  * ゲームプレイシーンの初期化関数
  */
@@ -33,8 +33,9 @@
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 #include "Scripts/Commons/Renderings/Shader/ConstantBuffer.h"
-#include "Scripts/Commons/Systems/IInput.h"
 #include "Scripts/Commons/Systems/IWindowController.h"
+#include "Scripts/Commons/Systems/IInput.h"
+#include "Scripts/Commons/Systems/IFlagManager.h"
 
 void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsRef) const
 {
@@ -55,7 +56,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->checkPointManagerRef = iGameObjectManager->Find("CheckPointManager")->GetComponent<CheckPointManager>();
 	const Math::Vector3& checkPointPosition = internalsRef->checkPointManagerRef->GetPosition
 	(
-		internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef()->checkPointNumber
+		internalsRef->gameContextRef->GetIFlagManager()->GetFlag<int>("CheckPointNumber")
 	);
 
 	// プレイヤーを取得
@@ -71,6 +72,9 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->nPCManagerRef = iGameObjectManager->Find("NPCManager")->GetComponent<NPCManager>();
 	// スライム管理を取得
 	internalsRef->slimeManagerRef = iGameObjectManager->Find("SlimeManager")->GetComponent<SlimeManager>();
+	Ref isDefeatSlimesRef = internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<bool>("IsDefeatSlimes");
+	internalsRef->slimeManagerRef->SetIsDefeatSlimesRef(isDefeatSlimesRef);
+	isDefeatSlimesRef.GetValue() = false;
 
 	// 地面を取得
 	Ref<GameObject> ground = iGameObjectManager->Find("Ground");
@@ -116,7 +120,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 			// 入力を無効化
 			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
 			// チェックポイントをリセット
-			internalsRef->gameContextRef->GetISceneManager()->GetTransitionDataRef()->checkPointNumber = 0;
+			internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<int>("CheckPointNumber").GetValue() = 0;
 		});
 
 	// プレイヤーカメラを取得
@@ -148,4 +152,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 		constantBufferRef->SetVariable("ShadowRadius", 0.75f, 16 * (i + nPCBoxes.size() + 1));
 	}
 	constantBufferRef->SetVariable("ShadowCount", static_cast<int>(1 + nPCBoxes.size() + slimeBoxes.size()));
+
+	// フラグの初期化
+	internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<bool>("IsTalk2NPC4").GetValue() = false;
 }

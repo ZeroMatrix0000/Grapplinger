@@ -1,7 +1,7 @@
 /*
  * FileName:     SlimeManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/18
  *
  * スライム管理
  */
@@ -21,6 +21,7 @@
 // コンストラクタ
 SlimeManager::SlimeManager(const ComponentDesc& desc)
 	: Component{ desc }
+	, m_pIsDefeatSlimes{}
 	, m_slimeRefs{}
 	, m_iCameraScreenRef{ GetOwner()->GetNullComponent<Renderings::ICameraScreen>().Const() }
 	, m_transformRef{ GetOwner()->GetNullComponent<Transform>() }
@@ -91,8 +92,15 @@ void SlimeManager::PlayerCollide(Ref<Player> playerRef)
 				// パーティクルを再生
 				m_transformRef->SetPosition(slimeBox.position);
 				m_particleManagerRef->Play<SlimeDefeatParticle>();
+				// スライムを破棄
 				m_slimeRefs.erase(m_slimeRefs.begin() + i);
 				Destroy(slimeRef->GetOwner());
+				// スライムを全員倒したかどうか
+				if (m_slimeRefs.size() == 0)
+				{
+					*m_pIsDefeatSlimes = true;
+				}
+
 				i--;
 			}
 			// プレイヤーの敗北

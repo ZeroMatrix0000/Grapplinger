@@ -1,21 +1,10 @@
 [
 	{
-		"ActionType": "OpenMessageWindow",
+		"ActionType": "EventBranch",
 		"Params": {
-			"IsWait": true
-		}
-	},
-	{
-		"ActionType": "SetMessageWindowText",
-		"Params": {
-			"Text": "<ruby=あと>後</ruby>で<ruby=さ>差</ruby>し<ruby=か>替</ruby>え",
-			"Character": "NPC4"
-		}
-	},
-	{
-		"ActionType": "CloseMessageWindow",
-		"Params": {
-			"IsWait": true
+			"FlagName": "IsDefeatSlimes",
+			"FalseEvent": "Event_TestStage_Talk4_False",
+			"TrueEvent": "Event_TestStage_Talk4_True"
 		}
 	}
 ]
