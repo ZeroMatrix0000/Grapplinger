@@ -114,7 +114,7 @@ void GamePlayScene::AcceptMessage(const std::string& message, const std::any& va
 		m_internals.blackBeltRef->SetWidth(m_internals.canvasRef->GetSize().x);
 		m_internals.pauseScreenRef->SetCanvasSize(outputSize);
 		m_internals.backGroundRef->GetTransformRef()->SetSize(m_internals.canvasRef->GetSize());
-		m_internals.backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("AspectRatio", m_internals.canvasRef->GetRatio());
+		m_internals.backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("TextureSize", m_internals.canvasRef->GetSize());
 	}
 }
 

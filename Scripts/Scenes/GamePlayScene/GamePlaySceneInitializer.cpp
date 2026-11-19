@@ -128,7 +128,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	// 背景を取得
 	internalsRef->backGroundRef = iGameObjectManager->Find("BackGround")->GetComponent<Renderings::Image>();
 	internalsRef->backGroundRef->GetTransformRef()->SetSize(internalsRef->canvasRef->GetSize());
-	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("AspectRatio", internalsRef->canvasRef->GetRatio());
+	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("TextureSize", internalsRef->canvasRef->GetSize());
 
 	// プレイヤーカメラを取得
 	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");
