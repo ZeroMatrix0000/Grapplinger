@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/19
  *
  * プレイヤーカメラ
  */
@@ -175,4 +175,10 @@ void PlayerCamera::BeginEasing(const Camera::EulerTargetCamera& value, float tim
 void PlayerCamera::EndEasing()
 {
 	m_isEasing = false;
+}
+
+// カメラを取得
+const Math::Euler& PlayerCamera::GetRotation() const
+{
+	return m_cameraScreenRef->GetCamera().rotation;
 }

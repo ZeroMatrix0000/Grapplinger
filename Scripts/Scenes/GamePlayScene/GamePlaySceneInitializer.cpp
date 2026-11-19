@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/19
  *
  * ゲームプレイシーンの初期化関数
  */
@@ -24,6 +24,7 @@
 #include "Scripts/Scenes/GamePlayScene/Actions/ActionManager.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
+#include "Scripts/Commons/Components/RectTransform.h"
 #include "Scripts/Commons/GameObjects/IGameObjectManager.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
@@ -31,6 +32,7 @@
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
+#include "Scripts/Commons/Renderings/Image/Image.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 #include "Scripts/Commons/Renderings/Shader/ConstantBuffer.h"
 #include "Scripts/Commons/Systems/IWindowController.h"
@@ -122,6 +124,11 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 			// チェックポイントをリセット
 			internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<int>("CheckPointNumber").GetValue() = 0;
 		});
+
+	// 背景を取得
+	internalsRef->backGroundRef = iGameObjectManager->Find("BackGround")->GetComponent<Renderings::Image>();
+	internalsRef->backGroundRef->GetTransformRef()->SetSize(internalsRef->canvasRef->GetSize());
+	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("AspectRatio", internalsRef->canvasRef->GetRatio());
 
 	// プレイヤーカメラを取得
 	Ref<GameObject> camera = iGameObjectManager->Find("PlayerCamera");

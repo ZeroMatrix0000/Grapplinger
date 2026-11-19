@@ -1,7 +1,7 @@
 /*
  * FileName:     Image.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/19
  *
  * 画像
  */
@@ -22,6 +22,7 @@ Renderings::Image::Image(const ComponentDesc& desc, Ref<IImageRenderer> iImageRe
 	, m_orderInLayer{}
 	, m_imageSource{ iResources->GetNullImageSource() }
 	, m_pixelShader{ iResources->GetNullPixelShader() }
+	, m_transformRef{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>().Const() }
 	, m_iImageRenderer{ iImageRenderer }
 	, m_iResources{ iResources }
@@ -64,6 +65,7 @@ void Renderings::Image::SetSerializeField(const nlohmann::ordered_json& json, Re
 // 初期化処理
 void Renderings::Image::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
+	m_transformRef = GetOwner()->GetComponent<RectTransform>();
 }
 
 // 画像ソースを設定

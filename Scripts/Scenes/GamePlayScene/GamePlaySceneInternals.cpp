@@ -34,6 +34,7 @@ GamePlaySceneInternals::GamePlaySceneInternals
 	, messageWindowRef{ owner->GetNullComponent<MessageWindow>() }
 	, targetPointRef{ owner->GetNullComponent<TargetPoint>() }
 	, pauseScreenRef{ owner->GetNullComponent<PauseScreen>() }
+	, backGroundRef{ owner->GetNullComponent<Renderings::Image>() }
 	, iCameraScreenRef{ owner->GetNullComponent<Renderings::ICameraScreen>() }
 	, canvasRef{ owner->GetNullComponent<Renderings::Canvas>() }
 	, actionManagerRef{ owner->GetNullComponent<ActionManager>() }

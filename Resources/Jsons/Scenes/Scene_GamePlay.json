@@ -461,5 +461,17 @@
 				"Canvas": "Canvas"
 			}
 		}
+	},
+	{
+		"Name": "BackGround",
+		"Components": {
+			"RectTransform": {},
+			"Image": {
+				"ImageSourceName": "Box",
+				"PixelShaderName": "BackGround",
+				"OrderInLayer": -1000,
+				"Canvas": "Canvas"
+			}
+		}
 	}
 ]

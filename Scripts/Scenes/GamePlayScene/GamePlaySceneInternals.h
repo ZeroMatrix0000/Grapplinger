@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/19
  *
  * ゲームプレイシーンの内部データ
  */
@@ -98,6 +98,9 @@ struct GamePlaySceneInternals
 
 	// ポーズ画面
 	Ref<PauseScreen> pauseScreenRef;
+
+	// 背景
+	Ref<Renderings::Image> backGroundRef;
 
 	// カメラ画面
 	Ref<Renderings::ICameraScreen> iCameraScreenRef;

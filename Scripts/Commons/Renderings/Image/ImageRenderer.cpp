@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/19
  *
  * 画像描画
  */
@@ -26,6 +26,7 @@ Renderings::ImageRenderer::ImageRenderer()
 	, m_pDevice{}
 	, m_pContext{}
 	, m_pCommonStates{}
+	, m_pPixelShader{}
 {
 }
 
@@ -78,8 +79,8 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 	}
 
 	// 画像の所有者の2Dトランスフォーム
-	Ref rectTransform{ imageRef->GetConstOwner()->GetConstComponent<RectTransform>() };
-	if (rectTransform == imageRef->GetConstOwner()->GetNullComponent<RectTransform>().Const())
+	Ref transformRef = imageRef->GetConstTransformRef();
+	if (transformRef == imageRef->GetConstOwner()->GetNullComponent<RectTransform>().Const())
 	{
 		// エラーメッセージを追加
 		Systems::IErrorMessage::GetInstance()->AddMessage(Utility::FormatWString
@@ -115,7 +116,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 	};
 
 	// ピボットにあわせて画像の中心を移動
-	switch (rectTransform->GetPivot())
+	switch (transformRef->GetPivot())
 	{
 	case Utility::AlignmentPoint::TopLeft:
 		origin.x = 0.0f;
@@ -150,12 +151,12 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 	}
 
 	// 長方形
-	Math::Rect rect = rectTransform->GetRect();
+	Math::Rect rect = transformRef->GetRect();
 	// キャンバスサイズ
 	Math::Vector2 canvasSize = canvasRef->GetSize();
 
 	// アンカーに合わせて画像を移動
-	switch (rectTransform->GetAnchor())
+	switch (transformRef->GetAnchor())
 	{
 	case Utility::AlignmentPoint::TopCenter:
 		rect.position.x += canvasSize.x / 2.0f;
@@ -219,7 +220,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 		},
 		nullptr,
 		imageRef->GetColor(),
-		Math::Deg2Rad(rectTransform->GetAngle()),
+		Math::Deg2Rad(transformRef->GetAngle()),
 		origin
 		);
 

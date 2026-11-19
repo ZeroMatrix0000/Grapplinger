@@ -508,7 +508,9 @@
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionEventBranch.cpp">
       <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.cpp" />
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -1169,6 +1171,9 @@
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\PixelShaders\PlayerShadowAndNormal.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\BackGround.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
   </ItemGroup>

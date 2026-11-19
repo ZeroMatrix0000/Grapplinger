@@ -1,7 +1,7 @@
 /*
  * FileName:     Text.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/19
  *
  * テキスト
  */
@@ -28,6 +28,7 @@ Renderings::Text::Text(const ComponentDesc& desc, Ref<ITextRenderer> iTextRender
 	, m_outlineWidth{ 0.0f }
 	, m_outlineColor{ D2D1::ColorF::Black }
 	, m_orderInLayer{}
+	, m_transformRef{ GetOwner()->GetNullComponent<RectTransform>().Const() }
 	, m_canvasRef{ GetOwner()->GetNullComponent<Canvas>().Const() }
 	, m_iTextRenderer{ iTextRenderer }
 {
@@ -70,4 +71,5 @@ void Renderings::Text::SetSerializeField(const nlohmann::ordered_json& json, Ref
 // 初期化処理
 void Renderings::Text::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
+	m_transformRef = GetConstOwner()->GetConstComponent<RectTransform>();
 }

@@ -24,6 +24,7 @@
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
+#include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 
 // コンストラクタ
 GamePlaySceneStateEvent::GamePlaySceneStateEvent()
@@ -86,6 +87,13 @@ void GamePlaySceneStateEvent::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// メッセージウィンドウの更新
 	internalsRef->messageWindowRef->Update(elapsedTime);
+	
+	// 背景の更新
+	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable
+	(
+		"Quaternion",
+		internalsRef->playerCameraRef->GetRotation().CreateQuaternion()
+	);
 
 	// アクション管理の更新
 	internalsRef->actionManagerRef->Update(elapsedTime, iGameInput.Const());

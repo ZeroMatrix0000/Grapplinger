@@ -1,7 +1,7 @@
 /*
  * FileName:     Text.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/19
  *
  * テキスト
  */
@@ -10,6 +10,11 @@
 
 #include "DecorationString.h"
 #include "Scripts/Commons/Components/Component.h"
+
+namespace Components
+{
+	class RectTransform;
+}
 
 namespace Renderings
 {
@@ -98,6 +103,9 @@ namespace Renderings
 		// レイヤー順を取得
 		int GetOrderInLayer() const { return m_orderInLayer; }
 
+		// トランスフォームの参照を取得
+		Ref<const RectTransform> GetTransformRef() const { return m_transformRef; }
+
 		// キャンバスの参照を取得
 		Ref<const Canvas> GetCanvasRef() const { return m_canvasRef; }
 
@@ -131,6 +139,9 @@ namespace Renderings
 
 		// レイヤー順
 		int m_orderInLayer;
+
+		// トランスフォームの参照
+		Ref<const RectTransform> m_transformRef;
 
 		// キャンバスの参照
 		Ref<const Canvas> m_canvasRef;

@@ -162,6 +162,13 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// ポーズ画面の更新
 	internalsRef->pauseScreenRef->Update(elapsedTime);
 
+	// 背景の更新
+	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable
+	(
+		"Quaternion",
+		internalsRef->playerCameraRef->GetRotation().CreateQuaternion()
+	);
+
 	// シェーダにオブジェクトの座標を設定
 	Ref constantBufferRef = internalsRef->groundModelRef->GetModelSource()->GetPixelShader()->GetConstantBufferRef();
 	auto slimeBoxes = internalsRef->slimeManagerRef->GetBoxes();

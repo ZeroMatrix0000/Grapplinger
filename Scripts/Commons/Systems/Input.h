@@ -1,7 +1,7 @@
 /*
  * FileName:     Input.h
  * Author:       Takao Hayata
- * Last Updated: 2026/09/11
+ * Last Updated: 2026/11/19
  *
  * 入力管理
  */
@@ -96,6 +96,8 @@ namespace Systems
 
 		// マウスの座標をループさせるかどうか
 		bool m_mousePositionLoop;
+		// マウスが表示されているかどうか
+		bool m_isShowMouse;
 
 	};
 }

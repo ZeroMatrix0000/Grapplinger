@@ -1,7 +1,7 @@
 /*
  * FileName:     Image.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/19
  *
  * 画像
  */
@@ -10,6 +10,10 @@
 
 #include "Scripts/Commons/Components/Component.h"
 
+namespace Components
+{
+	class RectTransform;
+}
 namespace Systems
 {
 	class IResources;
@@ -67,6 +71,12 @@ namespace Renderings
 		// ピクセルシェーダを取得
 		Ref<const PixelShader> GetPixelShader() const { return m_pixelShader; }
 
+		// トランスフォームの参照を取得
+		Ref<RectTransform> GetTransformRef() { return m_transformRef = m_transformRef; }
+
+		// トランスフォームの参照を取得
+		Ref<const RectTransform> GetConstTransformRef() const { return m_transformRef.Const(); }
+
 		// キャンバスの参照を取得
 		Ref<const Canvas> GetCanvasRef() const { return m_canvasRef; }
 
@@ -89,6 +99,9 @@ namespace Renderings
 		Ref<const ImageSource> m_imageSource;
 		// ピクセルシェーダ
 		Ref<const PixelShader> m_pixelShader;
+
+		// トランスフォームの参照
+		Ref<RectTransform> m_transformRef;
 
 		// キャンバスの参照
 		Ref<const Canvas> m_canvasRef;

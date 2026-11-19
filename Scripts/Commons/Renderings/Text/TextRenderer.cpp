@@ -1,7 +1,7 @@
 /*
  * FileName:     TextRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/19
  *
  * テキスト描画
  */
@@ -154,7 +154,7 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 	}
 
 	// テキストの所有者の2Dトランスフォーム
-	Ref<const RectTransform> rectTransform = textRef->GetConstOwner()->GetConstComponent<RectTransform>();
+	Ref transformRef = textRef->GetTransformRef();
 
 	// テキストが映るキャンバス
 	Ref<const Canvas> canvasRef = textRef->GetCanvasRef();
@@ -171,9 +171,9 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 	(
 		canvasRef->GetSize(),
 		canvasRatio,
-		rectTransform->GetRect(),
-		rectTransform->GetPivot(),
-		rectTransform->GetAnchor()
+		transformRef->GetRect(),
+		transformRef->GetPivot(),
+		transformRef->GetAnchor()
 	);
 
 	// フォントサイズ
@@ -283,9 +283,9 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 		m_compositeEffect->SetInput(1, floodImage.Get());
 
 		// 角度
-		float angle = rectTransform->GetAngle();
+		float angle = transformRef->GetAngle();
 		// 回転の中心を取得
-		Math::Vector2 origin = m_helper.GetRotateOrigin(transformRect, rectTransform->GetPivot());
+		Math::Vector2 origin = m_helper.GetRotateOrigin(transformRect, transformRef->GetPivot());
 		// 描画ターゲットを回転
 		if (angle != 0.0f)
 		{
@@ -342,9 +342,9 @@ void Renderings::TextRenderer::Draw(Ref<const Text> textRef, bool isDebug)
 	else
 	{
 		// 角度
-		float angle = rectTransform->GetAngle();
+		float angle = transformRef->GetAngle();
 		// 回転の中心を取得
-		Math::Vector2 origin = m_helper.GetRotateOrigin(transformRect, rectTransform->GetPivot());
+		Math::Vector2 origin = m_helper.GetRotateOrigin(transformRect, transformRef->GetPivot());
 		// 描画ターゲットを回転
 		if (angle != 0.0f)
 		{

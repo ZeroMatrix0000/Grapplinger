@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/19
  *
  * プレイヤーカメラ
  */
@@ -51,6 +51,9 @@ public:
 	void EndEasing();
 	// イージング中かどうか
 	bool IsEasing() const { return m_easingCamera.IsMoving(); }
+
+	// カメラを取得
+	const Math::Euler& GetRotation() const;
 
 
 private:

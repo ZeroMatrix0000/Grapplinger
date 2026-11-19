@@ -1,7 +1,7 @@
 /*
  * FileName:     Renderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/19
  *
  * 描画
  */
@@ -42,17 +42,6 @@ void Renderings::Renderer::Initialize
 // 描画処理
 void Renderings::Renderer::Render()
 {
-	// モデルの描画
-	if (m_renderMode != RenderMode::Collider)
-	{
-		m_modelRenderer.Render(true);
-	}
-	// 当たり判定の描画
-	if (m_renderMode != RenderMode::Model)
-	{
-		m_colliderRenderer.Render();
-	}
-
 	// 画像のポインタリストをソート
 	m_imageRenderer.SortImageRefs();
 	// 画像のポインタリスト
@@ -70,6 +59,93 @@ void Renderings::Renderer::Render()
 
 	// テキストを描画したか
 	bool wasDrawText = false;
+
+	// 描画開始
+	m_imageRenderer.Begin();
+	m_textRenderer.Begin();
+
+	// どちらも描画し切るまで
+	while (itImage != imageRefs.end() || itText != pTexts.end())
+	{
+		// 画像を描画し終わったなら
+		if (itImage == imageRefs.end())
+		{
+			wasDrawText = true;
+			m_textRenderer.Draw(*itText, m_renderMode != RenderMode::Model);
+			itText++;
+			continue;
+		}
+		// テキストを描画し終わったなら
+		if (itText == pTexts.end())
+		{
+			// 一度テキストを描画したならリセット
+			if (wasDrawText)
+			{
+				wasDrawText = false;
+				m_imageRenderer.End();
+				m_textRenderer.End();
+				m_imageRenderer.Begin();
+				m_textRenderer.Begin();
+			}
+
+			m_imageRenderer.Draw(*itImage);
+			itImage++;
+			continue;
+		}
+
+		// 画像の描画
+		if ((*itImage)->GetOrderInLayer() <= (*itText)->GetOrderInLayer())
+		{
+			// レイヤーが 0 以上になったら中断
+			if ((*itImage)->GetOrderInLayer() >= 0)
+			{
+				break;
+			}
+
+			// 一度テキストを描画したならリセット
+			if (wasDrawText)
+			{
+				wasDrawText = false;
+				m_imageRenderer.End();
+				m_textRenderer.End();
+				m_imageRenderer.Begin();
+				m_textRenderer.Begin();
+			}
+
+			m_imageRenderer.Draw(*itImage);
+			itImage++;
+			continue;
+		}
+		// テキストの描画
+		else
+		{
+			// レイヤーが 0 以上になったら中断
+			if ((*itText)->GetOrderInLayer() >= 0)
+			{
+				break;
+			}
+
+			wasDrawText = true;
+			m_textRenderer.Draw(*itText, m_renderMode != RenderMode::Model);
+			itText++;
+			continue;
+		}
+	}
+
+	// 描画終了
+	m_imageRenderer.End();
+	m_textRenderer.End();
+
+	// モデルの描画
+	if (m_renderMode != RenderMode::Collider)
+	{
+		m_modelRenderer.Render(true);
+	}
+	// 当たり判定の描画
+	if (m_renderMode != RenderMode::Model)
+	{
+		m_colliderRenderer.Render();
+	}
 
 	// 描画開始
 	m_imageRenderer.Begin();

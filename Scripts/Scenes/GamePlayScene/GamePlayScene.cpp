@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlayScene.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/19
  *
  * ゲームプレイシーン
  */
@@ -20,10 +20,12 @@
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "Scripts/Commons/Components/RectTransform.h"
 #include "Scripts/Commons/Scenes/ISceneManager.h"
 #include "Scripts/Commons/Renderings/Canvas.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3D.h"
 #include "Scripts/Commons/Renderings/Model3D/Model3DSource.h"
+#include "Scripts/Commons/Renderings/Image/Image.h"
 #include "Scripts/Commons/Renderings/Shader/PixelShader.h"
 #include "Scripts/Commons/Renderings/Shader/ConstantBuffer.h"
 #include "Scripts/Commons/Systems/IWindowController.h"
@@ -87,12 +89,6 @@ void GamePlayScene::Update(float elapsedTime)
 		"ShadowPosition",
 		m_internals.playerRef->GetPosition() + Math::Vector3::Down * m_internals.playerRef->GetBox().size.y / 2.0f
 	);
-	// NPC の当たり判定
-	const auto nPCBoxes = m_internals.nPCManagerRef->GetBoxes();
-	for (size_t i = 0; i < nPCBoxes.size(); i++)
-	{
-		constantBufferRef->SetVariable("ShadowPosition", nPCBoxes.at(i).position + Math::Vector3::Down * nPCBoxes.at(i).size.y / 2.0f, 16 * (i + 1));
-	}
 }
 
 // 終了処理
@@ -117,6 +113,8 @@ void GamePlayScene::AcceptMessage(const std::string& message, const std::any& va
 		m_internals.z2TalkRef->SetPosition(m_internals.playerRef->GetBox(), m_internals.iCameraScreenRef.Const());
 		m_internals.blackBeltRef->SetWidth(m_internals.canvasRef->GetSize().x);
 		m_internals.pauseScreenRef->SetCanvasSize(outputSize);
+		m_internals.backGroundRef->GetTransformRef()->SetSize(m_internals.canvasRef->GetSize());
+		m_internals.backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable("AspectRatio", m_internals.canvasRef->GetRatio());
 	}
 }
 

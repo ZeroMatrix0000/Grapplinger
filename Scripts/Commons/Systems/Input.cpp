@@ -1,7 +1,7 @@
 /*
  * FileName:     Input.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/07/29
+ * Last Updated: 2026/11/19
  *
  * 入力管理
  */
@@ -20,6 +20,7 @@ Systems::Input::Input()
 	, m_mouseState{}
 	, m_mouseStateOld{}
 	, m_mousePositionLoop{}
+	, m_isShowMouse{}
 {
 }
 
@@ -31,6 +32,8 @@ void Systems::Input::Initialize(const HWND& hWindow)
 	m_keyboardState = m_keyboard.GetState();
 	m_mouseState    = m_mouse.GetState();
 	MousePositionCorrect();
+
+	m_isShowMouse = true;
 }
 
 // 更新処理
@@ -77,6 +80,12 @@ bool Systems::Input::GetMouseButtonUp(MouseButtonName mouseButtonName) const
 // マウスカーソルを表示
 void Systems::Input::DisplayCursor(bool isShow)
 {
+	if (isShow == m_isShowMouse)
+	{
+		return;
+	}
+
+	m_isShowMouse = isShow;
 	ShowCursor(isShow);
 }
 
