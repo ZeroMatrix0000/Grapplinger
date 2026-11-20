@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/20
  *
  * NPC
  */
@@ -13,7 +13,6 @@
 namespace Components
 {
 	class Transform;
-	class RectTransform;
 }
 namespace Colliders
 {
@@ -23,7 +22,6 @@ namespace Colliders
 namespace Renderings
 {
 	class ICameraScreen;
-	class Text;
 }
 
 // NPC

@@ -1,7 +1,7 @@
 /*
  * FileName:     GameObjectManager.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/20
  *
  * ゲームオブジェクト管理
  */
@@ -69,7 +69,7 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 
 		// コンポーネントを追加
 		std::vector<Component*> pComponents = AddComponents(prefabJson.GetValue(), Ref{ *m_gameObjectsRef->at(i) });
-		// コンポーネントを初期化
+		// コンポーネントの初期値を設定
 		SetComponentsSerializeField(prefabJson.GetValue(), pComponents);
 	}
 
@@ -106,11 +106,11 @@ void GameObjects::GameObjectManager::Load(const std::string& jsonName)
 			continue;
 		}
 
-		// コンポーネントを初期化
+		// コンポーネントの初期値を設定
 		SetComponentsSerializeField(it.value(), pComponentsList.at(i));
 	}
 
-
+	// コンポーネントを初期化
 	size_t length = m_gameObjectsRef->size();
 	for (int i = 0; i < length; i++)
 	{
@@ -158,6 +158,7 @@ Ref<GameObject> GameObjects::GameObjectManager::Instantiate(const std::string& j
 	SetComponentsSerializeField(json.GetValue(), pComponents);
 	ownerRef->Initialize(Ref<IGameObjectFinder>{ *this });
 
+	// リストに追加
 	if (dontDestroyOnLoad)
 	{
 		m_dontDestroyOnLoadGameObjects.push_back(std::move(owner));

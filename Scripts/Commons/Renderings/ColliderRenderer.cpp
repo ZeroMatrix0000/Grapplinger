@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/20
  *
  * 当たり判定描画
  */
@@ -151,7 +151,7 @@ void Renderings::ColliderRenderer::RemovePMeshCollider(Ref<const Colliders::Mesh
 void Renderings::ColliderRenderer::DrawBox(const Math::Box& box, const Math::Color& color) const
 {
 	// 頂点情報
-	DirectX::VertexPositionColor vertexes[] =
+	DirectX::VertexPositionColor vertices[] =
 	{
 		DirectX::VertexPositionColor{ Math::Vector3{ -0.5f, -0.5f, -0.5f }, color },
 		DirectX::VertexPositionColor{ Math::Vector3{ -0.5f, -0.5f,  0.5f }, color },
@@ -177,63 +177,66 @@ void Renderings::ColliderRenderer::DrawBox(const Math::Box& box, const Math::Col
 		Math::Matrix::CreateTranslation(box.position)
 	;
 	// 座標を変換
-	for(auto& vertex : vertexes)
+	for(auto& vertex : vertices)
 	{
 		vertex.position = Math::Vector3::Transform(vertex.position, matrix);
 	}
 
-	m_primitiveBatch->DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, indexes, 24, vertexes, 8);
+	m_primitiveBatch->DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, indexes, 24, vertices, 8);
 }
 
 // 球を描画
 void Renderings::ColliderRenderer::DrawSphere(const Math::Sphere& sphere, const Math::Color& color, const Math::Vector3& eyePosition, int segmentCount) const
 {
-	DirectX::VertexPositionColor* vertexes1 = new DirectX::VertexPositionColor[segmentCount * 2];
-	DirectX::VertexPositionColor* vertexes2 = new DirectX::VertexPositionColor[segmentCount * 2];
-	DirectX::VertexPositionColor* vertexes3 = new DirectX::VertexPositionColor[segmentCount * 2];
+	// X軸の円
+	DirectX::VertexPositionColor* vertices1 = new DirectX::VertexPositionColor[segmentCount * 2];
+	// Y軸の円
+	DirectX::VertexPositionColor* vertices2 = new DirectX::VertexPositionColor[segmentCount * 2];
+	// Z軸の円
+	DirectX::VertexPositionColor* vertices3 = new DirectX::VertexPositionColor[segmentCount * 2];
 	for (int i = 0; i < segmentCount; i++)
 	{
 		float angle1 = Math::Deg2Rad(i * 360.0f / segmentCount);
 		float angle2 = Math::Deg2Rad((i + 1) * 360.0f / segmentCount);
 
-		vertexes1[i * 2] = DirectX::VertexPositionColor
+		vertices1[i * 2] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ 0.0f, Math::Cos(angle1), Math::Sin(angle1) } * sphere.radius,
 			color
 		};
-		vertexes2[i * 2] = DirectX::VertexPositionColor
+		vertices2[i * 2] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ Math::Sin(angle1), 0.0f, Math::Cos(angle1) } * sphere.radius,
 			color
 		};
-		vertexes3[i * 2] = DirectX::VertexPositionColor
+		vertices3[i * 2] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ Math::Cos(angle1), Math::Sin(angle1), 0.0f } * sphere.radius,
 			color
 		};
-		vertexes1[i * 2 + 1] = DirectX::VertexPositionColor
+		vertices1[i * 2 + 1] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ 0.0f, Math::Cos(angle2), Math::Sin(angle2) } * sphere.radius,
 			color
 		};
-		vertexes2[i * 2 + 1] = DirectX::VertexPositionColor
+		vertices2[i * 2 + 1] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ Math::Sin(angle2), 0.0f, Math::Cos(angle2) } * sphere.radius,
 			color
 		};
-		vertexes3[i * 2 + 1] = DirectX::VertexPositionColor
+		vertices3[i * 2 + 1] = DirectX::VertexPositionColor
 		{
 			sphere.centerPosition + Math::Vector3{ Math::Cos(angle2), Math::Sin(angle2), 0.0f } * sphere.radius,
 			color
 		};
 	}
-	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertexes1, static_cast<size_t>(segmentCount * 2));
-	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertexes2, static_cast<size_t>(segmentCount * 2));
-	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertexes3, static_cast<size_t>(segmentCount * 2));
+	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertices1, static_cast<size_t>(segmentCount * 2));
+	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertices2, static_cast<size_t>(segmentCount * 2));
+	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertices3, static_cast<size_t>(segmentCount * 2));
 
-	delete[] vertexes1;
-	delete[] vertexes2;
-	delete[] vertexes3;
+	delete[] vertices1;
+	delete[] vertices2;
+	delete[] vertices3;
 
 	// 球の方向を指すベクトル
 	Math::Vector3 targetDirection = sphere.centerPosition - eyePosition;
@@ -266,7 +269,7 @@ void Renderings::ColliderRenderer::DrawSphere(const Math::Sphere& sphere, const 
 void Renderings::ColliderRenderer::DrawCircle(const Math::Circle& circle, const Math::Color& color, int segmentCount) const
 {
 	// 頂点情報
-	DirectX::VertexPositionColor* vertexes = new DirectX::VertexPositionColor[segmentCount * 2];
+	DirectX::VertexPositionColor* vertices = new DirectX::VertexPositionColor[segmentCount * 2];
 
 	// 法線ベクトルX
 	Math::Vector3 unitX = circle.axis.Cross(Math::Vector3::UnitY);
@@ -284,20 +287,20 @@ void Renderings::ColliderRenderer::DrawCircle(const Math::Circle& circle, const 
 		float angle1 = Math::Deg2Rad(i * 360.0f / segmentCount);
 		float angle2 = Math::Deg2Rad((i + 1) * 360.0f / segmentCount);
 
-		vertexes[i * 2] = DirectX::VertexPositionColor
+		vertices[i * 2] = DirectX::VertexPositionColor
 		{
 			circle.centerPosition + (unitX * Math::Cos(angle1) + unitY * Math::Sin(angle1)) * circle.radius,
 			color
 		};
-		vertexes[i * 2 + 1] = DirectX::VertexPositionColor
+		vertices[i * 2 + 1] = DirectX::VertexPositionColor
 		{
 			circle.centerPosition + (unitX * Math::Cos(angle2) + unitY * Math::Sin(angle2)) * circle.radius,
 			color
 		};
 	}
-	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertexes, static_cast<size_t>(segmentCount * 2));
+	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, vertices, static_cast<size_t>(segmentCount * 2));
 
-	delete[] vertexes;
+	delete[] vertices;
 }
 
 // 三角形を描画

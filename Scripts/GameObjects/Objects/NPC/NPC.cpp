@@ -1,7 +1,7 @@
 /*
  * FileName:     NPC.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/20
  *
  * NPC
  */
@@ -89,7 +89,6 @@ void NPC::Update(float elapsedTime)
 // 回転を設定
 void NPC::SetRotation(const Math::Quaternion* rotation)
 {
-
 	// 回転を受け取らなかったら回転を基準に戻す
 	if (!rotation)
 	{

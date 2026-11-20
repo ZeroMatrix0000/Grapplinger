@@ -1,7 +1,7 @@
 /*
  * FileName:     SelectMenu.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/10
+ * Last Updated: 2026/11/20
  *
  * 選択メニュー
  */
@@ -138,9 +138,13 @@ void SelectMenu::SelectDown()
 	{
 		return;
 	}
+
 	m_fontSizes.at(m_selectNumber).SetMovement(m_params.fontSizeBegin, m_params.cursorMoveTime, m_params.cursorEasingType, m_params.cursorEasingInOut);
+
 	m_selectNumber = (m_selectNumber + 1) % static_cast<int>(m_Processes.size());
+
 	m_fontSizes.at(m_selectNumber).SetMovement(m_params.fontSizeEnd, m_params.cursorMoveTime, m_params.cursorEasingType, m_params.cursorEasingInOut);
+
 	m_cursorDelayY.SetMovement(static_cast<float>(m_selectNumber), m_params.cursorMoveTime, m_params.cursorEasingType, m_params.cursorEasingInOut);
 }
 

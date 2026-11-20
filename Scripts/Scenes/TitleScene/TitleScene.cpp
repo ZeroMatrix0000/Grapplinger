@@ -1,7 +1,7 @@
 /*
  * FileName:     TitleScene.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/28
+ * Last Updated: 2026/11/19
  *
  * タイトルシーン
  */
@@ -117,7 +117,6 @@ void TitleScene::Update(float elapsedTime)
 	m_titleRef->SetPosition(m_titlePosition + Math::Vector2::UnitY * Math::Sin(Math::Deg2Rad(m_titleSway)) * 50.0f);
 	Ref bufferRef = m_titleImageRef->GetPixelShader()->GetConstantBufferRef();
 	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
-	//buffer->SetVariable("timer", buffer->GetVariable<float>("time") + elapsedTime);
 
 	// カメラ画面の更新
 	Camera::EulerTargetCamera camera = m_cameraScreenRef->GetCamera();

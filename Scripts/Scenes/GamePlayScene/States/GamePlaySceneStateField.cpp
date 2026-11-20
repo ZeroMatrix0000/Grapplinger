@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/20
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -137,7 +137,6 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// 話しかけられるNPC
 	const NPC* pFocusedNPC = internalsRef->nPCManagerRef->GetPFocusedNPC();
-	// 糸を伸ばしていないかつ
 	// NPCに話しかけられる状態かつ
 	// プレイヤーが話せる状態かつ
 	// インタラクト入力がされたならイベント状態へ

@@ -1,7 +1,7 @@
 /*
  * FileName:     ActionManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/20
  *
  * アクション管理
  */
@@ -87,6 +87,7 @@ void ActionManager::InitializeCurrentAction()
 {
 	const auto& eventList = m_event->at(m_eventIndex);
 
+	// アクションの種類
 	auto it = eventList.find("ActionType");
 	if (it == eventList.end())
 	{
@@ -132,11 +133,13 @@ void ActionManager::InitializeCurrentAction()
 		}
 	}
 
+	// パラメータ
 	it = eventList.find("Params");
 	if (it != eventList.end())
 	{
 		m_currentActionRef->SetParams(*it, Ref{ *m_pIGameObjectFinder });
 	}
 
+	// アクション開始
 	m_currentActionRef->Enter();
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     ErrorMessage.h
  * Author:       Takao Hayata
- * Last Updated: 2026/10/27
+ * Last Updated: 2026/11/20
  *
  * エラーメッセージ
  */
@@ -51,6 +51,7 @@ namespace Systems
 
 		/* 構造体 */
 
+		// メッセージ
 		struct MessageData
 		{
 			// テキスト

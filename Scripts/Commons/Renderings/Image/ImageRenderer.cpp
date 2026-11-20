@@ -1,7 +1,7 @@
 /*
  * FileName:     ImageRenderer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/19
+ * Last Updated: 2026/11/20
  *
  * 画像描画
  */
@@ -226,6 +226,7 @@ void Renderings::ImageRenderer::Draw(Ref<const Image> imageRef)
 
 	if (pixelShader->IsInitialized())
 	{
+		// ピクセルシェーダをデフォルトに戻す
 		m_pContext->PSSetShader(m_pPixelShader->GetD3DShaderRef().Get(), nullptr, 0);
 	}
 }

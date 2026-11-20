@@ -1,7 +1,7 @@
 /*
  * FileName:     NPCManager.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/20
  *
  * NPC管理
  */
@@ -170,9 +170,10 @@ std::vector<Math::Box> NPCManager::GetBoxes() const
 	return boxes;
 }
 
-// NPC を追加
+// メッセージを受け取る
 void NPCManager::AcceptMessage(const std::string& message, const std::any& value)
 {
+	// NPC を追加
 	if (message == "AddNPC")
 	{
 		Ref nPCRef = std::any_cast<Ref<NPC>>(value);

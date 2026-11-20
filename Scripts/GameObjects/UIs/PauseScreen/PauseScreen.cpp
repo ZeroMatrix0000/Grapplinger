@@ -1,7 +1,7 @@
 /*
  * FileName:     PauseScreen.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/17
+ * Last Updated: 2026/11/20
  *
  * ポーズ画面
  */
@@ -90,6 +90,7 @@ void PauseScreen::Update(float elapsedTime)
 	m_sideBelt->SetPosition(position);
 	m_title->SetPosition(position);
 
+	// メニューの更新
 	for (int i = 0; i < m_menuList.size(); i++)
 	{
 		m_menuList.at(i)->SetPosition(position + m_menuBasePositionList.at(i));
@@ -100,6 +101,7 @@ void PauseScreen::Update(float elapsedTime)
 		m_menuTextList.at(i)->SetFontSize(m_menuFontSizeList.at(i).GetMovement());
 	}
 
+	// 定数バッファの更新
 	Ref bufferRef = m_sideBeltImage->GetPixelShader()->GetConstantBufferRef();
 	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
 	bufferRef->SetVariable("TextureSize", m_sideBelt->GetRect().size);
@@ -130,6 +132,7 @@ void PauseScreen::AddMenu(const std::wstring& str, const std::function<void()>& 
 {
 	int size = static_cast<int>(m_menuList.size());
 
+	// テキスト部分
 	Ref obj = Instantiate("Prefab_PauseScreenMenu");
 	Ref menu = m_menuList.emplace_back(obj->GetComponent<RectTransform>());
 	menu->SetPosition(m_menuBasePosition + Math::Vector2::UnitY * m_menuInterval * static_cast<float>(size));
@@ -140,6 +143,7 @@ void PauseScreen::AddMenu(const std::wstring& str, const std::function<void()>& 
 	fontSize.SetMovement(size == 0 ? m_menuBaseFontSize : m_menuBaseFontSize * 0.9f, 0.0f);
 	m_menuBasePositionList.emplace_back(menu->GetRect().position);
 
+	// バー部分
 	obj = Instantiate("Prefab_PauseScreenMenuBar");
 	Ref bar = m_menuBarList.emplace_back(obj->GetComponent<RectTransform>());
 	bar->SetPosition(m_menuBasePosition + Math::Vector2::UnitY * (m_menuInterval * static_cast<float>(size) - 5.0f));
@@ -157,7 +161,9 @@ void PauseScreen::SelectAbove()
 {
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize * Math::Vector2::UnitY, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize * 0.9f, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
+
 	m_selectNumber = Math::Clamp(m_selectNumber - 1, 0, static_cast<int>(m_menuList.size()) - 1);
+
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 }
@@ -167,7 +173,9 @@ void PauseScreen::SelectBelow()
 {
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize * Math::Vector2::UnitY, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize * 0.9f, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
+
 	m_selectNumber = Math::Clamp(m_selectNumber + 1, 0, static_cast<int>(m_menuList.size()) - 1);
+
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 }

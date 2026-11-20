@@ -126,6 +126,7 @@ std::vector<Math::Box> SlimeManager::GetBoxes() const
 // メッセージを受け取る
 void SlimeManager::AcceptMessage(const std::string& message, const std::any& value)
 {
+	// スライムを追加
 	if (message == "AddSlime")
 	{
 		Ref slimeRef = std::any_cast<Ref<Slime>>(value);

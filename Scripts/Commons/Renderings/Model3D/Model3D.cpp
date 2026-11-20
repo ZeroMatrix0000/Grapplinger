@@ -1,7 +1,7 @@
 /*
  * FileName:     Model3D.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/11
+ * Last Updated: 2026/11/20
  *
  * 3Dモデル
  */
@@ -22,7 +22,7 @@ Renderings::Model3D::Model3D(const ComponentDesc& desc, Ref<Systems::IResources>
 	, m_iCameraScreenRefs{}
 	, m_iResources{ iResources }
 {
-	// 破棄時に描画者からモデルを削除
+	// 破棄時にカメラ画面からモデルを削除
 	GetOwner()->AddMethodWhenDestroy([&]
 		{
 			for (Ref iCameraScreenRef : m_iCameraScreenRefs)

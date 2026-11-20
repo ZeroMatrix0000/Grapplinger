@@ -1,7 +1,7 @@
 /*
  * FileName:     CheckPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/12
+ * Last Updated: 2026/11/20
  *
  * チェックポイント
  */
@@ -38,7 +38,7 @@ void CheckPoint::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_boxColliderRef = GetOwner()->GetComponent<Colliders::BoxCollider>();
 	m_boxColliderRef->ApplyTransform();
 
-	// ターゲット管理管理に追加
+	// チェックポイント管理に追加
 	iGameObjectFinder->Find("CheckPointManager")->AcceptMessage("AddCheckPoint", Ref{ *this }.Const());
 }
 

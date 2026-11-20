@@ -60,6 +60,7 @@ const Math::Vector3& CheckPointManager::GetPosition(int index)
 // メッセージを受け取る
 void CheckPointManager::AcceptMessage(const std::string& message, const std::any& value)
 {
+	// チェックポイントを追加
 	if (message == "AddCheckPoint")
 	{
 		Ref checkPointRef = std::any_cast<Ref<const CheckPoint>>(value);

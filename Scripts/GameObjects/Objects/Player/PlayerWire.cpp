@@ -94,6 +94,7 @@ void PlayerWire::Translate(float elapsedTime)
 {
 	switch (m_currentState)
 	{
+	// 伸ばす
 	case State::Expand:
 		// 現在位置を計算
 		m_currentPosition += m_direction * EXPAND_SPEED * elapsedTime;
@@ -113,6 +114,7 @@ void PlayerWire::Translate(float elapsedTime)
 			}
 		}
 		break;
+	// 待機
 	case State::Stay:
 		m_stayTimer += elapsedTime;
 		if (m_stayTimer >= STAY_TIME)
@@ -120,6 +122,7 @@ void PlayerWire::Translate(float elapsedTime)
 			m_currentState = State::Contract;
 		}
 		break;
+	// 縮める
 	case State::Contract:
 		// 速度を計算
 		m_contractSpeed += CONTRACT_ACCELERATION * elapsedTime;
@@ -147,6 +150,7 @@ void PlayerWire::Translate(float elapsedTime)
 			}
 		}
 		break;
+	// 縮める（何も掴めなかった場合）
 	case State::AirContract:
 		// 現在位置を計算
 		m_currentPosition -= m_direction * EXPAND_SPEED * elapsedTime;
