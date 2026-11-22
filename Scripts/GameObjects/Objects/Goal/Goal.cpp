@@ -1,7 +1,7 @@
 /*
  * FileName:     Goal.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/21
+ * Last Updated: 2026/11/22
  *
  * ゴール
  */
@@ -13,6 +13,7 @@
 #include "../Player/States/PlayerStates.h"
 #include "Scripts/Main/IsDerivedRegister.h"
 #include "Scripts/GameObjects/Particles/GoalParticle.h"
+#include "Scripts/GameObjects/Particles/GoalDefeatParticle.h"
 #include "Scripts/Commons/Components/Transform.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
 #include "Scripts/Commons/Colliders/BoxCollider.h"
@@ -162,4 +163,6 @@ void Goal::Hide()
 {
 	m_isHide = true;
 	m_transformRef->SetScale(Math::Vector3::Zero);
+	// パーティクルの再生
+	m_particleManagerRef->Play<GoalDefeatParticle>();
 }

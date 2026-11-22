@@ -523,6 +523,9 @@
     <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateClear.cpp">
       <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Particles\GoalDefeatParticle.cpp">
+      <Filter>Scripts\GameObjects\Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pch.h" />
@@ -1024,6 +1027,9 @@
     <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateClear.h">
       <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Particles\GoalDefeatParticle.h">
+      <Filter>Scripts\GameObjects\Particles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -1148,6 +1154,9 @@
       <Filter>Jsons\Events</Filter>
     </None>
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_TrueTrue.json">
+      <Filter>Jsons\Events</Filter>
+    </None>
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk5.json">
       <Filter>Jsons\Events</Filter>
     </None>
   </ItemGroup>

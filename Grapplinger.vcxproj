@@ -223,6 +223,7 @@
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\Slime.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\SlimeInternals.cpp" />
     <ClCompile Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.cpp" />
+    <ClCompile Include="Scripts\GameObjects\Particles\GoalDefeatParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\GoalParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\JumpingParticle.cpp" />
     <ClCompile Include="Scripts\GameObjects\Particles\LandingParticle.cpp" />
@@ -288,6 +289,7 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_True.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_TrueFalse.json" />
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_TrueTrue.json" />
+    <None Include="Resources\Jsons\Events\Event_TestStage_Talk5.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_BlackBeltImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursor.json" />
@@ -388,6 +390,7 @@
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\Slime.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStateIdle.h" />
     <ClInclude Include="Scripts\GameObjects\Objects\Slime\States\SlimeStates.h" />
+    <ClInclude Include="Scripts\GameObjects\Particles\GoalDefeatParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\GoalParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\JumpingParticle.h" />
     <ClInclude Include="Scripts\GameObjects\Particles\LandingParticle.h" />

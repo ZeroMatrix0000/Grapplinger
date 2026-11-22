@@ -74,6 +74,7 @@ class WindCutParticle;
 class SlimeDefeatParticle;
 class PlayerDefeatParticle;
 class GoalParticle;
+class GoalDefeatParticle;
 
 #define IS_DERIVED_REGISTER(T, U) \
 template<> \
@@ -132,5 +133,6 @@ IS_DERIVED_REGISTER(WindCutParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(SlimeDefeatParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(PlayerDefeatParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(GoalParticle, Renderings::Particle)
+IS_DERIVED_REGISTER(GoalDefeatParticle, Renderings::Particle)
 
 #undef IS_DERIVED_REGISTER

@@ -131,6 +131,29 @@
 		}
 	},
 	{
+		"Name": "NPC",
+		"Prefab": "Prefab_NPC",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": -52.0,
+					"Y": 31.5,
+					"Z": -56.0
+				},
+				"Rotation": {
+					"X": 0.0,
+					"Y": 45.0,
+					"Z": 0.0
+				}
+			},
+			"NPC": {
+				"Name": "NPC5",
+				"EventName": "Event_TestStage_Talk5",
+				"CameraScreen": "PlayerCamera"
+			}
+		}
+	},
+	{
 		"Name": "NPCManager",
 		"Components": {
 			"NPCManager": {
@@ -240,10 +263,10 @@
 				"Canvas": "Canvas"
 			},
 			"TargetPoint": {
-				"TargetDistance": 200.0,
-				"RayLength": 400.0,
-				//"TargetDistance": 20.0,
-				//"RayLength": 50.0,
+				//"TargetDistance": 200.0,
+				//"RayLength": 400.0,
+				"TargetDistance": 20.0,
+				"RayLength": 50.0,
 				"BrightInterval": 0.1,
 				"Player": "Player",
 				"CameraScreen": "PlayerCamera",

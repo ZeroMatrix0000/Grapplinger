@@ -45,7 +45,10 @@ float4 main(PSInput input) : SV_Target
 	
 	// 法線
 	float3 normal = normalize(input.normal);
-	input.color.rgb = abs(normal) / 2.0f + 0.5;
+	input.color.rgb = abs(normal);
+	float colorMax = max(max(input.color.r, input.color.g), input.color.b);
+	input.color.rgb /= colorMax;
+	input.color.rgb = input.color.rgb / 2.0f + 0.5f;
 	
 	// 環境光色
 	float3 ambientColor = textureColor.rgb * AmbientColor * DiffuseColor.rgb * input.color.rgb;

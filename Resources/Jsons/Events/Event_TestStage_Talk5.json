@@ -1,0 +1,54 @@
+[
+	{
+		"ActionType": "OpenMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "BeginEasingCamera",
+		"Params": {
+			"Value": {
+				"Position": {
+					"X": -60.0,
+					"Y": 33.0,
+					"Z": -56.0
+				},
+				"Rotation": {
+					"X": -15.0,
+					"Y": 30.0,
+					"Z": 0.0
+				},
+				"Distance": 15.0
+			},
+			"Time": 1.5,
+			"Type": "Quart",
+			"InOut": "InOut"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "この<ruby=にじいろ>虹色</ruby>に<ruby=ひか>光</ruby>るモノを<ruby=こわ>壊</ruby>せばクリアだよ。",
+			"Character": "NPC5"
+		}
+	},
+	{
+		"ActionType": "SetMessageWindowText",
+		"Params": {
+			"Text": "3<ruby=かい>回</ruby>ワイヤーで<ruby=つか>掴</ruby>んで<ruby=たいあた>体当</ruby>りすれば\n<ruby=こわ>壊</ruby>すことができるよ。"
+		}
+	},
+	{
+		"ActionType": "CloseMessageWindow",
+		"Params": {
+			"IsWait": true
+		}
+	},
+	{
+		"ActionType": "WaitUntilEasingCamera"
+	},
+	{
+		"ActionType": "EndEasingCamera"
+	}
+]
