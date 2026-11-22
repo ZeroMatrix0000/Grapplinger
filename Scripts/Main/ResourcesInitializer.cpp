@@ -1,7 +1,7 @@
 /*
  * FileName:     ResourcesInitializer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/22
  *
  * リソース初期化
  */
@@ -108,6 +108,7 @@ void ResourcesInitializer::InitializeResources
 	resources->GetEditableModelSource("NewGrounds")->SetPixelShader(resources->GetPixelShader("PlayerShadowAndNormal"));
 	resources->GetEditableModelSource("TestStage")->SetPixelShader(resources->GetPixelShader("PlayerShadowAndNormal"));
 	resources->GetEditableModelSource("PlayerSilhouette")->SetPixelShader(resources->GetPixelShader("PlayerSilhouette"));
+	resources->GetEditableModelSource("Goal")->SetPixelShader(resources->GetPixelShader("Goal"));
 
 	// 描画順を設定
 	resources->GetEditableModelSource("PlayerSilhouette")->SetDrawingOrder(1000);

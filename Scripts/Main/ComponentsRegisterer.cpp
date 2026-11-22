@@ -1,7 +1,7 @@
 /*
  * FileName:     ComponentsRegisterer.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/22
  *
  * コンポーネント登録者
  */
@@ -28,7 +28,7 @@
 #include "../GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "../GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "../GameObjects/UIs/TargetPoint/TargetPoint.h"
-#include "../GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "../GameObjects/UIs/SideMenu/SideMenu.h"
 #include "../Scenes/Scenes.h"
 #include "../Scenes/GamePlayScene/Actions/Actions.h"
 #include "../Scenes/GamePlayScene/Actions/ActionManager.h"
@@ -224,5 +224,5 @@ void ComponentsRegisterer::RegisterComponents
 	// ターゲット照準
 	REGISTER(TargetPoint, "TargetPoint");
 	// ポーズ画面
-	REGISTER(PauseScreen, "PauseScreen");
+	REGISTER(SideMenu, "SideMenu");
 }

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/21
+ * Last Updated: 2026/11/22
  *
  * ゲームプレイシーンの内部データ
  */
@@ -37,7 +37,7 @@ class Z2Talk;
 class BlackBelt;
 class MessageWindow;
 class TargetPoint;
-class PauseScreen;
+class SideMenu;
 class ActionManager;
 
 // ゲームプレイシーンの内部データ
@@ -101,7 +101,10 @@ struct GamePlaySceneInternals
 	Ref<TargetPoint> targetPointRef;
 
 	// ポーズ画面
-	Ref<PauseScreen> pauseScreenRef;
+	Ref<SideMenu> pauseScreenRef;
+
+	// クリア画面
+	Ref<SideMenu> clearScreenRef;
 
 	// 背景
 	Ref<Renderings::Image> backGroundRef;

@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/21
+ * Last Updated: 2026/11/22
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -23,7 +23,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
-#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "Scripts/GameObjects/UIs/SideMenu/SideMenu.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
@@ -57,6 +57,13 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	if (internalsRef->playerRef->IsState<PlayerStateFreeze>())
 	{
 		internalsRef->playerRef->Update(elapsedTime, Math::Vector3::Zero, false, false);
+
+		// カメラの更新
+		internalsRef->playerCameraRef->SetTarget(internalsRef->playerRef->GetCameraTarget());
+		internalsRef->playerCameraRef->Rotate(Math::Vector2::Zero);
+		internalsRef->playerCameraRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh(), internalsRef->playerRef->GetPosition());
+		internalsRef->playerCameraRef->Update(elapsedTime);
+		internalsRef->iCameraScreenRef->UpdateViewMatrix();
 		return;
 	}
 
@@ -171,6 +178,9 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// ポーズ画面の更新
 	internalsRef->pauseScreenRef->Update(elapsedTime);
+	internalsRef->pauseScreenRef->UpdateConstantBuffer(elapsedTime);
+	// クリア画面の更新
+	internalsRef->clearScreenRef->Update(elapsedTime);
 
 	// 背景の更新
 	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable

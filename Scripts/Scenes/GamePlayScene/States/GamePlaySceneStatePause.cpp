@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStatePause.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/22
  *
  * ゲームプレイシーンのポーズ状態
  */
@@ -12,7 +12,7 @@
 #include "GamePlaySceneStates.h"
 #include "../GamePlaySceneInternals.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
-#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "Scripts/GameObjects/UIs/SideMenu/SideMenu.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Renderings/Image/Image.h"
@@ -69,6 +69,9 @@ void GamePlaySceneStatePause::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// ポーズ画面の更新
 	internalsRef->pauseScreenRef->Update(elapsedTime);
+	internalsRef->pauseScreenRef->UpdateConstantBuffer(elapsedTime);
+	// クリア画面の更新
+	internalsRef->clearScreenRef->Update(elapsedTime);
 
 	// ポーズ中でないなら終了
 	if (!internalsRef->pauseScreenRef->IsPausing())

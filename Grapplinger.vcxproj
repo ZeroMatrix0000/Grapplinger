@@ -234,7 +234,7 @@
     <ClCompile Include="Scripts\GameObjects\UIs\BlackBelt\BlackBelt.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\InteractCursor\InteractCursor.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\MessageWindow\MessageWindow.cpp" />
-    <ClCompile Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.cpp" />
+    <ClCompile Include="Scripts\GameObjects\UIs\SideMenu\SideMenu.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\TargetPoint\TargetPoint.cpp" />
     <ClCompile Include="Scripts\GameObjects\UIs\Z2Talk\Z2Talk.cpp" />
     <ClCompile Include="Scripts\Main\ComponentsRegisterer.cpp" />
@@ -297,10 +297,10 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_NPC.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorImage.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_InteractCursorText.json" />
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenu.json" />
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenuBar.json" />
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json" />
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuMenu.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuMenuBar.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuSideBelt.json" />
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuTitle.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_Player.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerModel.json" />
     <None Include="Resources\Jsons\Prefabs\Prefab_PlayerSilhouette.json" />
@@ -399,7 +399,7 @@
     <ClInclude Include="Scripts\GameObjects\UIs\BlackBelt\BlackBelt.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\InteractCursor\InteractCursor.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\MessageWindow\MessageWindow.h" />
-    <ClInclude Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.h" />
+    <ClInclude Include="Scripts\GameObjects\UIs\SideMenu\SideMenu.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\SelectMenu\SelectMenuParams.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\TargetPoint\TargetPoint.h" />
     <ClInclude Include="Scripts\GameObjects\UIs\Z2Talk\Z2Talk.h" />
@@ -498,6 +498,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\Goal.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(cso)PixelShaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(cso)PixelShaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(cso)PixelShaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(cso)PixelShaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Shaders\PixelShaders\GroundDebug.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

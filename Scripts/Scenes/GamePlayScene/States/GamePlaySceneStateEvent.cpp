@@ -21,6 +21,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
+#include "Scripts/GameObjects/UIs/SideMenu/SideMenu.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
@@ -91,6 +92,12 @@ void GamePlaySceneStateEvent::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// メッセージウィンドウの更新
 	internalsRef->messageWindowRef->Update(elapsedTime);
+
+	// ポーズ画面の更新
+	internalsRef->pauseScreenRef->Update(elapsedTime);
+	internalsRef->pauseScreenRef->UpdateConstantBuffer(elapsedTime);
+	// クリア画面の更新
+	internalsRef->clearScreenRef->Update(elapsedTime);
 	
 	// 背景の更新
 	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable

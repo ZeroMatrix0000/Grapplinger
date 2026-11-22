@@ -20,7 +20,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
-#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "Scripts/GameObjects/UIs/SideMenu/SideMenu.h"
 #include "Scripts/Scenes/GamePlayScene/Actions/ActionManager.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
@@ -107,7 +107,7 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->targetPointRef = iGameObjectManager->Find("TargetPoint")->GetComponent<TargetPoint>();
 
 	// ポーズ画面を取得
-	internalsRef->pauseScreenRef = iGameObjectManager->Find("PauseScreen")->GetComponent<PauseScreen>();
+	internalsRef->pauseScreenRef = iGameObjectManager->Find("PauseScreen")->GetComponent<SideMenu>();
 	internalsRef->pauseScreenRef->SetCanvasSize(outputSize);
 	internalsRef->pauseScreenRef->AddMenu(L"　ゲームを<ruby=つづ>続</ruby>ける", [internalsRef]
 		{
@@ -120,6 +120,26 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
 		});
 	internalsRef->pauseScreenRef->AddMenu(L"　タイトルに<ruby=もど>戻</ruby>る", [internalsRef]
+		{
+			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<TitleScene>();
+			// 入力を無効化
+			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
+			// チェックポイントをリセット
+			internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<int>("CheckPointNumber").GetValue() = 0;
+		});
+
+	// クリア画面を取得
+	internalsRef->clearScreenRef = iGameObjectManager->Find("ClearScreen")->GetComponent<SideMenu>();
+	internalsRef->clearScreenRef->SetCanvasSize(outputSize);
+	internalsRef->clearScreenRef->AddMenu(L"　<ruby=さいしょ>最初</ruby>からやり<ruby=なお>直</ruby>す", [internalsRef]
+		{
+			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<GamePlayScene>();
+			// 入力を無効化
+			internalsRef->gameContextRef->GetIGameInput()->SetActive(false);
+			// チェックポイントをリセット
+			internalsRef->gameContextRef->GetIFlagManager()->GetFlagRef<int>("CheckPointNumber").GetValue() = 0;
+		});
+	internalsRef->clearScreenRef->AddMenu(L"　タイトルに<ruby=もど>戻</ruby>る", [internalsRef]
 		{
 			internalsRef->gameContextRef->GetISceneManager()->SetNextScene<TitleScene>();
 			// 入力を無効化

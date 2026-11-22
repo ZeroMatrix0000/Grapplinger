@@ -145,11 +145,11 @@
     <Filter Include="Scripts\GameObjects\Objects\CheckPoint">
       <UniqueIdentifier>{bc8b654c-dde9-423a-83aa-c89e465f828b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\GameObjects\UIs\PauseScreen">
-      <UniqueIdentifier>{2c969d8c-c232-4d88-bbed-c222183671f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\GameObjects\Objects\Goal">
       <UniqueIdentifier>{043bacb2-7210-4659-9fe9-02dfb8a6875a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\GameObjects\UIs\SideMenu">
+      <UniqueIdentifier>{2c969d8c-c232-4d88-bbed-c222183671f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -499,8 +499,8 @@
     <ClCompile Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.cpp">
       <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.cpp">
-      <Filter>Scripts\GameObjects\UIs\PauseScreen</Filter>
+    <ClCompile Include="Scripts\GameObjects\UIs\SideMenu\SideMenu.cpp">
+      <Filter>Scripts\GameObjects\UIs\SideMenu</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.cpp">
       <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
@@ -997,8 +997,8 @@
     <ClInclude Include="Scripts\GameObjects\Objects\CheckPoint\CheckPointManager.h">
       <Filter>Scripts\GameObjects\Objects\CheckPoint</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\GameObjects\UIs\PauseScreen\PauseScreen.h">
-      <Filter>Scripts\GameObjects\UIs\PauseScreen</Filter>
+    <ClInclude Include="Scripts\GameObjects\UIs\SideMenu\SideMenu.h">
+      <Filter>Scripts\GameObjects\UIs\SideMenu</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStatePause.h">
       <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
@@ -1120,10 +1120,10 @@
     <None Include="Resources\Jsons\Prefabs\Prefab_CheckPoint.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenSideBelt.json">
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuSideBelt.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenTitle.json">
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuTitle.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk3.json">
@@ -1132,10 +1132,10 @@
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4.json">
       <Filter>Jsons\Events</Filter>
     </None>
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenu.json">
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuMenu.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
-    <None Include="Resources\Jsons\Prefabs\Prefab_PauseScreenMenuBar.json">
+    <None Include="Resources\Jsons\Prefabs\Prefab_SideMenuMenuBar.json">
       <Filter>Jsons\Prefabs</Filter>
     </None>
     <None Include="Resources\Jsons\Events\Event_TestStage_Talk4_False.json">
@@ -1195,6 +1195,9 @@
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\PixelShaders\BackGround.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\Goal.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
   </ItemGroup>

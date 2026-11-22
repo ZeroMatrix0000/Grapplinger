@@ -429,7 +429,8 @@
 	{
 		"Name": "PauseScreen",
 		"Components": {
-			"PauseScreen": {
+			"SideMenu": {
+				"Title": "ポーズ",
 				"MenuInterval": 150.0,
 				"MenuBasePosition": {
 					"X": 0.0,
@@ -485,13 +486,7 @@
 				}
 			},
 			"Model3D": {
-				"ModelSourceName": "Goal",
-				"Color": {
-					"R": 0.5,
-					"G": 0.8,
-					"B": 1.0,
-					"A": 1.0
-				}
+				"ModelSourceName": "Goal"
 			},
 			"BoxCollider": {
 				"Size": {
@@ -524,6 +519,25 @@
 				"CameraScreen": "PlayerCamera"
 			},
 			"ParticleManager": {}
+		}
+	},
+	{
+		"Name": "ClearScreen",
+		"Components": {
+			"SideMenu": {
+				"Title": "クリア！",
+				"MenuInterval": 200.0,
+				"MenuBasePosition": {
+					"X": 0.0,
+					"Y": 0.0
+				},
+				"MenuBarBaseSize": {
+					"X": 500.0,
+					"Y": 100.0
+				},
+				"MenuBaseFontSize": 48.0,
+				"Canvas": "Canvas"
+			}
 		}
 	}
 ]

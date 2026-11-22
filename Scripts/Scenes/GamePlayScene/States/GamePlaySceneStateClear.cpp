@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateClear.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/21
+ * Last Updated: 2026/11/22
  *
  * ゲームプレイシーンのクリア状態
  */
@@ -19,7 +19,7 @@
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
 #include "Scripts/GameObjects/UIs/TargetPoint/TargetPoint.h"
-#include "Scripts/GameObjects/UIs/PauseScreen/PauseScreen.h"
+#include "Scripts/GameObjects/UIs/SideMenu/SideMenu.h"
 #include "Scripts/Main/GameContext.h"
 #include "Scripts/Main/IGameInput.h"
 #include "Scripts/Commons/Colliders/MeshCollider.h"
@@ -39,6 +39,8 @@ void GamePlaySceneStateClear::Enter(Ref<GamePlaySceneInternals> internalsRef)
 	internalsRef->reticleRef->SetColor(DirectX::Colors::Transparent);
 	// ターゲット照準を非表示
 	internalsRef->targetPointRef->Hide();
+	// ポーズ画面を開く
+	internalsRef->clearScreenRef->Pause(true);
 
 	// ゴールを隠す
 	internalsRef->goalRef->Hide();
@@ -57,21 +59,18 @@ void GamePlaySceneStateClear::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// 上選択
 	if (iGameInput->GetMenuAbove())
 	{
-		//internalsRef->pauseScreenRef->SelectAbove();
+		internalsRef->clearScreenRef->SelectAbove();
 	}
 	// 下選択
 	if (iGameInput->GetMenuBelow())
 	{
-		//internalsRef->pauseScreenRef->SelectBelow();
+		internalsRef->clearScreenRef->SelectBelow();
 	}
 	// 決定
 	if (iGameInput->GetMenuDecide())
 	{
-		//internalsRef->pauseScreenRef->Decide();
+		internalsRef->clearScreenRef->Decide();
 	}
-
-	// ポーズ画面の更新
-	internalsRef->pauseScreenRef->Update(elapsedTime);
 
 	// NPCの更新
 	internalsRef->nPCManagerRef->SetRotation(internalsRef->playerRef->GetPosition());
@@ -102,6 +101,12 @@ void GamePlaySceneStateClear::Update(Ref<GamePlaySceneInternals> internalsRef, f
 
 	// メッセージウィンドウの更新
 	internalsRef->messageWindowRef->Update(elapsedTime);
+
+	// ポーズ画面の更新
+	internalsRef->pauseScreenRef->Update(elapsedTime);
+	internalsRef->pauseScreenRef->UpdateConstantBuffer(elapsedTime);
+	// クリア画面の更新
+	internalsRef->clearScreenRef->Update(elapsedTime);
 
 	// 背景の更新
 	internalsRef->backGroundRef->GetPixelShader()->GetConstantBufferRef()->SetVariable

@@ -1,13 +1,13 @@
 /*
- * FileName:     PauseScreen.cpp
+ * FileName:     SideMenu.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/20
+ * Last Updated: 2026/11/22
  *
  * ポーズ画面
  */
 
 #include "Pch.h"
-#include "PauseScreen.h"
+#include "SideMenu.h"
 
 #include "Scripts/Commons/Components/RectTransform.h"
 #include "Scripts/Commons/GameObjects/GameObject.h"
@@ -18,9 +18,10 @@
 #include "Scripts/Commons/Systems/IsDerivedRegister.h"
 #include "Scripts/Commons/Systems/JsonSerializer.h"
 
-// コンストラクタ
-PauseScreen::PauseScreen(const ComponentDesc& desc)
+// サイドメニュー
+SideMenu::SideMenu(const ComponentDesc& desc)
 	: Component{ desc }
+	, m_titleStr{}
 	, m_menuInterval{}
 	, m_menuBasePosition{}
 	, m_menuBarBaseSize{}
@@ -28,7 +29,7 @@ PauseScreen::PauseScreen(const ComponentDesc& desc)
 	, m_isPausing{}
 	, m_selectNumber{}
 	, m_canvasRef{ GetOwner()->GetNullComponent<Renderings::Canvas>() }
-	, m_backGround{ GetOwner()->GetNullComponent<RectTransform>() }
+	, m_pBackGround{}
 	, m_sideBelt{ GetOwner()->GetNullComponent<RectTransform>() }
 	, m_sideBeltImage{ GetOwner()->GetNullComponent<Renderings::Image>() }
 	, m_sideBeltWidth{}
@@ -46,26 +47,30 @@ PauseScreen::PauseScreen(const ComponentDesc& desc)
 }
 
 // 初期値を設定
-void PauseScreen::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
+void SideMenu::SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder)
 {
 	Systems::JsonSerializer serializer{ iGameObjectFinder };
+	serializer.AddParameter(Ref{ m_titleStr }, "Title");
 	serializer.AddParameter(Ref{ m_menuInterval }, "MenuInterval");
 	serializer.AddParameter(Ref{ m_menuBasePosition }, "MenuBasePosition");
 	serializer.AddParameter(Ref{ m_menuBarBaseSize }, "MenuBarBaseSize");
 	serializer.AddParameter(Ref{ m_menuBaseFontSize }, "MenuBaseFontSize");
 	serializer.AddParameter(m_canvasRef.Nest(), "Canvas");
-	serializer.AddParameter(m_backGround.Nest(), "BackGround");
+	serializer.AddParameter(Ref{ m_pBackGround }, "BackGround");
 	serializer.Load(json);
 }
 
 // 初期化処理
-void PauseScreen::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
+void SideMenu::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 {
-	m_backGround->SetPivot(Utility::AlignmentPoint::MiddleLeft);
-	m_backGround->SetAnchor(Utility::AlignmentPoint::MiddleRight);
+	if (m_pBackGround)
+	{
+		m_pBackGround->SetPivot(Utility::AlignmentPoint::MiddleLeft);
+		m_pBackGround->SetAnchor(Utility::AlignmentPoint::MiddleRight);
+	}
 
 	// 左帯を作成
-	Ref obj = Instantiate("Prefab_PauseScreenSideBelt");
+	Ref obj = Instantiate("Prefab_SideMenuSideBelt");
 	m_sideBelt = obj->GetComponent<RectTransform>();
 	m_sideBeltImage = obj->GetComponent<Renderings::Image>();
 	m_sideBeltImage->SetCanvasRef(m_canvasRef.Const());
@@ -74,14 +79,16 @@ void PauseScreen::Initalize(Ref<IGameObjectFinder> iGameObjectFinder)
 	m_sideBeltPosition.SetMovement(Math::Vector2{ -m_sideBeltWidth, 0.0f }, 0.0f);
 
 	// タイトルを作成
-	obj = Instantiate("Prefab_PauseScreenTitle");
+	obj = Instantiate("Prefab_SideMenuTitle");
 	m_title = obj->GetComponent<RectTransform>();
-	obj->GetComponent<Renderings::Text>()->SetCanvasRef(m_canvasRef.Const());
 	m_title->SetPosition(Math::Vector2{ -m_sideBeltWidth, 0.0f });
+	Ref titleText = obj->GetComponent<Renderings::Text>();
+	titleText->SetStr(m_titleStr);
+	titleText->SetCanvasRef(m_canvasRef.Const());
 }
 
 // 更新処理
-void PauseScreen::Update(float elapsedTime)
+void SideMenu::Update(float elapsedTime)
 {
 	m_sideBeltPosition.Tick(elapsedTime);
 
@@ -100,21 +107,27 @@ void PauseScreen::Update(float elapsedTime)
 		m_menuFontSizeList.at(i).Tick(elapsedTime);
 		m_menuTextList.at(i)->SetFontSize(m_menuFontSizeList.at(i).GetMovement());
 	}
+}
 
-	// 定数バッファの更新
+// 定数バッファの更新
+void SideMenu::UpdateConstantBuffer(float elapsedTime)
+{
 	Ref bufferRef = m_sideBeltImage->GetPixelShader()->GetConstantBufferRef();
 	bufferRef->SetVariable("Time", bufferRef->GetVariable<float>("Time") + elapsedTime);
 	bufferRef->SetVariable("TextureSize", m_sideBelt->GetRect().size);
 }
 
 // キャンバスサイズを設定
-void PauseScreen::SetCanvasSize(const Math::Vector2& outputSize)
+void SideMenu::SetCanvasSize(const Math::Vector2& outputSize)
 {
-	m_backGround->SetSize(m_canvasRef->GetSize());
+	if (m_pBackGround)
+	{
+		m_pBackGround->SetSize(m_canvasRef->GetSize());
+	}
 }
 
 // ポーズする
-void PauseScreen::Pause(bool isPause)
+void SideMenu::Pause(bool isPause)
 {
 	if (m_isPausing == isPause)
 	{
@@ -123,17 +136,20 @@ void PauseScreen::Pause(bool isPause)
 
 	m_isPausing = isPause;
 	m_sideBeltPosition.SetMovement(Math::Vector2{ isPause ? 0.0f : -m_sideBeltWidth, 0.0f }, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
-	m_backGround->SetPivot(isPause ? Utility::AlignmentPoint::MiddleCenter : Utility::AlignmentPoint::MiddleLeft);
-	m_backGround->SetAnchor(isPause ? Utility::AlignmentPoint::MiddleCenter : Utility::AlignmentPoint::MiddleRight);
+	if (m_pBackGround)
+	{
+		m_pBackGround->SetPivot(isPause ? Utility::AlignmentPoint::MiddleCenter : Utility::AlignmentPoint::MiddleLeft);
+		m_pBackGround->SetAnchor(isPause ? Utility::AlignmentPoint::MiddleCenter : Utility::AlignmentPoint::MiddleRight);
+	}
 }
 
 // メニューの追加
-void PauseScreen::AddMenu(const std::wstring& str, const std::function<void()>& onDecide)
+void SideMenu::AddMenu(const std::wstring& str, const std::function<void()>& onDecide)
 {
 	int size = static_cast<int>(m_menuList.size());
 
 	// テキスト部分
-	Ref obj = Instantiate("Prefab_PauseScreenMenu");
+	Ref obj = Instantiate("Prefab_SideMenuMenu");
 	Ref menu = m_menuList.emplace_back(obj->GetComponent<RectTransform>());
 	menu->SetPosition(m_menuBasePosition + Math::Vector2::UnitY * m_menuInterval * static_cast<float>(size));
 	Ref text = m_menuTextList.emplace_back(obj->GetComponent<Renderings::Text>());
@@ -144,9 +160,9 @@ void PauseScreen::AddMenu(const std::wstring& str, const std::function<void()>& 
 	m_menuBasePositionList.emplace_back(menu->GetRect().position);
 
 	// バー部分
-	obj = Instantiate("Prefab_PauseScreenMenuBar");
+	obj = Instantiate("Prefab_SideMenuMenuBar");
 	Ref bar = m_menuBarList.emplace_back(obj->GetComponent<RectTransform>());
-	bar->SetPosition(m_menuBasePosition + Math::Vector2::UnitY * (m_menuInterval * static_cast<float>(size) - 5.0f));
+	bar->SetPosition(m_menuBasePosition + Math::Vector2::UnitY * (m_menuInterval * static_cast<float>(size) - 8.0f));
 	Ref image = obj->GetComponent<Renderings::Image>();
 	image->SetCanvasRef(m_canvasRef.Const());
 	auto& barSize = m_menuBarSizeList.emplace_back();
@@ -157,7 +173,7 @@ void PauseScreen::AddMenu(const std::wstring& str, const std::function<void()>& 
 }
 
 // 上選択
-void PauseScreen::SelectAbove()
+void SideMenu::SelectAbove()
 {
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize * Math::Vector2::UnitY, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize * 0.9f, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
@@ -169,7 +185,7 @@ void PauseScreen::SelectAbove()
 }
 
 // 下選択
-void PauseScreen::SelectBelow()
+void SideMenu::SelectBelow()
 {
 	m_menuBarSizeList.at(m_selectNumber).SetMovement(m_menuBarBaseSize * Math::Vector2::UnitY, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
 	m_menuFontSizeList.at(m_selectNumber).SetMovement(m_menuBaseFontSize * 0.9f, 0.25f, Easing::Type::Quart, Easing::InOut::Out);
@@ -181,7 +197,7 @@ void PauseScreen::SelectBelow()
 }
 
 // 決定
-void PauseScreen::Decide()
+void SideMenu::Decide()
 {
 	m_menuOnDecideList.at(m_selectNumber)();
 }

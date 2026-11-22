@@ -1,9 +1,9 @@
 /*
- * FileName:     PauseScreen.h
+ * FileName:     SideMenu.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/17
+ * Last Updated: 2026/11/22
  *
- * ポーズ画面
+ * サイドメニュー
  */
 
 #pragma once
@@ -21,8 +21,8 @@ namespace Renderings
 	class Canvas;
 }
 
-// ポーズ画面
-class PauseScreen : public Component
+// サイドメニュー
+class SideMenu : public Component
 {
 
 public:
@@ -31,7 +31,7 @@ public:
 	/* メンバ関数 */
 
 	// コンストラクタ
-	PauseScreen(const ComponentDesc& desc);
+	SideMenu(const ComponentDesc& desc);
 
 	// 初期値を設定
 	void SetSerializeField(const nlohmann::ordered_json& json, Ref<IGameObjectFinder> iGameObjectFinder) override;
@@ -40,6 +40,8 @@ public:
 
 	// 更新処理
 	void Update(float elapsedTime);
+	// 定数バッファの更新
+	void UpdateConstantBuffer(float elapsedTime);
 
 	// キャンバスサイズを設定
 	void SetCanvasSize(const Math::Vector2& outputSize);
@@ -65,6 +67,8 @@ private:
 
 	/* メンバ変数 */
 
+	// タイトル
+	std::wstring m_titleStr;
 	// メニューの間隔
 	float m_menuInterval;
 	// メニューの初期位置
@@ -83,7 +87,7 @@ private:
 	Ref<Renderings::Canvas> m_canvasRef;
 
 	// 背景
-	Ref<RectTransform> m_backGround;
+	RectTransform* m_pBackGround;
 	
 	// 左帯
 	Ref<RectTransform> m_sideBelt;
