@@ -1,7 +1,7 @@
 /*
  * FileName:     ColliderRenderer.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/20
+ * Last Updated: 2026/11/21
  *
  * 当たり判定描画
  */
@@ -338,8 +338,14 @@ void Renderings::ColliderRenderer::DrawTriangle(const Math::Triangle& triangle, 
 void Renderings::ColliderRenderer::DrawMesh(const Mesh& mesh, const Math::Color& color) const
 {
 	// 各三角形を描画
-	for (const auto& face : mesh.f)
+	for (int i = 0; i < mesh.v.size(); i++)
 	{
-		DrawTriangle(Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)), mesh.v.at(face.at(2)) }, color);
+		const auto& vertices = mesh.v.at(i);
+		const auto& faces = mesh.f.at(i);
+
+		for (const auto& face : faces)
+		{
+			DrawTriangle(Math::Triangle{ vertices.at(face.at(0)), vertices.at(face.at(1)), vertices.at(face.at(2)) }, color);
+		}
 	}
 }

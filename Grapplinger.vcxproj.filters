@@ -148,6 +148,9 @@
     <Filter Include="Scripts\GameObjects\UIs\PauseScreen">
       <UniqueIdentifier>{2c969d8c-c232-4d88-bbed-c222183671f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\GameObjects\Objects\Goal">
+      <UniqueIdentifier>{043bacb2-7210-4659-9fe9-02dfb8a6875a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Main\WinMain.cpp">
@@ -510,6 +513,15 @@
     </ClCompile>
     <ClCompile Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.cpp">
       <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Objects\Goal\Goal.cpp">
+      <Filter>Scripts\GameObjects\Objects\Goal</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\GameObjects\Particles\GoalParticle.cpp">
+      <Filter>Scripts\GameObjects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateClear.cpp">
+      <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1002,6 +1014,15 @@
     </ClInclude>
     <ClInclude Include="Scripts\Scenes\GamePlayScene\Actions\ActionSetFlag.h">
       <Filter>Scripts\Scenes\GamePlayScene\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Objects\Goal\Goal.h">
+      <Filter>Scripts\GameObjects\Objects\Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\GameObjects\Particles\GoalParticle.h">
+      <Filter>Scripts\GameObjects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Scenes\GamePlayScene\States\GamePlaySceneStateClear.h">
+      <Filter>Scripts\Scenes\GamePlayScene\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

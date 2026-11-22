@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.hpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/16
+ * Last Updated: 2026/11/21
  *
  * ゲームプレイシーンの内部データ
  */
@@ -28,6 +28,7 @@ GamePlaySceneInternals::GamePlaySceneInternals
 	, groundModelRef{ owner->GetNullComponent<Renderings::Model3D>() }
 	, deathFloorRef{ owner->GetNullComponent<Colliders::BoxCollider>() }
 	, checkPointManagerRef{ owner->GetNullComponent<CheckPointManager>() }
+	, goalRef{ owner->GetNullComponent<Goal>() }
 	, reticleRef{ owner->GetNullComponent<Renderings::Image>() }
 	, z2TalkRef{ owner->GetNullComponent<Z2Talk>() }
 	, blackBeltRef{ owner->GetNullComponent<BlackBelt>() }

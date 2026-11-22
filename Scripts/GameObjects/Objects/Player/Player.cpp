@@ -1,7 +1,7 @@
 /*
  * FileName:     Player.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/17
+ * Last Updated: 2026/11/21
  * 
  *
  * プレイヤー
@@ -126,76 +126,87 @@ void Player::MeshCorrect(const Mesh& mesh)
 	Math::NonRotatingBox nonRotatingBox = m_internals.boxColliderRef->GetWorldBox().CreateNonRotatingBox();
 	nonRotatingBox.size *= 1.2f;
 
-	// 壁
-	std::vector<Math::Triangle> walls{};
-	// 床
-	std::vector<Math::Triangle> floors{};
-
-	for (const auto& face : mesh.f)
+	for (int i = 0; i < mesh.v.size(); i++)
 	{
-		// メッシュの三角形を取得
-		Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)) , mesh.v.at(face.at(2)) };
-		triangle += triangle.GetNormal() * 0.01f;
-		// 外接する非回転直方体が触れていなければ何もしない
-		if (!Math::Geometry::IsCollide(nonRotatingBox, triangle.CreateNonRotatingBox()))
+		if (!Math::Geometry::IsCollide(nonRotatingBox, mesh.GetNonRotatingBox(i)))
 		{
 			continue;
 		}
 
-		float cos = triangle.GetNormal().Dot(Math::Vector3::Down);
+		const auto& vertices = mesh.v.at(i);
+		const auto& faces = mesh.f.at(i);
 
-		// 法線の角度が 45° 以上なら床、でなければ壁
-		if (cos < -1.0f / 1.41421356f)
+		// 壁
+		std::vector<Math::Triangle> walls{};
+		// 床
+		std::vector<Math::Triangle> floors{};
+
+		for (const auto& face : faces)
 		{
-			floors.push_back(triangle);
+			// メッシュの三角形を取得
+			Math::Triangle triangle = Math::Triangle{ vertices.at(face.at(0)), vertices.at(face.at(1)) , vertices.at(face.at(2)) };
+			triangle += triangle.GetNormal() * 0.01f;
+			// 外接する非回転直方体が触れていなければ何もしない
+			if (!Math::Geometry::IsCollide(nonRotatingBox, triangle.CreateNonRotatingBox()))
+			{
+				continue;
+			}
+
+			float cos = triangle.GetNormal().Dot(Math::Vector3::Down);
+
+			// 法線の角度が 45° 以上なら床、でなければ壁
+			if (cos < -1.0f / 1.41421356f)
+			{
+				floors.push_back(triangle);
+			}
+			else
+			{
+				walls.push_back(triangle);
+			}
 		}
-		else
+
+		// 最短距離
+		float distance = Math::INFTY;
+		// 押出方向
+		Math::Vector3 direction{};
+
+		// 壁
+		for (const auto& wall : walls)
 		{
-			walls.push_back(triangle);
+			Math::Vector3 newDirection{};
+
+			float newDistance = Math::Geometry::Distance(wall, box, &newDirection, false);
+
+			// 最短距離を更新
+			if (newDistance < distance)
+			{
+				distance = newDistance;
+				direction = newDirection;
+			}
 		}
+		// 座標補正
+		PositionCorrect(distance, direction);
+
+		distance = Math::INFTY;
+		direction = Math::Vector3::Zero;
+
+		// 床
+		for (const auto& floor : floors)
+		{
+			Math::Vector3 newDirection = Math::Vector3::Down;
+
+			float newDistance = Math::Geometry::AngledDistance(box, floor, newDirection);
+
+			// 最短距離を更新
+			if (newDistance < distance && newDistance > -1.5f)
+			{
+				distance = newDistance;
+				direction = newDirection;
+			}
+		}
+		// 座標補正
+		PositionCorrect(distance, direction);
 	}
-
-	// 最短距離
-	float distance = Math::INFTY;
-	// 押出方向
-	Math::Vector3 direction{};
-
-	// 壁
-	for (const auto& wall : walls)
-	{
-		Math::Vector3 newDirection{};
-
-		float newDistance = Math::Geometry::Distance(wall, box, &newDirection, false);
-
-		// 最短距離を更新
-		if (newDistance < distance)
-		{
-			distance = newDistance;
-			direction = newDirection;
-		}
-	}
-	// 座標補正
-	PositionCorrect(distance, direction);
-
-	distance = Math::INFTY;
-	direction = Math::Vector3::Zero;
-
-	// 床
-	for (const auto& floor : floors)
-	{
-		Math::Vector3 newDirection = Math::Vector3::Down;
-
-		float newDistance = Math::Geometry::AngledDistance(box, floor, newDirection);
-
-		// 最短距離を更新
-		if (newDistance < distance && newDistance > -1.5f)
-		{
-			distance = newDistance;
-			direction = newDirection;
-		}
-	}
-	// 座標補正
-	PositionCorrect(distance, direction);
 
 	// 次の状態に遷移
 	std::unique_ptr<Systems::State<PlayerInternals>> nextState{ m_currentState->MoveNextState() };

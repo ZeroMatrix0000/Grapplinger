@@ -1,7 +1,7 @@
 /*
  * FileName:     TargetPoint.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/21
  *
  * ターゲット照準
  */
@@ -134,36 +134,47 @@ void TargetPoint::Update(float elapsedTime)
 	{
 		const auto& mesh = groundRef->GetWorldMesh();
 
-		for (const auto& face : mesh.f)
+		for (int i = 0; i < mesh.v.size(); i++)
 		{
-			// メッシュの三角形
-			Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)) , mesh.v.at(face.at(2)) };
-
-			// 方向が法線と反対方向でなければスキップ
-			if (triangle.GetNormal().Dot(eyeDirection) > 0.0f)
+			if (Math::Geometry::AngledDistance(eyePosition, mesh.GetNonRotatingBox(i), eyeDirection) == Math::INFTY)
 			{
 				continue;
 			}
 
-			// カメラの中心と三角形の方向指定最短距離
-			float distance = Math::Geometry::AngledDistance(eyePosition, triangle, eyeDirection);
-			if (distance == Math::INFTY)
-			{
-				continue;
-			}
+			const auto& vertices = mesh.v.at(i);
+			const auto& faces = mesh.f.at(i);
 
-			// 交点
-			Math::Vector3 intersect = eyePosition + eyeDirection * distance;
-
-			// プレイヤーより手前側にあるなら
-			if (eyeDirection.Dot(intersect - playerPosition) > 0.0f)
+			for (const auto& face : faces)
 			{
-				float playerDistance = Math::Vector3::Distance(playerPosition, intersect);
-				if (playerDistance <= distanceMin)
+				// メッシュの三角形
+				Math::Triangle triangle = Math::Triangle{ vertices.at(face.at(0)), vertices.at(face.at(1)) , vertices.at(face.at(2)) };
+
+				// 方向が法線と反対方向でなければスキップ
+				if (triangle.GetNormal().Dot(eyeDirection) > 0.0f)
 				{
-					distanceMin = playerDistance;
-					m_info.position = intersect;
-					m_info.type = Type::Ground;
+					continue;
+				}
+
+				// カメラの中心と三角形の方向指定最短距離
+				float distance = Math::Geometry::AngledDistance(eyePosition, triangle, eyeDirection);
+				if (distance == Math::INFTY)
+				{
+					continue;
+				}
+
+				// 交点
+				Math::Vector3 intersect = eyePosition + eyeDirection * distance;
+
+				// プレイヤーより手前側にあるなら
+				if (eyeDirection.Dot(intersect - playerPosition) > 0.0f)
+				{
+					float playerDistance = Math::Vector3::Distance(playerPosition, intersect);
+					if (playerDistance <= distanceMin)
+					{
+						distanceMin = playerDistance;
+						m_info.position = intersect;
+						m_info.type = Type::Ground;
+					}
 				}
 			}
 		}
@@ -204,19 +215,30 @@ const TargetPoint::Info& TargetPoint::GetTargetInfo()
 	{
 		const auto& mesh = groundRef->GetWorldMesh();
 
-		for (const auto& face : mesh.f)
+		for (int i = 0; i < mesh.v.size(); i++)
 		{
-			// メッシュの三角形
-			Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)) , mesh.v.at(face.at(2)) };
-
-			// カメラの中心と三角形の方向指定最短距離
-			float distance = Math::Geometry::AngledDistance(playerPosition, triangle, direction);
-
-			if (distance > 0.0f && distance < distanceMin)
+			if (Math::Geometry::AngledDistance(playerPosition, mesh.GetNonRotatingBox(i), direction) == Math::INFTY)
 			{
-				distanceMin = distance;
-				m_info.position = playerPosition + direction * distance;
-				m_info.type = Type::Ground;
+				continue;
+			}
+
+			const auto& vertices = mesh.v.at(i);
+			const auto& faces = mesh.f.at(i);
+
+			for (const auto& face : faces)
+			{
+				// メッシュの三角形
+				Math::Triangle triangle = Math::Triangle{ vertices.at(face.at(0)), vertices.at(face.at(1)) , vertices.at(face.at(2)) };
+
+				// カメラの中心と三角形の方向指定最短距離
+				float distance = Math::Geometry::AngledDistance(playerPosition, triangle, direction);
+
+				if (distance > 0.0f && distance < distanceMin)
+				{
+					distanceMin = distance;
+					m_info.position = playerPosition + direction * distance;
+					m_info.type = Type::Ground;
+				}
 			}
 		}
 	}

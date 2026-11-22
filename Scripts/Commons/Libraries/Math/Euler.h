@@ -1,7 +1,7 @@
 /*
  * FileName:     Euler.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/06
+ * Last Updated: 2026/11/21
  *
  * オイラー角
  */
@@ -23,6 +23,13 @@ namespace Libraries
 				: x{}
 				, y{}
 				, z{}
+			{
+			}
+			// コンストラクタ
+			constexpr Euler(float i)
+				: x{ i }
+				, y{ i }
+				, z{ i }
 			{
 			}
 			// コンストラクタ

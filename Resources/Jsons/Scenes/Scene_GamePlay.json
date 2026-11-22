@@ -240,10 +240,10 @@
 				"Canvas": "Canvas"
 			},
 			"TargetPoint": {
-				//"TargetDistance": 200.0,
-				//"RayLength": 400.0,
-				"TargetDistance": 20.0,
-				"RayLength": 50.0,
+				"TargetDistance": 200.0,
+				"RayLength": 400.0,
+				//"TargetDistance": 20.0,
+				//"RayLength": 50.0,
 				"BrightInterval": 0.1,
 				"Player": "Player",
 				"CameraScreen": "PlayerCamera",
@@ -472,6 +472,58 @@
 				"OrderInLayer": -1000,
 				"Canvas": "Canvas"
 			}
+		}
+	},
+	{
+		"Name": "Goal",
+		"Components": {
+			"Transform": {
+				"Position": {
+					"X": -60.0,
+					"Y": 35.0,
+					"Z": -51.0
+				}
+			},
+			"Model3D": {
+				"ModelSourceName": "Goal",
+				"Color": {
+					"R": 0.5,
+					"G": 0.8,
+					"B": 1.0,
+					"A": 1.0
+				}
+			},
+			"BoxCollider": {
+				"Size": {
+					"X": 1.5,
+					"Y": 1.5,
+					"Z": 1.5
+				},
+				"Color": {
+					"R": 0.5,
+					"G": 0.8,
+					"B": 1.0,
+					"A": 1.0
+				}
+			},
+			"SphereCollider": {
+				"Radius": 5.0,
+				"Color": {
+					"R": 1.0,
+					"G": 0.5,
+					"B": 0.5,
+					"A": 1.0
+				}
+			},
+			"Goal": {
+				"FloatSize": 0.5,
+				"FloatTime": 4.0,
+				"RotateTime": 5.0,
+				"ParticleTime": 0.05,
+				"Hp": 3,
+				"CameraScreen": "PlayerCamera"
+			},
+			"ParticleManager": {}
 		}
 	}
 ]

@@ -88,6 +88,9 @@ void GamePlaySceneInitializer::operator()(Ref<GamePlaySceneInternals> internalsR
 	internalsRef->deathFloorRef = iGameObjectManager->Find("DeathFloor")->GetComponent<Colliders::BoxCollider>();
 	internalsRef->deathFloorRef->ApplyTransform();
 
+	// ゴールを取得
+	internalsRef->goalRef = iGameObjectManager->Find("Goal")->GetComponent<Goal>();
+
 	// レティクルを取得
 	internalsRef->reticleRef = iGameObjectManager->Find("Reticle")->GetComponent<Renderings::Image>();
 

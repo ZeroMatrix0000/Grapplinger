@@ -1,7 +1,7 @@
 /*
  * FileName:     PlayerCamera.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/19
+ * Last Updated: 2026/11/21
  *
  * プレイヤーカメラ
  */
@@ -114,16 +114,29 @@ void PlayerCamera::MeshCorrect(const Mesh& mesh, const Math::Vector3& centerPosi
 	// 方向指定最短距離
 	float angledDistance = Math::INFTY;
 
-	for (const auto& face : mesh.f)
+	Math::NonRotatingBox nonRotatingBox{ m_target, Math::Vector3::One * m_maxDistance };
+
+	for (int i = 0; i < mesh.v.size(); i++)
 	{
-		// メッシュの三角形を取得
-		Math::Triangle triangle = Math::Triangle{ mesh.v.at(face.at(0)), mesh.v.at(face.at(1)), mesh.v.at(face.at(2)) };
-
-		float newDistance = Math::Geometry::AngledDistance(m_target, triangle, direction);
-
-		if (newDistance > minDistance && direction.Dot(triangle.GetNormal()) < 0.0f)
+		if (!Math::Geometry::IsCollide(nonRotatingBox, mesh.GetNonRotatingBox(i)))
 		{
-			angledDistance = Math::Min(angledDistance, newDistance);
+			continue;
+		}
+
+		const auto& vertices = mesh.v.at(i);
+		const auto& faces = mesh.f.at(i);
+
+		for (const auto& face : faces)
+		{
+			// メッシュの三角形を取得
+			Math::Triangle triangle = Math::Triangle{ vertices.at(face.at(0)), vertices.at(face.at(1)), vertices.at(face.at(2)) };
+
+			float newDistance = Math::Geometry::AngledDistance(m_target, triangle, direction);
+
+			if (newDistance > minDistance && direction.Dot(triangle.GetNormal()) < 0.0f)
+			{
+				angledDistance = Math::Min(angledDistance, newDistance);
+			}
 		}
 	}
 

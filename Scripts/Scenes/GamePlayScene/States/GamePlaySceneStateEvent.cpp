@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateEvent.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/18
+ * Last Updated: 2026/11/21
  *
  * ゲームプレイシーンのイベント状態
  */
@@ -16,6 +16,7 @@
 #include "Scripts/GameObjects/Objects/Player/PlayerCamera.h"
 #include "Scripts/GameObjects/Objects/NPC/NPC.h"
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
+#include "Scripts/GameObjects/Objects/Goal/Goal.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -57,6 +58,9 @@ void GamePlaySceneStateEvent::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	internalsRef->nPCManagerRef->SetRotation(internalsRef->playerRef->GetPosition());
 	internalsRef->nPCManagerRef->Update(elapsedTime);
 	internalsRef->nPCManagerRef->SetCursor(internalsRef->iCameraScreenRef.Const());
+
+	// ゴールの更新
+	internalsRef->goalRef->Update(elapsedTime);
 
 	// ゲーム入力
 	Ref iGameInput = internalsRef->gameContextRef->GetIGameInput();

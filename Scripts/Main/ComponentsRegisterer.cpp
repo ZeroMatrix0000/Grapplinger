@@ -21,6 +21,7 @@
 #include "../GameObjects/Objects/Slime/SlimeManager.h"
 #include "../GameObjects/Objects/CheckPoint/CheckPoint.h"
 #include "../GameObjects/Objects/CheckPoint/CheckPointManager.h"
+#include "../GameObjects/Objects/Goal/Goal.h"
 #include "../GameObjects/UIs/SelectMenu/SelectMenu.h"
 #include "../GameObjects/UIs/InteractCursor/InteractCursor.h"
 #include "../GameObjects/UIs/Z2Talk/Z2Talk.h"
@@ -208,6 +209,8 @@ void ComponentsRegisterer::RegisterComponents
 	// チェックポイント
 	REGISTER(CheckPoint, "CheckPoint");
 	REGISTER(CheckPointManager, "CheckPointManager");
+	// ゴール
+	REGISTER(Goal, "Goal");
 	// 選択メニュー
 	REGISTER(SelectMenu, "SelectMenu");
 	// カーソル

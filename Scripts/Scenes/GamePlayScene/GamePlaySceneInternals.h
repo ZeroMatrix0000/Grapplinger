@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneInternals.h
  * Author:       Takao Hayata
- * Last Updated: 2026/11/19
+ * Last Updated: 2026/11/21
  *
  * ゲームプレイシーンの内部データ
  */
@@ -32,6 +32,7 @@ class PlayerCamera;
 class NPCManager;
 class SlimeManager;
 class CheckPointManager;
+class Goal;
 class Z2Talk;
 class BlackBelt;
 class MessageWindow;
@@ -80,6 +81,9 @@ struct GamePlaySceneInternals
 
 	// チェックポイント管理
 	Ref<CheckPointManager> checkPointManagerRef;
+
+	// ゴール
+	Ref<Goal> goalRef;
 
 	// レティクル
 	Ref<Renderings::Image> reticleRef;

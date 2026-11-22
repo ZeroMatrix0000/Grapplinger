@@ -1,7 +1,7 @@
 /*
  * FileName:     Mesh.h
  * Author:       Takao Hayata
- * Last Updated: 2026/07/24
+ * Last Updated: 2026/11/21
  *
  * メッシュ
  */
@@ -25,14 +25,17 @@ namespace Libraries
 		// 行列を適用
 		void ApplyMatrix(const Math::Matrix& matrix);
 
+		// 非回転直方体を取得
+		Math::NonRotatingBox GetNonRotatingBox(size_t index) const;
+
 
 		/* メンバ変数 */
 
 		// 頂点情報
-		std::vector<Math::Vector3> v;
+		std::vector<std::vector<Math::Vector3>> v;
 
 		// 面情報（三角形のみ）
-		std::vector<std::array<size_t, 3>> f;
+		std::vector<std::vector<std::array<size_t, 3>>> f;
 
 	};
 }

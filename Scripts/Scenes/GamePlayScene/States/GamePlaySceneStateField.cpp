@@ -1,7 +1,7 @@
 /*
  * FileName:     GamePlaySceneStateField.cpp
  * Author:       Takao Hayata
- * Last Updated: 2026/11/20
+ * Last Updated: 2026/11/21
  *
  * ゲームプレイシーンのフィールド状態
  */
@@ -18,6 +18,7 @@
 #include "Scripts/GameObjects/Objects/NPC/NPCManager.h"
 #include "Scripts/GameObjects/Objects/Slime/SlimeManager.h"
 #include "Scripts/GameObjects/Objects/CheckPoint/CheckPointManager.h"
+#include "Scripts/GameObjects/Objects/Goal/Goal.h"
 #include "Scripts/GameObjects/UIs/Z2Talk/Z2Talk.h"
 #include "Scripts/GameObjects/UIs/BlackBelt/BlackBelt.h"
 #include "Scripts/GameObjects/UIs/MessageWindow/MessageWindow.h"
@@ -107,13 +108,23 @@ void GamePlaySceneStateField::Update(Ref<GamePlaySceneInternals> internalsRef, f
 	// スライムの更新
 	internalsRef->slimeManagerRef->Update(elapsedTime);
 
+	// ゴールの更新
+	internalsRef->goalRef->Update(elapsedTime);
+
 	// プレイヤーの更新
 	internalsRef->playerRef->Update(elapsedTime, iGameInput->GetPlayerMove(), iGameInput->GetPlayerDash(), iGameInput->GetPlayerJump());
 	internalsRef->nPCManagerRef->PlayerCollide(internalsRef->playerRef);
 	internalsRef->slimeManagerRef->PlayerCollide(internalsRef->playerRef);
+	internalsRef->goalRef->PlayerCollide(internalsRef->playerRef);
 	internalsRef->playerRef->MeshCorrect(internalsRef->groundMeshRef->GetWorldMesh());
 	internalsRef->playerRef->UpdateModel(elapsedTime);
 	internalsRef->playerRef->DeathFloorCheck(internalsRef->deathFloorRef->GetWorldBox());
+
+	// ゴールの HP が 0 なら クリアシーンに移動
+	if (internalsRef->goalRef->GetHp() == 0)
+	{
+		SetNextState(std::make_unique<GamePlaySceneStateClear>());
+	}
 
 	// カメラの更新
 	internalsRef->playerCameraRef->SetTarget(internalsRef->playerRef->GetCameraTarget());

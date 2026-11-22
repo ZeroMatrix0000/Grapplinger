@@ -43,6 +43,7 @@ class Slime;
 class SlimeManager;
 class CheckPoint;
 class CheckPointManager;
+class Goal;
 class SelectMenu;
 class InteractCursor;
 class Z2Talk;
@@ -72,6 +73,7 @@ class SparklingParticle;
 class WindCutParticle;
 class SlimeDefeatParticle;
 class PlayerDefeatParticle;
+class GoalParticle;
 
 #define IS_DERIVED_REGISTER(T, U) \
 template<> \
@@ -101,6 +103,7 @@ IS_DERIVED_REGISTER(Slime, Component)
 IS_DERIVED_REGISTER(SlimeManager, Component)
 IS_DERIVED_REGISTER(CheckPoint, Component)
 IS_DERIVED_REGISTER(CheckPointManager, Component)
+IS_DERIVED_REGISTER(Goal, Component)
 IS_DERIVED_REGISTER(SelectMenu, Component)
 IS_DERIVED_REGISTER(InteractCursor, Component)
 IS_DERIVED_REGISTER(Z2Talk, Component)
@@ -128,5 +131,6 @@ IS_DERIVED_REGISTER(SparklingParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(WindCutParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(SlimeDefeatParticle, Renderings::Particle)
 IS_DERIVED_REGISTER(PlayerDefeatParticle, Renderings::Particle)
+IS_DERIVED_REGISTER(GoalParticle, Renderings::Particle)
 
 #undef IS_DERIVED_REGISTER
