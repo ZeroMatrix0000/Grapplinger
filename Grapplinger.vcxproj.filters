@@ -1209,5 +1209,8 @@
     <FxCompile Include="Shaders\PixelShaders\Goal.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PixelShaders\FontTest.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -127,6 +127,26 @@
 			}
 		}
 	},
+	{
+		"Name": "Test",
+		"Components": {
+			"RectTransform": {
+				"Position": {
+					"X": -1024.0,
+					"Y": 1024.0
+				},
+				"Size": {
+					"X": 4096.0,
+					"Y": 4096.0
+				}
+			},
+			"Image": {
+				"ImageSourceName": "Test",
+				"PixelShaderName": "FontTest",
+				"Canvas": "Canvas"
+			}
+		}
+	},
 	//{
 	//	"Name": "Test",
 	//	"Components": {

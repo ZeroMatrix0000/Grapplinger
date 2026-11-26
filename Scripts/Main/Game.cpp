@@ -131,7 +131,6 @@ void Game::Initialize(const HWND& hWindow)
 	);
 
 	// 最初のシーンを設定
-	// 最初のシーンを設定
 	//m_sceneManager.SetFirstScene<SampleScene>();
 	m_sceneManager.SetFirstScene<TitleScene>();
 }
